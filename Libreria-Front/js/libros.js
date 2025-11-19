@@ -350,7 +350,6 @@ function renderTabla(list) {
 
     return `
       <tr>
-        <td>${cod}</td>
         <td>${titulo}</td>
         <td>${autores}</td>
         <td>${idioma}</td>

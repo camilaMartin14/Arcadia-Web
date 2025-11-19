@@ -130,41 +130,37 @@ async function cargarPedidos() {
 }
 
 function renderPedidos(pedidos) {
-  const tbody = document.getElementById("tbodyPedidos");
-  const sinResultados = document.getElementById("sinResultados");
-  tbody.innerHTML = "";
+    const tbody = document.getElementById("tbodyPedidos");
+    const sinResultados = document.getElementById("sinResultados");
+    tbody.innerHTML = "";
 
-  if (!pedidos || pedidos.length === 0) {
-    if (sinResultados) sinResultados.classList.remove("d-none");
-    return;
-  }
 
-  if (sinResultados) sinResultados.classList.add("d-none");
-
-  pedidos.forEach(p => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${p.nroPedido}</td>
-      <td>${new Date(p.fecha).toLocaleString()}</td>
-      <td>${p.nombreCliente ?? p.codCliente}</td>
-      <td>${p.nombreFormaEnvio ?? p.idFormaEnvio}</td>
-      <td>${p.estadoActual ?? 'Sin estado'}</td>
-      <td class="text-end">
-        <button class="btn btn-sm btn-outline-info action-sm" title="Ver" onclick="verPedido(${p.nroPedido})">
-            <i class="bi bi-eye"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-warning action-sm" title="Editar" onclick="editarPedido(${p.nroPedido})">
-            <i class="bi bi-pencil"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-secondary action-sm" title="Cambiar estado" onclick="cambiarEstado(${p.nroPedido})">
-            <i class="bi bi-arrow-repeat"></i>
-        </button>
-        <button class="btn btn-sm btn-outline-danger action-sm" title="Eliminar" onclick="eliminarPedido(${p.nroPedido})">
-            <i class="bi bi-trash"></i>
-        </button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
+    pedidos.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${p.nroPedido}</td>
+            <td>${new Date(p.fecha).toLocaleString()}</td>
+            
+            <td class="d-none">${p.nombreCliente ?? p.codCliente}</td> 
+            
+            <td>${p.nombreFormaEnvio ?? p.idFormaEnvio}</td>
+            <td>${p.estadoActual ?? 'Sin estado'}</td>
+            <td class="text-end">
+                <button class="btn btn-sm btn-outline-info action-sm" title="Ver" onclick="verPedido(${p.nroPedido})">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning action-sm" title="Editar" onclick="editarPedido(${p.nroPedido})">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary action-sm" title="Cambiar estado" onclick="cambiarEstado(${p.nroPedido})">
+                    <i class="bi bi-arrow-repeat"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger action-sm" title="Eliminar" onclick="eliminarPedido(${p.nroPedido})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>`;
+        tbody.appendChild(tr);
+    });
 }
 
 function limpiarFiltros() {

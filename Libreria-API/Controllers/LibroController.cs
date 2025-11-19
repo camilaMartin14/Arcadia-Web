@@ -15,7 +15,6 @@ namespace Libreria_API.Controllers
             _service = service;
         }
 
-        // GET api/libro/filtrar?...
         [HttpGet("filtrar")]
         public IActionResult BuscarLibros(
             [FromQuery] string? titulo,
@@ -28,7 +27,6 @@ namespace Libreria_API.Controllers
             return Ok(libros);
         }
 
-        // GET api/libro/123
         [HttpGet("{codigo:int}")]
         public IActionResult GetDetalle(int codigo)
         {
@@ -39,7 +37,6 @@ namespace Libreria_API.Controllers
             return Ok(libro);
         }
 
-        // POST api/libro
         [HttpPost]
         public IActionResult CrearLibro([FromBody] LibroCreateUpdateDTO dto)
         {
@@ -48,13 +45,11 @@ namespace Libreria_API.Controllers
 
             var creado = _service.CreateLibro(dto);
 
-            // Devuelvo 201 + ubicación del recurso creado
             return CreatedAtAction(nameof(GetDetalle),
                 new { codigo = creado.Codigo },
                 creado);
         }
 
-        // PUT api/libro/123
         [HttpPut("{codigo:int}")]
         public IActionResult ActualizarLibro(int codigo, [FromBody] LibroCreateUpdateDTO dto)
         {
@@ -69,7 +64,6 @@ namespace Libreria_API.Controllers
             return Ok(actualizado);
         }
 
-        // DELETE api/libro/123
         [HttpDelete("{codigo:int}")]
         public IActionResult EliminarLibro(int codigo)
         {

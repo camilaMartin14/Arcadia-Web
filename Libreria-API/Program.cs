@@ -59,10 +59,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<LibreriaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CamiConnection")));
 
-    //options.UseSqlServer(builder.Configuration.GetConnectionString("MaxiConnection")));
-
-//builder.Services.AddDbContext<LibreriaContext>(options =>
-   //options.UseSqlServer(builder.Configuration.GetConnectionString("LorenzoConnection")));
+  
 
 
 builder.Services.AddScoped<ILibroRepository, LibroRepository>();

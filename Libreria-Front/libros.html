@@ -90,11 +90,18 @@
         </div>
         <div class="col-sm-6 col-lg-4">
           <label class="form-label">Idioma</label>
-          <input id="fIdioma" class="form-control" placeholder="Ej: Español">
+
+
+          <select id="fIdioma" class="form-select"></select>
+
+
         </div>
         <div class="col-sm-6 col-lg-4">
           <label class="form-label">Género</label>
-          <input id="fGenero" class="form-control" placeholder="Ej: Aventura">
+          
+          <select id="fGenero" class="form-select"></select>
+          
+          
         </div>
         <div class="col-12 d-flex gap-2">
         <button id="btnBuscar" class="btn btn-info">
@@ -172,6 +179,19 @@
               <label class="form-label">Título</label>
               <input id="mTitulo" class="form-control" required>
             </div>
+
+            <div class="col-12">
+              <label class="form-label">Descripción</label>
+              <textarea id="mDescripcion" class="form-control" rows="4" placeholder="Ingresá una descripción del libro"></textarea>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">ISBN</label>
+              <input id="mIsbn" class="form-control" placeholder="Ej: 978-950-123-456-7">
+            </div>
+
+
+
             <div class="col-md-6">
               <label class="form-label">Autor(es)</label>
               <div class="dropdown w-100">
@@ -181,15 +201,22 @@
                 <ul class="dropdown-menu w-100" aria-labelledby="dropdownAutores" id="listaAutores"></ul>
               </div>
             </div>
+           
+
+
             <div class="col-md-4">
-              <label class="form-label">Idioma</label>
-              <div class="dropdown w-100">
-                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start text-white" type="button" id="dropdownIdiomas" data-bs-toggle="dropdown" aria-expanded="false">
-                  <span id="resumenIdiomas" class="dropdown-text" data-placeholder="Seleccioná un idioma"></span>
-                </button>
-                <ul class="dropdown-menu w-100" aria-labelledby="dropdownIdiomas" id="listaIdiomas"></ul>
-              </div>
+                <label class="form-label">Editorial</label>
+                <select id="mEditorial" class="form-select" required></select>
             </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Idioma</label>
+                <select id="mIdioma" class="form-select" required></select>
+            </div>
+
+
+
+
             <div class="col-md-4">
               <label class="form-label">Género(s)</label>
               <div class="dropdown w-100">
@@ -216,6 +243,13 @@
               <label class="form-label">Stock</label>
               <input id="mStock" type="number" min="0" step="1" class="form-control" required>
             </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Fecha de Lanzamiento</label>
+              <input id="mFechaLanzamiento" type="date" class="form-control">
+            </div>
+
+
           </div>
           <div class="modal-footer justify-content-between">
             <button id="btnEliminar" type="button" class="btn btn-outline-danger d-none"><i class="bi bi-trash"></i> Eliminar</button>

@@ -72,5 +72,21 @@ namespace Libreria_API.Controllers
                 .ToList();
             return Ok(data);
         }
+    
+
+    [HttpGet("editoriales")]
+        public IActionResult ObtenerEditoriales()
+        {
+            var data = _context.Editoriales
+                .OrderBy(e => e.Editorial)
+                .Select(e => new LookupItemDTO
+                {
+                    Id = e.IdEditorial,
+                    Nombre = e.Editorial
+                })
+                .ToList();
+
+            return Ok(data);
+        }
     }
 }

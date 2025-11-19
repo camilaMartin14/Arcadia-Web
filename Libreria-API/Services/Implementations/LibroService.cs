@@ -118,36 +118,7 @@ namespace Libreria_API.Services.Implementations
                 LibrosGeneros = new List<LibrosGenero>()
             };
 
-            foreach (var idAutor in autoresIds)
-            {
-                libro.AutoresLibros.Add(new AutoresLibro
-                {
-                    IdAutor = idAutor
-                    ,
-                    IdAutorLibro = ObtenerSiguienteIdAutoresLibro(),
-                    IdLibroNavigation = libro
-                });
-            }
 
-            foreach (var idCat in categoriasIds)
-            {
-                libro.LibrosCategoria.Add(new LibrosCategoria
-                {
-                    IdCategoria = idCat,
-                    IdLibroCategoria = ObtenerSiguienteIdLibroCategoria(),
-                    IdLibroNavigation = libro
-                });
-            }
-
-            foreach (var idGen in generosIds)
-            {
-                libro.LibrosGeneros.Add(new LibrosGenero
-                {
-                    IdGenero = idGen,
-                    IdLibroGenero = ObtenerSiguienteIdLibroGenero(),
-                    IdLibroNavigation = libro
-                });
-            }
 
             _repo.Add(libro);
             _repo.SaveChanges();
@@ -183,9 +154,6 @@ namespace Libreria_API.Services.Implementations
             if (dto.FechaLanzamiento.HasValue)
                 libro.FechaLanzamiento = dto.FechaLanzamiento.Value;
 
-            ReemplazarAutores(libro.CodLibro, autoresIds);
-            ReemplazarCategorias(libro.CodLibro, categoriasIds);
-            ReemplazarGeneros(libro.CodLibro, generosIds);
 
             _repo.SaveChanges();
 
@@ -514,107 +482,8 @@ namespace Libreria_API.Services.Implementations
             return nuevo.IdSexo;
         }
 
-        private void ReemplazarAutores(int codLibro, List<int> nuevosIds)
-        {
-            _context.AutoresLibros
-                .Where(al => al.IdLibro == codLibro)
-                .ExecuteDelete();
 
-            foreach (var idAutor in nuevosIds)
-            {
-                _context.AutoresLibros.Add(new AutoresLibro
-                {
-                    IdAutor = idAutor,
-                    IdAutorLibro = ObtenerSiguienteIdAutoresLibro(),
-                    IdLibro = codLibro
-                });
-            }
-        }
 
-        private void ReemplazarCategorias(int codLibro, List<int> nuevasCategorias)
-        {
-            _context.LibrosCategorias
-                .Where(lc => lc.IdLibro == codLibro)
-                .ExecuteDelete();
-
-            foreach (var idCat in nuevasCategorias)
-            {
-                _context.LibrosCategorias.Add(new LibrosCategoria
-                {
-                    IdCategoria = idCat,
-                    IdLibroCategoria = ObtenerSiguienteIdLibroCategoria(),
-                    IdLibro = codLibro
-                });
-            }
-        }
-
-        private void ReemplazarGeneros(int codLibro, List<int> nuevosGeneros)
-        {
-            _context.LibrosGeneros
-                .Where(lg => lg.IdLibro == codLibro)
-                .ExecuteDelete();
-
-            foreach (var idGen in nuevosGeneros)
-            {
-                _context.LibrosGeneros.Add(new LibrosGenero
-                {
-                    IdGenero = idGen,
-                    IdLibroGenero = ObtenerSiguienteIdLibroGenero(),
-                    IdLibro = codLibro
-                });
-            }
-        }
-
-        private int ObtenerSiguienteIdAutoresLibro()
-        {
-            if (!_ultimoAutorLibroId.HasValue)
-            {
-                var max = _context.AutoresLibros
-                    .Select(al => (int?)al.IdAutorLibro)
-                    .Max() ?? 0;
-                _ultimoAutorLibroId = max + 1;
-            }
-            else
-            {
-                _ultimoAutorLibroId++;
-            }
-
-            return _ultimoAutorLibroId.Value;
-        }
-
-        private int ObtenerSiguienteIdLibroCategoria()
-        {
-            if (!_ultimoLibroCategoriaId.HasValue)
-            {
-                var max = _context.LibrosCategorias
-                    .Select(lc => (int?)lc.IdLibroCategoria)
-                    .Max() ?? 0;
-                _ultimoLibroCategoriaId = max + 1;
-            }
-            else
-            {
-                _ultimoLibroCategoriaId++;
-            }
-
-            return _ultimoLibroCategoriaId.Value;
-        }
-
-        private int ObtenerSiguienteIdLibroGenero()
-        {
-            if (!_ultimoLibroGeneroId.HasValue)
-            {
-                var max = _context.LibrosGeneros
-                    .Select(lg => (int?)lg.IdLibroGenero)
-                    .Max() ?? 0;
-                _ultimoLibroGeneroId = max + 1;
-            }
-            else
-            {
-                _ultimoLibroGeneroId++;
-            }
-
-            return _ultimoLibroGeneroId.Value;
-        }
 
     }
 }

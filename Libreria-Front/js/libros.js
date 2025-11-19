@@ -6,16 +6,18 @@ const fmtCurrency = new Intl.NumberFormat("es-AR", { style: "currency", currency
 let vista = "tabla";
 let ultimoListado = [];
 const catalogos = {
-  autores: [],
-  categorias: [],
-  generos: [],
-  idiomas: []
+  autores: [],
+  categorias: [],
+  generos: [],
+  idiomas: [],
+  editoriales: []
 };
 const selecciones = {
-  autores: [],
-  categorias: [],
-  generos: [],
-  idiomas: []
+  autores: [],
+  categorias: [],
+  generos: [],
+  idiomas: [],
+  editoriales: []
 };
 const setCargando = (on) => $('#estadoBusqueda').classList.toggle('d-none', !on);
 const show = (id, v) => $(id).classList.toggle('d-none', !v);
@@ -104,51 +106,70 @@ function render() {
 }
 
 async function cargarCatalogos() {
-  try {
-    const endpoints = ["autores", "categorias", "generos", "idiomas"];
-    const solicitudes = endpoints.map((ep) => fetch(`${API_BASE}/api/catalogos/${ep}`));
-    const respuestas = await Promise.all(solicitudes);
-    const datos = await Promise.all(respuestas.map((res) => res.ok ? res.json() : []));
+  try {
+    const endpoints = ["autores", "categorias", "generos", "idiomas", "editoriales"]; 
+    const solicitudes = endpoints.map((ep) => fetch(`${API_BASE}/api/catalogos/${ep}`));
+    const respuestas = await Promise.all(solicitudes);
+    const datos = await Promise.all(respuestas.map((res) => res.ok ? res.json() : []));
 
-    catalogos.autores = datos[0] ?? [];
-    catalogos.categorias = datos[1] ?? [];
-    catalogos.generos = datos[2] ?? [];
-    catalogos.idiomas = datos[3] ?? [];
+    catalogos.autores = datos[0] ?? [];
+    catalogos.categorias = datos[1] ?? [];
+    catalogos.generos = datos[2] ?? [];
+    catalogos.idiomas = datos[3] ?? [];
+    catalogos.editoriales = datos[4] ?? [];
+
+console.log("Catálogos cargados:", catalogos);
+
+  } catch (err) {
+    console.error("Error al cargar catálogos:", err);
+  }
+} 
+
 
 function renderCatalogoSelects() {
   renderDropdown('autores', catalogos.autores);
   renderDropdown('categorias', catalogos.categorias);
   renderDropdown('generos', catalogos.generos);
-  // 🔑 CAMBIO CLAVE: Usar popularSelect para el campo de idiomas (#mIdioma)
-  popularSelect('#mIdioma', catalogos.idiomas, { placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+  popularSelect('#mIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+popularSelect('#mEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
+
 }
 
-// CÓDIGO A PEGAR/REEMPLAZAR:
-function popularSelect(selector, items, { placeholder = 'Seleccioná una opción', incluyeVacio = false } = {}) {
-  const select = $(selector);
-  if (!select) return;
 
-  const fragment = document.createDocumentFragment();
-  if (!select.multiple && incluyeVacio) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = placeholder;
-    fragment.appendChild(opt);
-  }
 
-  items.forEach((item) => {
-    // Usa la función de ayuda para obtener el ID y nombre del idioma
-    const { id, nombre } = extractIdAndName('idiomas', item);
-    
-    const option = document.createElement('option');
-    option.value = id;
-    option.textContent = nombre;
-    fragment.appendChild(option);
-  });
 
-  select.innerHTML = '';
-  select.appendChild(fragment);
+
+
+function popularSelect(selector, items, { tipo, placeholder = 'Seleccioná una opción', incluyeVacio = false } = {}) {
+  const select = $(selector);
+  if (!select) return;
+
+  const fragment = document.createDocumentFragment();
+
+  if (!select.multiple && incluyeVacio) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = placeholder;
+    fragment.appendChild(opt);
+  }
+
+  items.forEach(item => {
+    const { id, nombre } = extractIdAndName(tipo, item);
+    if (!idValido(id)) return;
+
+    const option = document.createElement('option');
+    option.value = id;
+    option.textContent = nombre;
+    fragment.appendChild(option);
+  });
+
+  select.innerHTML = '';   // limpiar antes
+  select.appendChild(fragment);
 }
+
+
+
+
 
 function setSelectValues(selector, values) {
   const select = $(selector);
@@ -195,9 +216,6 @@ function setSeleccionDesdeLibro(tipo, ids) {
         .filter((item) => item.id && normalizadosSet.has(item.id)) 
         .map((item) => ({ id: item.id, nombre: item.nombre }));
         
-    if (tipo === 'idiomas' && seleccionados.length > 1) {
-        seleccionados = seleccionados.slice(0, 1);
-    }
     selecciones[tipo] = seleccionados;
     actualizarResumen(tipo);
 }
@@ -390,9 +408,9 @@ function abrirModal(modo, libro = null) {
   $('#btnEliminar').classList.toggle('d-none', modo !== 'edicion');
 
   const soloLectura = (modo === 'detalle');
-  ['#mTitulo','#mPrecio','#mStock','#mIdioma']
-    .forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
-  ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
+  ['#mTitulo','#mPrecio','#mStock','#mIdioma', '#mEditorial'] 
+    .forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
+  ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
 
   $('#btnGuardar').classList.toggle('d-none', soloLectura);
 
@@ -401,12 +419,23 @@ function abrirModal(modo, libro = null) {
   $('#mPrecio').value    = libro?.precio ?? libro?.Precio ?? 0;
   $('#mStock').value     = libro?.stock ?? libro?.Stock ?? 0;
 
+  // --> Agrego estos que son not null en mi BD
+const mIsbn = $('#mISBN');
+if (mIsbn) mIsbn.value = libro?.isbn ?? libro?.Isbn ?? '';
+
+const mDescripcion = $('#mDescripcion');
+if (mDescripcion) mDescripcion.value = libro?.descripcion ?? libro?.Descripcion ?? '';
+
+const mFecha = $('#mFechaLanzamiento');
+if (mFecha) mFecha.value = libro?.fecha_lanzamiento ?? libro?.FechaLanzamiento ?? '';
+
   setSeleccionDesdeLibro('autores', obtenerIdsDesdeLibro(libro, 'autoresIds'));
   setSeleccionDesdeLibro('categorias', obtenerIdsDesdeLibro(libro, 'categoriasIds'));
   setSeleccionDesdeLibro('generos', obtenerIdsDesdeLibro(libro, 'generosIds'));
   const idiomaSeleccionado = libro?.idIdioma ?? libro?.IdIdioma ?? '';
   setSelectValues('#mIdioma', idiomaSeleccionado ? [idiomaSeleccionado] : []);
-
+const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
+  setSelectValues('#mEditorial', editorialSeleccionada ? [editorialSeleccionada] : []);
   bsModal ??= new bootstrap.Modal($('#modalLibro'));
   bsModal.show();
 
@@ -447,40 +476,46 @@ async function eliminarLibro(id) {
 
 function tomarPayload() {
   const idiomaSeleccionado = obtenerValoresSelect('#mIdioma')[0] ?? 0;
+  const editorialSeleccionada = obtenerValoresSelect('#mEditorial')[0] ?? 0;
+
+  // Helper para leer valores sin romper si el campo no existe
+  const getVal = (sel) => {
+    const el = $(sel);
+    return el ? el.value.trim() : "";
+  };
+
+  const getNum = (sel) => {
+    const el = $(sel);
+    return el ? Number(el.value) : 0;
+  };
 
   return {
-    titulo: $('#mTitulo').value.trim(),
+    titulo: getVal('#mTitulo'),
     idsAutores: selecciones.autores.map((item) => item.id),
     autores: [],
+    
     idIdioma: idiomaSeleccionado,
     idioma: null,
+    
+    idEditorial: editorialSeleccionada,
+    editorial: null,
+    
     idsGeneros: selecciones.generos.map((item) => item.id),
     generos: [],
+    
     idsCategorias: selecciones.categorias.map((item) => item.id),
     categorias: [],
-    precio: Number($('#mPrecio').value || 0),
-    stock: Number($('#mStock').value || 0)
+    
+    precio: getNum('#mPrecio'),
+    stock: getNum('#mStock'),
+
+    // Campos nuevos protegidos (no rompen si no están en HTML)
+    isbn: getVal('#mISBN'),
+    descripcion: getVal('#mDescripcion'),
+    fechaLanzamiento: getVal('#mFechaLanzamiento'),
   };
 }
 
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-action]');
-  if (!btn) return;
-  const id = btn.getAttribute('data-id');
-  const action = btn.getAttribute('data-action');
-
-  const libro = ultimoListado.find(x =>
-    (x.cod_libro ?? x.CodLibro ?? x.codigo ?? x.Codigo) == id
-  );
-
-  if (!libro) {
-    console.warn('No se encontró el libro para id', id, 'en', ultimoListado);
-    return;
-  }
-
-  if (action === 'ver')     abrirModal('detalle', libro);
-  if (action === 'editar')  abrirModal('edicion', libro);
-});
 
 $('#btnBuscar').addEventListener('click', buscarLibros);
 $('#btnLimpiar').addEventListener('click', () => {
@@ -529,6 +564,7 @@ document.addEventListener('DOMContentLoaded', async () => {
  document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 
   await cargarCatalogos();
+  renderCatalogoSelects();
   buscarLibros();
 });
 
@@ -553,10 +589,21 @@ function extractIdAndName(tipo, item) {
             id = item.id_idioma ?? item.IdIdioma ?? item.id ?? item.Id;
             nombre = item.idioma ?? item.Idioma ?? item.nombre ?? item.Nombre ?? '';
             break;
+
+        case 'editoriales':
+            id = item.id_editorial ?? item.IdEditorial ?? item.id ?? item.Id;
+            nombre = item.editorial ?? item.Editorial ?? item.nombre ?? item.Nombre ?? '';
+            break;
+
         default:
             id = item.id ?? item.Id;
             nombre = item.nombre ?? item.Nombre ?? '';
     }
-    // Convertir a String para consistencia en HTML value y comparaciones
     return { id: String(id), nombre: nombre };
-};
+} 
+
+function idValido(id) {
+    if (id === null || id === undefined) return false;
+    const s = String(id).trim();
+    return s !== "" && s !== "null" && s !== "undefined";
+}

@@ -56,7 +56,6 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
 
 Impedir el registro de pedidos con fechas anteriores a la fecha actual.
 Restringir cambios de estado: No permitir volver a un estado previo si el pedido ya fue marcado como Entregado.
-Aplicar reglas estrictas en las transiciones de estado para mantener coherencia.
 
 🎯 **Mejora de la experiencia de usuario**
 

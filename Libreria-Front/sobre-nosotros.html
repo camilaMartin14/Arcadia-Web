@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arcadia</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+        .footer-icon {
+        height: 30px;
+        width: auto;
+        opacity: 0.9;
+        transition: opacity 0.3s, filter 0.3s;
+    }
+
+    
+        body[data-bs-theme="dark"],
+        body[data-bs-theme="light"] {
+            background:
+                linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+                url('images/libro2.jpg') center / cover no-repeat fixed;
+            color: #e9ecf1;
+        }
+
+        nav.navbar {
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            z-index: 9999;
+        }
+
+        nav.navbar .navbar-brand h1,
+        nav.navbar .navbar-brand i {
+            color: #ffffff !important;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .video-inicial-title {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        body[data-bs-theme="light"] nav.navbar .navbar-brand h1,
+        body[data-bs-theme="light"] nav.navbar .navbar-brand i {
+            color: #000000 !important;
+            text-shadow: none !important;
+        }
+            
+        body[data-bs-theme="light"] footer,
+        body[data-bs-theme="light"] footer .text-reset {
+            color: #000000 !important; 
+        }
+
+        body[data-bs-theme="light"] .header h1,
+        body[data-bs-theme="light"] .header h3 {
+            color: #000000 !important;
+            text-shadow: none !important;
+        }
+    </style>
+</head>
+
+<body data-bs-theme="dark">
+
+    <header class="fixed-top" style="z-index: 9999;">
+        <nav class="navbar navbar-expand-lg py-3 border-bottom border-subtle">
+            <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <h1 class="m-0 fs-3 d-inline-block">Arcadia</h1>
+            </a>
+
+                <div class="d-flex align-items-center">
+
+                    <button class="btn btn-secondary me-3" id="theme-toggle" aria-label="Cambiar tema">
+                        <i class="bi bi-sun-fill" id="theme-icon"></i>
+                    </button>
+
+                    <a href="login.html" id="btnAccederHeader" class="btn btn-warning ms-3">
+                        Inicia sesión o regístrate
+                    </a>
+
+                    <div id="user-menu-dropdown" class="dropdown ms-3 d-none">
+                        <button id="user-dropdown-button" class="btn btn-secondary dropdown-toggle"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="user-greeting-text">👤 Hola, Usuario</span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="dashboard.html">Acceder al dashboard</a></li>
+                            <li><a class="dropdown-item" href="pedidos.html">Administrar pedidos</a></li>
+                            <li><a class="dropdown-item" href="libros.html">Administrar libros</a></li>
+
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <button id="btn-logout" class="dropdown-item text-danger" type="button">
+                                    Cerrar Sesión
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5 pt-5 position-relative mb-5" style="z-index: 1;">
+
+        <header class="header text-center mt-5 pt-4 text-white">
+            <h1 class="video-inicial-title text-uppercase">ARCADIA</h1>
+            <h3>Más que un lugar, un ideal</h3>
+        </header>
+
+        <section class="arcadia-definition mt-4">
+            <article class="card p-4">
+                <p class="mb-3">
+                    <strong>¿Qué es Arcadia?</strong> En la Antigua Grecia, Arcadia era una región montañosa,
+                    hogar de dioses como Hermes y Pan. Con el tiempo, los poetas la imaginaron como 
+                    <strong>un santuario de paz y armonía.</strong>
+                </p>
+
+                <p class="mb-0">
+                    Hoy, Arcadia simboliza la pausa, el refugio y la reconexión. 
+                    Cada libro es un sendero hacia tu propia Arcadia personal.
+                </p>
+            </article>
+        </section>
+
+        <section class="section-mv mt-5 d-flex flex-column flex-md-row gap-4">
+
+            <article class="card p-4">
+                <h2>🌟 Nuestra Visión</h2>
+                <p>
+                    Ser el santuario digital de la lectura, el destino donde los lectores buscan historias 
+                    que inspiren calma, asombro y refugio.
+                </p>
+            </article>
+
+            <article class="card p-4">
+                <h2>🎯 Nuestra Misión</h2>
+                <ul>
+                    <li>Fomentar la evasión consciente mediante una selección curada de libros.</li>
+                    <li>Conectar al lector con su refugio interior mediante una experiencia simple y motivadora.</li>
+                    <li>Promover el conocimiento y el crecimiento personal.</li>
+                </ul>
+            </article>
+
+        </section>
+
+    </div>
+
+<footer class="bg-body-tertiary pt-5 pb-4 border-top border-subtle">
+    <div class="container">
+
+        <style>
+            .footer-icon {
+                max-height: 32px;
+                object-fit: contain;
+            }
+        </style>
+        
+        <div class="row align-items-start">
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Arcadia</h6>
+                <ul class="list-unstyled">
+                    <li><a href="sobre-nosotros.html" class="text-reset text-decoration-none footer-link">Sobre Nosotros</a></li>
+                    <li><p class="mb-0"><a href="sucursales.html" class="text-reset text-decoration-none">Sucursales</a></p></li>
+                    <li><a href="AcercaDe.html" class="text-reset text-decoration-none footer-link">Nuestros Desarrolladores</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de pago</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/visa.jpg" alt="Visa" class="footer-icon">
+                    <img src="images/mastercard.webp" alt="Mastercard" class="footer-icon">
+                    <img src="images/amex.png" alt="American Express" class="footer-icon">
+                    <img src="images/nx.png" alt="Tarjeta Naranja" class="footer-icon">
+                    <img src="images/mercado-pago.jpg" alt="Mercado Pago" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de envío</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/oca.png" alt="OCA" class="footer-icon">
+                    <img src="images/andreani.jpg" alt="Andreani" class="footer-icon">
+                    <img src="images/correo-arg.png" alt="Correo Argentino" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Atención al Cliente</h6>
+                <p>
+                    <i class="bi bi-telephone-fill me-3"></i> 0810 555 6272
+                </p>
+                <p>
+                    <i class="bi bi-envelope-fill me-3"></i> 
+                    <a href="mailto:librerias@acardia.com" class="text-reset text-decoration-none">
+                        librerias@arcadia.com
+                    </a>
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="mb-4 mt-3 border-secondary-subtle">
+
+        <div class="text-center">
+            <p>&copy; 2025 Librerías Arcadia. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/8d77e74cbe.js" crossorigin="anonymous"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleButton = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const body = document.body;
+
+            const storedTheme = localStorage.getItem('theme');
+            let currentTheme = storedTheme || 'light';
+
+        function applyTheme(theme) {
+            const icon = document.getElementById("theme-icon");
+            const navbar = document.querySelector("nav.navbar");
+            const toggle = document.getElementById("theme-toggle");
+
+            body.setAttribute("data-bs-theme", theme);
+
+            if (theme === "dark") {
+                icon.classList.remove("bi-sun-fill");
+                icon.classList.add("bi-moon-stars-fill");
+                
+                if (toggle) {
+                    toggle.classList.remove("btn-secondary");
+                    toggle.classList.add("btn-outline-warning"); 
+                }
+
+                navbar.classList.remove("theme-light");
+                navbar.classList.add("theme-dark");
+
+            } else {
+                icon.classList.remove("bi-moon-stars-fill");
+                icon.classList.add("bi-sun-fill");
+
+                if (toggle) {
+                    toggle.classList.remove("btn-outline-warning");
+                    toggle.classList.add("btn-secondary");
+                }
+                
+                navbar.classList.remove("theme-dark");
+                navbar.classList.add("theme-light");
+            }
+
+            localStorage.setItem("theme", theme);
+            currentTheme = theme;
+        }
+
+            applyTheme(currentTheme);
+
+            toggleButton.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
+        });
+
+        function updateUIForUser() {
+            const userDataJSON = localStorage.getItem('usuario');
+
+            const userGreetingText = document.getElementById('user-greeting-text');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown');
+            const btnAccederHeader = document.getElementById('btnAccederHeader');
+            const logoutBtn = document.getElementById("btn-logout");
+
+            if (!userGreetingText || !userMenuDropdown || !btnAccederHeader || !logoutBtn) {
+                console.error("Faltan elementos clave en el HTML.");
+                return;
+            }
+
+            if (userDataJSON) {
+                try {
+                    const userData = JSON.parse(userDataJSON);
+                    const fullName = (userData.nombre && userData.apellido)
+                        ? `${userData.nombre} ${userData.apellido}`
+                        : 'Usuario';
+
+                    userMenuDropdown.classList.remove('d-none');
+                    btnAccederHeader.classList.add('d-none');
+
+                    userGreetingText.innerHTML = `👤 Hola, ${fullName}`;
+                    logoutBtn.onclick = handleLogout;
+
+                } catch (e) {
+                    console.error("Error al parsear usuario:", e);
+                    localStorage.removeItem('usuario');
+                    userMenuDropdown.classList.add('d-none');
+                    btnAccederHeader.classList.remove('d-none');
+                }
+
+            } else {
+                userMenuDropdown.classList.add('d-none');
+                btnAccederHeader.classList.remove('d-none');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+
+            updateUIForUser();
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener("DOMContentLoaded", updateUIForUser);
+    </script>
+</body>
+</html>

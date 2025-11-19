@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión - Arcadia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex justify-content-end">
+              <button id="theme-toggle" class="btn btn-sm btn-secondary" aria-label="Cambiar tema">
+                <i id="theme-icon" class="bi bi-sun-fill"></i>
+              </button>
+            </div>
+            <h3 class="text-center mb-4">Iniciar Sesión</h3>
+            <form id="loginForm" autocomplete="off">
+              <div class="mb-3">
+                <label class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="usuario" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+            </form>
+            <p class="mt-3 text-center">
+              ¿No tenés cuenta? <a href="register.html">Registrate</a>
+            </p>
+            <div id="mensaje" class="text-center mt-3 text-danger"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function applyTheme(theme) {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        const toggleButton = document.getElementById('theme-toggle');
+
+        body.setAttribute('data-bs-theme', theme);
+        localStorage.setItem('tema', theme);
+
+        if (icon) {
+            if (theme === 'dark') {
+                icon.className = 'bi bi-moon-stars-fill'; 
+            } else {
+                icon.className = 'bi bi-sun-fill';
+            }
+        }
+
+        if (toggleButton) {
+            if (theme === 'dark') {
+                toggleButton.classList.remove('btn-secondary');
+                toggleButton.classList.add('btn-outline-warning');
+            } else {
+                toggleButton.classList.remove('btn-outline-warning');
+                toggleButton.classList.add('btn-secondary');
+            }
+        }
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.body.getAttribute('data-bs-theme') || 'dark';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
+    }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        const temaGuardado = localStorage.getItem("tema");
+        const temaInicial = temaGuardado || 'dark';
+        
+        applyTheme(temaInicial);
+
+        const toggleButton = document.getElementById('theme-toggle');
+        if (toggleButton) {
+            toggleButton.addEventListener('click', toggleTheme);
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const temaGuardado = localStorage.getItem("tema");
+      if (temaGuardado === "light") temaClaro();
+      else temaOscuro();
+    });
+
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const usuario = document.getElementById("usuario").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const mensaje = document.getElementById("mensaje");
+
+      mensaje.textContent = "";
+      mensaje.classList.remove("text-danger", "text-success");
+
+      if (!usuario || !password) {
+        mensaje.textContent = "⚠️ Completá todos los campos.";
+        mensaje.classList.add("text-danger");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5157/api/cliente/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ Usuario: usuario, Contraseña: password })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem("usuario", JSON.stringify(data));
+          mensaje.classList.add("text-success");
+          mensaje.textContent = "✅ Inicio de sesión exitoso. Redirigiendo...";
+          
+          setTimeout(() => {
+            window.location.href = "index.html"; 
+          }, 1500);
+        } else {
+          mensaje.textContent = "❌ Usuario o contraseña incorrectos.";
+          mensaje.classList.add("text-danger");
+        }
+      } catch (error) {
+        mensaje.textContent = "⚠️ Error de conexión con el servidor.";
+        mensaje.classList.add("text-danger");
+      }
+    });
+  </script>
+
+
+
+</body>
+</html>

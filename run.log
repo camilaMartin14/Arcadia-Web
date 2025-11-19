@@ -1,0 +1,102 @@
+Usando la configuración de inicio de C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Properties\launchSettings.json...
+Compilando...
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Repositories\Interfaces\IClienteRepository.cs(12,79): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Repositories\Implementations\ClienteRepository.cs(45,88): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Controllers\ClienteController.cs(82,84): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Services\Interfaces\IClienteService.cs(10,74): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Services\Implementations\ClienteService.cs(47,87): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\UpdateEstadoDTO.cs(10,23): warning CS8618: El elemento propiedad "Observaciones" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(8,23): warning CS8618: El elemento propiedad "Codigo" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(9,23): warning CS8618: El elemento propiedad "Titulo" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(10,23): warning CS8618: El elemento propiedad "Editorial" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(11,23): warning CS8618: El elemento propiedad "Idioma" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(12,29): warning CS8618: El elemento propiedad "Autores" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(13,29): warning CS8618: El elemento propiedad "Categorias" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\DTOs\LibroDTO.cs(14,29): warning CS8618: El elemento propiedad "Generos" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de agregar el modificador "required'"o declarar el propiedad como un valor que acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Controllers\ClienteController.cs(107,29): warning CS8600: Se va a convertir un literal nulo o un posible valor nulo en un tipo que no acepta valores NULL [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Controllers\ClienteController.cs(110,51): warning CS8604: Posible argumento de referencia nulo para el parámetro "userId" en "string IClienteService.GenerateJwtToken(string userId, string userName, IList<string> roles)". [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Services\Implementations\ClienteService.cs(69,55): warning CS8625: No se puede convertir un literal NULL en un tipo de referencia que no acepta valores NULL. [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Services\Implementations\ClienteService.cs(97,71): warning CS8604: Posible argumento de referencia nulo para el parámetro "s" en "byte[] Encoding.GetBytes(string s)". [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Program.cs(26,39): warning CS8604: Posible argumento de referencia nulo para el parámetro "s" en "byte[] Encoding.GetBytes(string s)". [C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API\Libreria-API.csproj]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5157
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Users\loren\Desktop\TUP\1-año\3 - Segundo semestre\Programacion 2\pii-tpi-grupo-17\Libreria-API
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+warn: Microsoft.EntityFrameworkCore.Query[10103]
+      The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (58ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [e].[id_editorial], [e].[editorial]
+      FROM [editoriales] AS [e]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [i].[id_idioma], [i].[idioma]
+      FROM [idiomas] AS [i]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [a].[id_autor] AS [IdAutor], [a].[nombre] AS [Nombre], [a].[apellido] AS [Apellido]
+      FROM [autores] AS [a]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [c].[id_categoria] AS [IdCategoria], [c].[categoria] AS [Categoria1]
+      FROM [categorias] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [g].[id_genero] AS [IdGenero], [g].[genero] AS [Genero1]
+      FROM [generos] AS [g]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT MAX([a].[id_autor_libro])
+      FROM [autores_libros] AS [a]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT MAX([l].[id_libro_categoria])
+      FROM [libros_categorias] AS [l]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (36ms) [Parameters=[@p0='?' (Size = 200) (DbType = AnsiString), @p1='?' (DbType = Date), @p2='?' (DbType = Int32), @p3='?' (DbType = Int32), @p4='?' (Size = 50) (DbType = AnsiString), @p5='?' (Precision = 10) (Scale = 2) (DbType = Decimal), @p6='?' (DbType = Int32), @p7='?' (Size = 50) (DbType = AnsiString)], CommandType='Text', CommandTimeout='30']
+      SET IMPLICIT_TRANSACTIONS OFF;
+      SET NOCOUNT ON;
+      INSERT INTO [libros] ([descripcion], [fecha_lanzamiento], [id_editorial], [id_idioma], [isbn], [precio], [stock], [titulo])
+      OUTPUT INSERTED.[cod_libro]
+      VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (7ms) [Parameters=[@p8='?' (DbType = Int32), @p9='?' (DbType = Int32), @p10='?' (DbType = Int32), @p11='?' (DbType = Int32), @p12='?' (DbType = Int32), @p13='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SET NOCOUNT ON;
+      INSERT INTO [autores_libros] ([id_autor_libro], [id_autor], [id_libro])
+      VALUES (@p8, @p9, @p10);
+      INSERT INTO [libros_categorias] ([id_libro_categoria], [id_categoria], [id_libro])
+      VALUES (@p11, @p12, @p13);
+warn: Microsoft.EntityFrameworkCore.Query[20504]
+      Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@__codigo_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [s].[cod_libro], [s].[descripcion], [s].[fecha_lanzamiento], [s].[id_editorial], [s].[id_idioma], [s].[isbn], [s].[precio], [s].[stock], [s].[titulo], [s].[id_editorial0], [s].[editorial], [s].[id_idioma0], [s].[idioma], [s0].[id_autor_libro], [s0].[id_autor], [s0].[id_libro], [s0].[id_autor0], [s0].[apellido], [s0].[biografia], [s0].[fecha_nacimiento], [s0].[id_nacionalidad], [s0].[id_sexo], [s0].[nombre], [s1].[id_libro_categoria], [s1].[id_categoria], [s1].[id_libro], [s1].[id_categoria0], [s1].[categoria], [s2].[id_libro_genero], [s2].[id_genero], [s2].[id_libro], [s2].[id_genero0], [s2].[genero]
+      FROM (
+          SELECT TOP(1) [l].[cod_libro], [l].[descripcion], [l].[fecha_lanzamiento], [l].[id_editorial], [l].[id_idioma], [l].[isbn], [l].[precio], [l].[stock], [l].[titulo], [e].[id_editorial] AS [id_editorial0], [e].[editorial], [i].[id_idioma] AS [id_idioma0], [i].[idioma]
+          FROM [libros] AS [l]
+          INNER JOIN [editoriales] AS [e] ON [l].[id_editorial] = [e].[id_editorial]
+          INNER JOIN [idiomas] AS [i] ON [l].[id_idioma] = [i].[id_idioma]
+          WHERE [l].[cod_libro] = @__codigo_0
+      ) AS [s]
+      LEFT JOIN (
+          SELECT [a].[id_autor_libro], [a].[id_autor], [a].[id_libro], [a0].[id_autor] AS [id_autor0], [a0].[apellido], [a0].[biografia], [a0].[fecha_nacimiento], [a0].[id_nacionalidad], [a0].[id_sexo], [a0].[nombre]
+          FROM [autores_libros] AS [a]
+          INNER JOIN [autores] AS [a0] ON [a].[id_autor] = [a0].[id_autor]
+      ) AS [s0] ON [s].[cod_libro] = [s0].[id_libro]
+      LEFT JOIN (
+          SELECT [l0].[id_libro_categoria], [l0].[id_categoria], [l0].[id_libro], [c].[id_categoria] AS [id_categoria0], [c].[categoria]
+          FROM [libros_categorias] AS [l0]
+          INNER JOIN [categorias] AS [c] ON [l0].[id_categoria] = [c].[id_categoria]
+      ) AS [s1] ON [s].[cod_libro] = [s1].[id_libro]
+      LEFT JOIN (
+          SELECT [l1].[id_libro_genero], [l1].[id_genero], [l1].[id_libro], [g].[id_genero] AS [id_genero0], [g].[genero]
+          FROM [libros_generos] AS [l1]
+          INNER JOIN [generos] AS [g] ON [l1].[id_genero] = [g].[id_genero]
+      ) AS [s2] ON [s].[cod_libro] = [s2].[id_libro]
+      ORDER BY [s].[cod_libro], [s].[id_editorial0], [s].[id_idioma0], [s0].[id_autor_libro], [s0].[id_autor0], [s1].[id_libro_categoria], [s1].[id_categoria0], [s2].[id_libro_genero]

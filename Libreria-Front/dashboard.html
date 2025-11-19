@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Librería</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+
+  <body>
+<nav class="navbar navbar-expand-lg mb-4 py-3 border-bottom border-secondary-subtle">
+  <div class="container">
+    
+    <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <h1 class="m-0 fs-3 d-inline-block">Arcadia</h1>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+        <li class="nav-item me-2">
+          <a class="nav-link active" aria-current="page" href="dashboard.html">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" href="libros.html">
+            <i class="bi bi-journal-bookmark me-1"></i> Libros
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a class="nav-link" href="pedidos.html">
+            <i class="bi bi-basket me-1"></i> Pedidos
+          </a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center">
+        
+        <button class="btn btn-secondary me-3" id="theme-toggle" aria-label="Cambiar tema">
+            <i class="bi bi-sun-fill" id="theme-icon"></i> 
+        </button>
+
+        <div id="user-menu-dropdown" class="dropdown ms-3">
+            <button id="user-dropdown-button" class="btn btn-secondary dropdown-toggle" 
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span id="user-greeting-text">👤 Hola, Usuario</span>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <button id="btn-logout" class="dropdown-item text-danger" type="button">
+                        Cerrar Sesión
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+      </div>
+      
+    </div> 
+  </div>
+</nav>
+
+  <main class="container-xxl dashboard-shell pb-5 px-3 px-lg-4">
+    <div class="row g-4 g-xl-5">
+      
+      <!-- Panel principal -->
+      <section class="col-12 col-xl-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <h1 class="h2 fw-semibold mb-1">Panel de rendimiento</h1>
+            <p class="text-secondary mb-0">Seguimiento de ventas y logística de la librería.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button id="refreshDashboardBtn" class="btn btn-outline-info btn-sm px-3">
+              <i class="bi bi-download me-1"></i> <span class="refresh-label">Descargar resumen del panel</span>
+            </button>
+            <button id="navbarReloadBtn" class="btn btn-outline-info btn-sm px-3" title="Actualizar la página">
+              <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <div class="col-12 col-xl-10 mx-auto">
+        <div class="row g-4">
+          <section class="col-12 col-lg-7">
+            <div class="card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Top 10 de autores más pedidos</span>
+                <span class="text-secondary small">Últimos 3 meses</span>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary small mb-3">Autores con mayor cantidad de ejemplares solicitados.</p>
+                <div class="chart-container authors-chart-container">
+                  <canvas id="authorsChart" height="320" class="d-none"></canvas>
+                  <div id="authorsChartPlaceholder" class="text-secondary small text-center py-5">Cargando datos...</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Tipos de envío -->
+          <section class="col-12 col-lg-5">
+            <div class="card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Tipos de envío más solicitados</span>
+                <span class="text-secondary small">Últimos 3 meses</span>
+              </div>
+              <div class="card-body">
+                <p class="text-secondary small mb-4">Volumen de pedidos por tipo de envío.</p>
+                <div id="shippingStats" class="d-flex flex-column gap-3">
+                  <div class="text-secondary small">Cargando datos...</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <!-- Formas de pago -->
+      <section class="col-12 col-xl-10 mx-auto">
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Formas de pago con mayor facturación</span>
+            <span class="text-secondary small">Últimos 3 meses</span>
+          </div>
+          <div class="card-body">
+            <p class="text-secondary small mb-4">Facturación total segmentada por medio de pago.</p>
+            <div class="chart-container payment-layout">
+              <div class="payment-chart position-relative">
+                <div id="paymentChartPlaceholder" class="text-secondary small text-center py-5">Cargando datos...</div>
+                <canvas id="paymentChart" height="500" class="d-none"></canvas>
+              </div>
+              <div class="payment-summary">
+                <ul class="list-group list-group-flush payment-summary-list" id="paymentSummary"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>
+
+</body>
+  <script src="js/app.js"></script>
+  
+</html>

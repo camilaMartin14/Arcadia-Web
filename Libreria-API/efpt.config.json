@@ -1,0 +1,166 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "AppDBContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "MinimumProductVersion": "2.6.1130",
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Libreria_API",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[autores]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[autores_libros]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[barrios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[categorias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ciudades]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[clientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[contactos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[detalle_facturas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[detalle_pedidos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[editoriales]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[estados_envios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[facturas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[facturas_formaspago]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[financieras]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[formapagos_clientes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[formas_envios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[formas_pagos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[generos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[idiomas]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[libros]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[libros_categorias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[libros_generos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[nacionalidades]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[pedidos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[provincias]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[sexos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tipos_contactos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tipos_documentos]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tracking_envios]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Usuarios]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}

@@ -1,0 +1,886 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Arcadia</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+
+.carousel-container {
+    max-width: 70%;
+    margin: 40px auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.carousel-slide-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out; 
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 15px 10px;
+    cursor: pointer;
+    font-size: 24px;
+    z-index: 10;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.carousel-btn:hover {
+    opacity: 1;
+}
+
+.prev {
+    left: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.next {
+    right: 0;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+    nav.navbar.theme-dark .navbar-brand h1,
+    nav.navbar.theme-dark .navbar-brand i {
+        color: #ffffff !important; 
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); 
+    }
+
+    .footer-icon {
+        height: 30px;
+        width: auto;
+        opacity: 0.9;
+        transition: opacity 0.3s, filter 0.3s;
+    }
+    
+    html[data-theme="dark"] .footer-icon {
+        filter: invert(0.1) brightness(1.2); 
+    }
+
+        nav.navbar {
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            z-index: 9999;
+        }
+
+        .navbar.theme-light,
+        .navbar.theme-light * {
+            color: #000 !important;
+            text-shadow: none !important;
+        }
+
+        .navbar.theme-dark,
+        .navbar.theme-dark * {
+            color: #ffffff !important;
+        }
+
+        .video-inicial-content.theme-light-text,
+        .video-inicial-content.theme-light-text * {
+            color: #000 !important;
+            text-shadow: none !important;
+        }
+
+        .video-inicial-content.theme-dark-text,
+        .video-inicial-content.theme-dark-text * {
+            color: #ffffff !important;
+        }
+
+        #user-menu-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        #user-menu-dropdown .dropdown-menu {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .card-body {
+            padding: 10px; 
+        }
+
+        .carousel-inner {
+            padding: 0 40px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 3%;
+            z-index: 10;
+            background-color: rgb(112, 118, 134);
+        }
+
+        .carousel-control-prev {
+            left: 0;
+        }
+
+        .carousel-control-next {
+            right: 0;
+        }
+
+        .video-inicial-container {
+            position: relative;
+            height: 100vh;
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1; 
+            filter: brightness(1);
+            transition: filter 0.3s ease;
+        }
+
+        body[data-bs-theme="light"] .video-bg {
+            filter: brightness(1.35);
+        }
+
+        body[data-bs-theme="dark"] .video-bg {
+            filter: brightness(0.65);
+        }
+
+        .video-inicial-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            padding: 0 15px;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.35);
+            z-index: 2;
+            transition: background-color 0.3s ease;
+        }
+
+        body[data-bs-theme="light"] .overlay {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        body[data-bs-theme="dark"] .overlay {
+            background-color: rgba(0, 0, 0, 0.45);
+        }
+
+        .video-inicial-title {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-inicial-quote {
+            font-style: italic;
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+        }
+
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card {
+            transition: transform .2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        #user-menu-dropdown #btn-logout {
+            color: #dc3545 !important;
+        }
+
+    </style>
+
+</head>
+
+<body data-bs-theme="dark"> 
+
+<header class="fixed-top" style="z-index: 9999;">
+    <nav class="navbar navbar-expand-lg py-3 theme-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <h1 class="m-0 fs-3 d-inline-block">Arcadia</h1>
+            </a>
+
+            <div class="d-flex align-items-center">
+                
+                <button class="btn btn-secondary me-3" id="theme-toggle" aria-label="Cambiar tema">
+                    <i class="bi bi-sun-fill" id="theme-icon"></i> 
+                </button>
+                
+                <a href="login.html" id="btnAccederHeader" class="btn btn-warning ms-3">
+                     Inicia sesión o regístrate
+                </a>
+
+                <div id="user-menu-dropdown" class="dropdown ms-3 d-none">
+                    <button id="user-dropdown-button" class="btn btn-secondary dropdown-toggle" 
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="user-greeting-text">👤 Hola, Usuario</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="dashboard.html">Acceder al dashboard</a></li>
+                        <li><a class="dropdown-item" href="pedidos.html">Administrar pedidos</a></li>
+                        <li><a class="dropdown-item" href="libros.html">Administrar libros</a></li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <button id="btn-logout" class="dropdown-item text-danger" type="button">
+                                Cerrar Sesión
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+
+    <section class="video-inicial-container">
+        <video autoplay muted loop class="video-bg">
+            <source src="images/video-inicial.mp4" type="video/mp4">
+            Tu navegador no soporta la etiqueta de video.
+        </video>
+
+        <div class="overlay"></div>
+
+        <div class="video-inicial-content theme-dark-text">
+            
+            <h1 class="video-inicial-title">ARCADIA</h1>
+            
+            <p class="video-inicial-quote">
+                «Hay quienes no pueden imaginar un mundo sin pájaros; hay quienes no pueden imaginar un mundo sin agua; en lo que a mí se refiere, soy incapaz de imaginar un mundo sin libros»
+                <br>— Jorge Luis Borges
+            </p>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+
+    <section id="recomendados" class="container py-5">
+    <h2 class="mb-4 fw-bold">Recomendados</h2>
+
+    <div id="carouselRecomendados" class="carousel slide" data-bs-ride="carousel">
+
+        <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselRecomendados" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselRecomendados" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/comer-rezar-amar.jpg" class="card-img-top" alt="comer-rezar-amar">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Comer, rezar, amar</h6>
+                                <p class="mb-1">Elizabeth Gilbert</p>
+                                <p class="fw-semibold">$19999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/busca-de-sentido.webp" class="card-img-top" alt="busca-de-sentido">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El hombre en busca de sentido</h6>
+                                <p class="mb-1">Viktor Frankl</p>
+                                <p class="fw-semibold">$18999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/el-cuarto-mono.jpg" class="card-img-top" alt="el-cuarto-mono">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El cuarto mono</h6>
+                                <p class="mb-1">J.D. Barker</p>
+                                <p class="fw-semibold">$18999</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/dune.webp" class="card-img-top" alt="dune">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Dune</h6>
+                                <p class="mb-1">Frank Herbert</p>
+                                <p class="fw-semibold">$32999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/it-ends.webp" class="card-img-top" alt="it-ends">
+                            <div class="card-body">
+                                <h6 class="fw-bold">It Ends With Us</h6>
+                                <p class="mb-1">Clarice Lispector</p>
+                                <p class="fw-semibold">$19999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/nombre-del-viento.webp" class="card-img-top" alt="nombre-del-viento">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El nombre del viento</h6>
+                                <p class="mb-1">Patrick Rothfuss</p>
+                                <p class="fw-semibold">$28999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/silencio-ciudad-blanca.jpg" class="card-img-top" alt="silencio-ciudad-blanca">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El Silencio de la Ciudad Blanca</h6>
+                                <p class="mb-1">Eva García Sáenz de Urturi</p>
+                                <p class="fw-semibold">$17999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/medianoche.webp" class="card-img-top" alt="La Biblioteca de la Medianoche">
+                            <div class="card-body">
+                                <h6 class="fw-bold">La Biblioteca de la Medianoche</h6>
+                                <p class="mb-1">Matt Haig</p>
+                                <p class="fw-semibold">$23999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/Emanon-portada.jpg" class="card-img-top" alt="Recuerdos de Emanon">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Recuerdos de Emanon</h6>
+                                <p class="mb-1">Shinji Kaijo</p>
+                                <p class="fw-semibold">$21999</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/archipielagos.jpg" class="card-img-top" alt="archipielagos">
+                            <div class="card-body">
+                                <h6 class="fw-bold">La Teoría de los Archipiélagos</h6>
+                                <p class="mb-1">Alice Kellen</p>
+                                <p class="fw-semibold">$16999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/tokyo.webp" class="card-img-top" alt="Tokyo Revengers Vol. 1">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Tokyo Revengers Vol. 1</h6>
+                                <p class="mb-1">Ken Wakui</p>
+                                <p class="fw-semibold">$14999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/boulevard-libro-2.jpg" class="card-img-top" alt="Boulevard 2">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Boulevard</h6>
+                                <p class="mb-1">Flor M. Salvador</p>
+                                <p class="fw-semibold">$23987.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="mas-vendidos" class="container py-5">
+    <h2 class="mb-4 fw-bold">Más Vendidos</h2>
+
+    <div id="carouselMasVendidos" class="carousel slide" data-bs-ride="carousel">
+
+        <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselMasVendidos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+        <div class="carousel-inner">
+
+            <div class="carousel-item active">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/ia.jpg" class="card-img-top" alt="Inteligencia Artificial">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Inteligencia Artificial</h6>
+                                <p class="mb-1">Patrick Rothfuss</p>
+                                <p class="fw-semibold">$20000.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/habitos-atomicos.webp" class="card-img-top" alt="Hábitos Atómicos">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Hábitos Atómicos</h6>
+                                <p class="mb-1">James Clear</p>
+                                <p class="fw-semibold">$25999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/alquimista.jpg" class="card-img-top" alt="El Alquimista">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El Alquimista</h6>
+                                <p class="mb-1">Paulo Coelho</p>
+                                <p class="fw-semibold">$22999</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/chica-tren.webp" class="card-img-top" alt="La chica del tren">
+                            <div class="card-body">
+                                <h6 class="fw-bold">La chica del tren</h6>
+                                <p class="mb-1">Paula Hawkins</p>
+                                <p class="fw-semibold">$15999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/cuento-criada.webp" class="card-img-top" alt="El Cuento de la Criada">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El Cuento de la Criada</h6>
+                                <p class="mb-1">Margaret Atwood</p>
+                                <p class="fw-semibold">$21999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/preterito-imperfecto.webp" class="card-img-top" alt="Pretérito Imperfecto">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Pretérito Imperfecto</h6>
+                                <p class="mb-1">Delia Owens</p>
+                                <p class="fw-semibold">$17999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="row g-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/sapiens.webp" class="card-img-top" alt="Sapiens">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Sapiens</h6>
+                                <p class="mb-1">Alice Oceman</p>
+                                <p class="fw-semibold">$32999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/casa-infernal.jpeg" class="card-img-top" alt="La casa infernal">
+                            <div class="card-body">
+                                <h6 class="fw-bold">La Casa Infernal</h6>
+                                <p class="mb-1">Richard Matheson</p>
+                                <p class="fw-semibold">$15600</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/silencio-corderos.png" class="card-img-top" alt="El Silencio de los Corderos">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El Silencio de los Corderos</h6>
+                                <p class="mb-1">Frank Herbert</p>
+                                <p class="fw-semibold">$32999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/el-secreto.webp" class="card-img-top" alt="El Secreto">
+                            <div class="card-body">
+                                <h6 class="fw-bold">El Secreto</h6>
+                                <p class="mb-1">Thomas Harris</p>
+                                <p class="fw-semibold">$21000.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/cien-años-soledad.webp" class="card-img-top" alt="Cien Años de Soledad">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Cien Años de Soledad</h6>
+                                <p class="mb-1">Paulo Cohelo</p>
+                                <p class="fw-semibold">$13999.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card h-100 text-center">
+                            <img src="images/frankenstein.webp" class="card-img-top" alt="it-ends">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Frankenstein</h6>
+                                <p class="mb-1">Mary Shelley</p>
+                                <p class="fw-semibold">$15679.00</p>
+                                <button class="btn btn-warning btn-sm">Pedir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <a href="catalogo.html" class="btn btn-primary btn-lg w-100 fw-bold shadow-lg">
+                ACCEDE A NUESTRO CATÁLOGO
+            </a>
+        </div>
+    </div>
+</section>
+
+<section>
+
+
+        <div class="carousel-container">
+    <div class="carousel-slide-wrapper">
+        <img class="carousel-slide" src="images/9.png" alt="Imagen 1 del Carrusel">
+        <img class="carousel-slide" src="images/8.png" alt="Imagen 1 del Carrusel">
+        <img class="carousel-slide" src="images/7.png" alt="Imagen 1 del Carrusel">
+    </div>
+
+    <button id="prevBtn" class="carousel-btn prev">&#10094;</button>
+    <button id="nextBtn" class="carousel-btn next">&#10095;</button>
+</section>
+
+<section class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10">
+            <h3 class="fw-bold mb-3">Descripción del Proyecto</h3>
+            <p class="fs-5">
+                Este desarrollo forma parte del Trabajo Práctico Integrador de la materia 
+                <strong>Programación II</strong>. Fue realizado por un equipo de 
+                <strong>cinco estudiantes de la Tecnicatura Universitaria en Programación</strong>, 
+                siguiendo lineamientos académicos y criterios de diseño orientados a entornos reales.
+                La plataforma integra <strong>gestión de usuarios con autenticación JWT</strong>, 
+                <strong>CRUD de tablas de soporte</strong> (como libros), 
+                <strong>módulos transaccionales</strong> (como pedidos) 
+                y un <strong>panel de administración</strong>, conformando una solución completa 
+                para la gestión de una librería digital.
+            </p>
+        </div>
+    </div>
+    </section>
+
+
+
+</main>
+
+<footer class="bg-body-tertiary pt-5 pb-4 border-top border-subtle">
+    <div class="container">
+
+        <style>
+            .footer-icon {
+                max-height: 32px;
+                object-fit: contain;
+            }
+        </style>
+        
+        <div class="row align-items-start">
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Arcadia</h6>
+                <ul class="list-unstyled">
+                    <li><a href="sobre-nosotros.html" class="text-reset text-decoration-none footer-link">Sobre Nosotros</a></li>
+                    <li><p class="mb-0"><a href="sucursales.html" class="text-reset text-decoration-none">Sucursales</a></p></li>
+                    <li><a href="AcercaDe.html" class="text-reset text-decoration-none footer-link">Nuestros Desarrolladores</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de pago</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/visa.jpg" alt="Visa" class="footer-icon">
+                    <img src="images/mastercard.webp" alt="Mastercard" class="footer-icon">
+                    <img src="images/amex.png" alt="American Express" class="footer-icon">
+                    <img src="images/nx.png" alt="Tarjeta Naranja" class="footer-icon">
+                    <img src="images/mercado-pago.jpg" alt="Mercado Pago" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de envío</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/oca.png" alt="OCA" class="footer-icon">
+                    <img src="images/andreani.jpg" alt="Andreani" class="footer-icon">
+                    <img src="images/correo-arg.png" alt="Correo Argentino" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Atención al Cliente</h6>
+                <p>
+                    <i class="bi bi-telephone-fill me-3"></i> 0810 555 6272
+                </p>
+                <p>
+                    <i class="bi bi-envelope-fill me-3"></i> 
+                    <a href="mailto:librerias@acardia.com" class="text-reset text-decoration-none">
+                        librerias@arcadia.com
+                    </a>
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="mb-4 mt-3 border-secondary-subtle">
+
+        <div class="text-center">
+            <p>&copy; 2025 Librerías Arcadia. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const themeIcon = document.getElementById('theme-icon');
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+        const navbar = document.querySelector('nav.navbar');
+        const heroContent = document.querySelector('.video-inicial-content');
+
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+
+        function updateSectionTextColors(theme) {
+            if (navbar) {
+                navbar.classList.toggle('theme-light', theme === 'light');
+                navbar.classList.toggle('theme-dark', theme !== 'light');
+            }
+            if (heroContent) {
+                heroContent.classList.toggle('theme-light-text', theme === 'light');
+                heroContent.classList.toggle('theme-dark-text', theme !== 'light');
+            }
+        }
+
+        function applyTheme(theme) {
+            body.setAttribute('data-bs-theme', theme);
+
+            if (theme === 'dark') {
+                if (themeIcon) {
+                    themeIcon.classList.remove('bi-sun-fill');
+                    themeIcon.classList.add('bi-moon-stars-fill');
+                }
+                if (toggleButton) {
+                    toggleButton.classList.remove('btn-secondary');
+                    toggleButton.classList.add('btn-outline-warning');
+                }
+
+            } else {
+                if (themeIcon) {
+                    themeIcon.classList.remove('bi-moon-stars-fill');
+                    themeIcon.classList.add('bi-sun-fill');
+                }
+                if (toggleButton) {
+                    toggleButton.classList.remove('btn-outline-warning');
+                    toggleButton.classList.add('btn-secondary');
+                }
+            }
+
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+            updateSectionTextColors(theme);
+        }
+
+        applyTheme(currentTheme);
+
+        if (toggleButton) {
+            toggleButton.addEventListener('click', () => {
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                applyTheme(newTheme);
+            });
+        }
+
+        const handleLogout = () => {
+            localStorage.removeItem('usuario'); 
+            localStorage.removeItem('token'); 
+            updateUIForUser(); 
+            window.location.href = 'index.html'; 
+        }
+
+        function updateUIForUser() {
+            const userDataJSON = localStorage.getItem('usuario'); 
+            const userGreetingText = document.getElementById('user-greeting-text');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown'); 
+            const btnAccederHeader = document.getElementById('btnAccederHeader'); 
+            
+            if (!userGreetingText || !userMenuDropdown || !btnAccederHeader) {
+                return; 
+            }
+
+            if (userDataJSON) {
+                try {
+                    const userData = JSON.parse(userDataJSON);
+                    const fullName = `${userData.nombre} ${userData.apellido}`; 
+
+                    userMenuDropdown.classList.remove('d-none');
+                    btnAccederHeader.classList.add('d-none');
+                    userGreetingText.textContent = `👤 Hola, ${fullName}`;
+
+                } catch (e) {
+                    console.error("Error al parsear datos de usuario de localStorage:", e);
+                    localStorage.removeItem('usuario'); 
+                    userMenuDropdown.classList.add('d-none');
+                    btnAccederHeader.classList.remove('d-none');
+                }
+            } else {
+                userMenuDropdown.classList.add('d-none');
+                btnAccederHeader.classList.remove('d-none');
+            }
+        }
+
+        updateUIForUser();
+        const logoutBtn = document.getElementById("btn-logout");
+        if (logoutBtn) {
+            logoutBtn.onclick = handleLogout;
+        }
+
+        const slideWrapper = document.querySelector('.carousel-slide-wrapper');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (slideWrapper && slides.length > 0 && prevBtn && nextBtn) {
+            const totalSlides = slides.length;
+            let currentSlide = 0; 
+            
+            function moveCarousel() {
+                const offset = -currentSlide * 100;
+                slideWrapper.style.transform = `translateX(${offset}%)`;
+            }
+
+            nextBtn.addEventListener('click', function() {
+                if (currentSlide < totalSlides - 1) {
+                    currentSlide++;
+                } else {
+                    currentSlide = 0;
+                }
+                moveCarousel();
+            });
+
+            prevBtn.addEventListener('click', function() {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                } else {
+                    currentSlide = totalSlides - 1;
+                }
+                moveCarousel();
+            });
+        }
+    });
+</script>
+<script src="https://kit.fontawesome.com/8d77e74cbe.js" crossorigin="anonymous"></script>
+</body>
+</html>

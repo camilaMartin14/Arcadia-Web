@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Pedidos · ABMC</title>
+
+
+
+
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+
+
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+</head>
+
+<body data-bs-theme="dark">
+
+
+
+
+
+<nav class="navbar navbar-expand-lg mb-4 py-3 border-bottom border-secondary-subtle">
+
+  <div class="container">
+
+   
+
+    <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+
+        <i class="fa-solid fa-book-bookmark"></i>
+
+        <h1 class="m-0 fs-3 d-inline-block">Arcadia</h1>
+
+    </a>
+
+
+
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+
+            aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+
+      <span class="navbar-toggler-icon"></span>
+
+    </button>
+
+
+
+
+
+    <div class="collapse navbar-collapse" id="mainNav">
+
+     
+
+      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+
+        <li class="nav-item me-2">
+
+          <a class="nav-link" href="dashboard.html">
+
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+
+          </a>
+
+        </li>
+
+        <li class="nav-item me-2">
+
+          <a class="nav-link" href="libros.html">
+
+            <i class="bi bi-journal-bookmark me-1"></i> Libros
+
+          </a>
+
+        </li>
+
+        <li class="nav-item me-2">
+
+          <a class="nav-link active" aria-current="page" href="pedidos.html">
+
+            <i class="bi bi-basket me-1"></i> Pedidos
+
+          </a>
+
+        </li>
+
+      </ul>
+
+
+
+
+
+      <div class="d-flex align-items-center">
+
+       
+
+        <button class="btn btn-secondary me-3" id="theme-toggle" aria-label="Cambiar tema">
+
+            <i class="bi bi-sun-fill" id="theme-icon"></i>
+
+        </button>
+
+
+
+
+
+        <div id="user-menu-dropdown" class="dropdown ms-3">
+
+            <button id="user-dropdown-button" class="btn btn-secondary dropdown-toggle"
+
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                <span id="user-greeting-text">👤 Hola, Usuario</span>
+
+            </button>
+
+
+
+
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+
+
+
+
+
+
+
+
+                <li>
+
+                    <button id="btn-logout" class="dropdown-item text-danger" type="button">
+
+                        Cerrar Sesión
+
+                    </button>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+  <main class="container-xxl pb-5">
+
+    <section class="card p-3 mb-4">
+
+      <h2 class="h5 mb-3">Buscar pedidos</h2>
+
+      <form class="row g-3">
+
+        <div class="col-sm-6 col-lg-4">
+
+          <label class="form-label" for="filtroFecha">Fecha</label>
+
+          <input type="date" id="filtroFecha" class="form-control">
+
+        </div>
+
+        <div class="col-sm-6 col-lg-4">
+
+          <label class="form-label" for="filtroCodCliente">Código de cliente</label>
+
+          <input type="number" id="filtroCodCliente" class="form-control" placeholder="Ej: 1001">
+
+        </div>
+
+        <div class="col-12 d-flex gap-2 mt-2">
+
+  <button type="button" id="btnBuscarPedidos" class="btn btn-info">
+
+    <i class="bi bi-search"></i> Buscar
+
+  </button>
+
+
+
+
+
+  <button type="button" id="btnNuevoPedido" class="btn btn-success">
+
+    <i class="bi bi-plus-lg"></i> Nuevo
+
+  </button>
+
+
+
+  <button type="button" id="btnLimpiarFiltros" class="btn btn-outline-secondary">
+
+    Limpiar
+
+  </button>
+
+</div>
+
+      </form>
+
+    </section>
+
+
+
+    <section class="card p-3 mb-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+
+    <div>
+
+      <h2 class="h5 mb-0">Listado de pedidos</h2>
+
+      <div class="small text-secondary">Filtros por fecha y cliente. Acciones: ver, editar, estado y eliminar.</div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+      <div class="table-responsive">
+
+        <table class="table table-hover align-middle" id="tablaPedidos">
+
+          <thead>
+
+            <tr>
+
+              <th>N°</th>
+
+              <th>Fecha</th>
+
+              <th>Cliente</th>
+
+              <th>Forma envío</th>
+
+              <th>Estado actual</th>
+
+              <th class="text-end">Acciones</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody id="tbodyPedidos">
+
+            <tr>
+
+              <td colspan="6" class="text-center text-secondary py-4">
+
+                Sin datos. Usá los filtros para buscar pedidos.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+
+
+
+      <div id="sinResultados" class="text-center text-secondary py-4 d-none">
+
+        <i class="bi bi-emoji-frown"></i> No se encontraron pedidos.
+
+      </div>
+
+    </section>
+
+
+
+
+
+   <div class="modal fade" id="modalPedido" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="tituloModalPedido">Nuevo pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="formPedido" class="row g-3" novalidate>
+                    <input type="hidden" id="nroPedido" />
+
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha</label>
+                        <input type="datetime-local" id="fecha" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Fecha entrega</label>
+                        <input type="date" id="fechaEntrega" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Cliente (código)</label>
+                        <input type="number" id="codCliente" class="form-control" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Forma de envío</label>
+                        <select id="idFormaEnvio" class="form-select" required>
+                           <option value="">Seleccionar...</option>
+                           <option value="1">Retiro en tienda</option>
+                           <option value="2">Moto en CABA</option>
+                           <option value="3">Correo nacional</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Instrucciones adicionales</label>
+                        <textarea id="instrucciones" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="col-12 mt-3">
+                        <h6 class="mb-2">Detalle del pedido</h6>
+                        <div class="table-responsive mb-2">
+                            <table class="table table-sm align-middle table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 25%;">Cód. Libro</th>
+                                        <th style="width: 20%;">Cantidad</th>
+                                        <th style="width: 25%;">Precio unit.</th>
+                                        <th style="width: 10%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyDetalles">
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" id="btnAgregarDetalle" class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-plus-circle"></i> Agregar libro
+                        </button>
+                    </div>
+
+                    <div class="col-12 mt-4 text-end">
+                        <button type="submit" id="btnGuardarPedido" class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </form> 
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="modalEstado" tabindex="-1" aria-hidden="true">
+
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">Cambiar estado de pedido</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <p class="mb-3">Pedido N°: <span id="estadoNroPedido" class="fw-bold"></span></p>
+
+       
+
+        <div class="mb-3">
+
+          <label class="form-label">Nuevo estado</label>
+
+          <select id="nuevoEstado" class="form-select">
+
+            <option value="">Seleccionar…</option>
+
+            <option value="1">Recibido / Pendiente</option>
+
+            <option value="2">Preparando</option>
+
+            <option value="3">Enviado</option>
+
+            <option value="4">Entregado</option>
+
+          </select>
+
+        </div>
+
+       
+
+        <div class="mb-3">
+
+          <label class="form-label">Observaciones</label>
+
+          <textarea id="observacionesEstado" class="form-control" rows="3"></textarea>
+
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+        <button type="button" id="btnGuardarEstado" class="btn btn-success">Guardar estado</button>
+
+      </div>
+
+    </div>
+    
+
+  </div>
+
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+          crossorigin="anonymous">
+  </script>
+
+  <script type="module" src="js/pedidos.js"></script>
+
+</body>
+</html>
+
+</body>
+
+</html>

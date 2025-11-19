@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Arcadia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+
+
+html[data-theme="dark"] body {
+        background-color: #0f1420; 
+        color: #f8f9fa;
+    }
+nav.navbar .navbar-brand h1,
+    nav.navbar .navbar-brand i {
+        color: #ffffff !important; 
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); 
+    }
+
+        nav.navbar {
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            z-index: 9999;
+        }
+
+        .card-body {
+            padding: 10px; 
+        }
+
+        .carousel-inner {
+            padding: 0 40px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 3%;
+            z-index: 10;
+            background-color: rgb(112, 118, 134);
+        }
+
+        .carousel-control-prev {
+            left: 0;
+        }
+
+        .carousel-control-next {
+            right: 0;
+        }
+
+                .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card {
+            transition: transform .2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .carousel-indicators {
+        display: none;
+    }
+    body[data-bs-theme="light"] nav.navbar .navbar-brand h1,
+    body[data-bs-theme="light"] nav.navbar .navbar-brand i,
+    body[data-bs-theme="light"] #user-dropdown-button,
+    body[data-bs-theme="light"] #user-greeting-text,
+    body[data-bs-theme="light"] #theme-icon {
+        color: #000000 !important;
+        text-shadow: none !important; 
+    }
+    </style>
+</head>
+
+<body>
+
+<header class="fixed-top" style="z-index: 9999;">
+    <nav class="navbar navbar-expand-lg py-3 border-bottom border-subtle">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <h1 class="m-0 fs-3 d-inline-block">Arcadia</h1>
+            </a>
+
+            <div class="d-flex align-items-center">
+                
+                <button class="btn btn-secondary me-3" id="theme-toggle" aria-label="Cambiar tema">
+                    <i class="bi bi-sun-fill" id="theme-icon"></i> 
+                </button>
+                
+                <a href="login.html" id="btnAccederHeader" class="btn btn-warning ms-3">
+                    Inicia sesión o regístrate
+                </a>
+
+                <div id="user-menu-dropdown" class="dropdown ms-3 d-none">
+                    <button id="user-dropdown-button" class="btn btn-secondary dropdown-toggle" 
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="user-greeting-text">👤 Hola, Usuario</span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="dashboard.html">Acceder al dashboard</a></li>
+                        <li><a class="dropdown-item" href="pedidos.html">Administrar pedidos</a></li>
+                        <li><a class="dropdown-item" href="libros.html">Administrar libros</a></li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+                            <button id="btn-logout" class="dropdown-item text-danger" type="button">
+                                Cerrar Sesión
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+    <main role="main" class="mt-5"> 
+
+        <section id="novelas" class="container py-5">
+            <h2 class="mb-4 fw-bold">Novelas</h2>
+
+            <div id="carouselNovelas" class="carousel slide shadow" data-bs-ride="carousel"> 
+                
+                <div class="carousel-indicators">
+                </div>
+                
+                <div class="carousel-inner" id="carouselNovelasInner">
+                </div>
+                
+                <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselNovelas" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselNovelas" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </section>
+
+        <hr class="border-secondary-subtle"> 
+        
+        <section id="programadores" class="container py-5"> 
+            <h2 class="mb-4 fw-bold">Para Programadores</h2>
+
+            <div id="carouselProgramadores" class="carousel slide shadow" data-bs-ride="carousel">
+                
+                <div class="carousel-indicators">
+                </div>
+                
+                <div class="carousel-inner" id="carouselProgramadoresInner"> </div>
+
+                <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselProgramadores" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselProgramadores" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </section>
+
+        <hr class="border-secondary-subtle">
+
+        <section id="terror" class="container py-5">
+            <h2 class="mb-4 fw-bold">Terror</h2>
+
+            <div id="carouselTerror" class="carousel slide shadow" data-bs-ride="carousel">
+                
+                <div class="carousel-indicators">
+                </div>
+                
+                <div class="carousel-inner" id="carouselTerrorInner">
+                </div>
+
+                <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselTerror" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselTerror" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </section>
+
+        <hr class="border-secondary-subtle">
+
+        <section id="manga" class="container py-5">
+            <h2 class="mb-4 fw-bold">Manga y Cultura Japonesa</h2>
+
+            <div id="carouselManga" class="carousel slide shadow" data-bs-ride="carousel">
+                
+                <div class="carousel-indicators">
+                </div>
+                
+                <div class="carousel-inner" id="carouselMangaInner">
+                </div>
+
+                <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselManga" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselManga" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </section>
+
+        <hr class="border-secondary-subtle">
+
+        <section id="peques" class="container py-5">
+            <h2 class="mb-4 fw-bold">Para los más peques</h2>
+
+            <div id="carouselInfantil" class="carousel slide shadow" data-bs-ride="carousel">
+                
+                <div class="carousel-indicators">
+                </div>
+                
+                <div class="carousel-inner" id="carouselInfantilInner">
+                </div>
+
+                <button class="carousel-control-prev mx-n5 w-auto" type="button" data-bs-target="#carouselInfantil" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next mx-n5 w-auto" type="button" data-bs-target="#carouselInfantil" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <hr class="border-secondary-subtle">
+
+<footer class="bg-body-tertiary pt-5 pb-4 border-top border-subtle">
+    <div class="container">
+
+        <style>
+            .footer-icon {
+                max-height: 32px;
+                object-fit: contain;
+            }
+        </style>
+        
+        <div class="row align-items-start">
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Arcadia</h6>
+                <ul class="list-unstyled">
+                    <li><a href="sobre-nosotros.html" class="text-reset text-decoration-none footer-link">Sobre Nosotros</a></li>
+                    <li><p class="mb-0"><a href="sucursales.html" class="text-reset text-decoration-none">Sucursales</a></p></li>
+                    <li><a href="AcercaDe.html" class="text-reset text-decoration-none footer-link">Nuestros Desarrolladores</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de pago</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/visa.jpg" alt="Visa" class="footer-icon">
+                    <img src="images/mastercard.webp" alt="Mastercard" class="footer-icon">
+                    <img src="images/amex.png" alt="American Express" class="footer-icon">
+                    <img src="images/nx.png" alt="Tarjeta Naranja" class="footer-icon">
+                    <img src="images/mercado-pago.jpg" alt="Mercado Pago" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4 px-1">
+                <h6 class="text-uppercase fw-bold mb-3">Medios de envío</h6>
+                <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                    <img src="images/oca.png" alt="OCA" class="footer-icon">
+                    <img src="images/andreani.jpg" alt="Andreani" class="footer-icon">
+                    <img src="images/correo-arg.png" alt="Correo Argentino" class="footer-icon">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3 mb-4">
+                <h6 class="text-uppercase fw-bold mb-3">Atención al Cliente</h6>
+                <p>
+                    <i class="bi bi-telephone-fill me-3"></i> 0810 555 6272
+                </p>
+                <p>
+                    <i class="bi bi-envelope-fill me-3"></i> 
+                    <a href="mailto:librerias@acardia.com" class="text-reset text-decoration-none">
+                        librerias@arcadia.com
+                    </a>
+                </p>
+            </div>
+
+        </div>
+
+        <hr class="mb-4 mt-3 border-secondary-subtle">
+
+        <div class="text-center">
+            <p>&copy; 2025 Librerías Arcadia. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const librosNovelas = [
+            { titulo: "Comer, rezar, amar", autor: "Elizabeth Gilbert", precio: "19999.00", imagen: "images/comer-rezar-amar.jpg", alt: "comer-rezar-amar" },
+            { titulo: "El hombre en busca de sentido", autor: "Viktor Frankl", precio: "18999.00", imagen: "images/busca-de-sentido.webp", alt: "busca-de-sentido" },
+            { titulo: "El cuarto mono", autor: "J.D. Barker", precio: "18999.00", imagen: "images/el-cuarto-mono.jpg", alt: "el-cuarto-mono" }, 
+            { titulo: "Dune", autor: "Frank Herbert", precio: "32999.00", imagen: "images/dune.webp", alt: "dune" },
+            { titulo: "It Ends With Us", autor: "Clarice Lispector", precio: "19999.00", imagen: "images/it-ends.webp", alt: "it-ends" },
+            { titulo: "El nombre del viento", autor: "Patrick Rothfuss", precio: "28999.00", imagen: "images/nombre-del-viento.webp", alt: "nombre-del-viento" },
+            { titulo: "El Silencio de la Ciudad Blanca", autor: "Eva García Sáenz de Urturi", precio: "17999.00", imagen: "images/silencio-ciudad-blanca.jpg", alt: "silencio-ciudad-blanca" },
+            { titulo: "La Biblioteca de la Medianoche", autor: "Matt Haig", precio: "23999.00", imagen: "images/medianoche.webp", alt: "La Biblioteca de la Medianoche" },
+            { titulo: "La Teoría de los Archipiélagos", autor: "Alice Kellen", precio: "16999.00", imagen: "images/archipielagos.jpg", alt: "archipielagos" },
+            { titulo: "Cien Años de Soledad", autor: "G. García Márquez", precio: "25000.00", imagen: "images/cien-años-soledad.webp", alt: "Cien Años de Soledad" },
+            { titulo: "1984", autor: "George Orwell", precio: "15500.00", imagen: "images/1984.webp", alt: "1984" },
+            { titulo: "Orgullo y Prejuicio", autor: "Jane Austen", precio: "14000.00", imagen: "images/orgullo-prejuicio.jpeg", alt: "Orgullo y Prejuicio" },
+        ];
+
+        const librosTerror = [
+             { titulo: "It", autor: "Stephen King", precio: "20500.00", imagen: "images/It.webp", alt: "It" },
+             { titulo: "Drácula", autor: "Bram Stoker", precio: "16700.00", imagen: "images/dracula.jpg", alt: "Drácula" },
+             { titulo: "Frankenstein", autor: "Mary Shelley", precio: "15300.00", imagen: "images/frankenstein.webp", alt: "Frankenstein" },
+             { titulo: "El Resplandor", autor: "Stephen King", precio: "24900.00", imagen: "images/resplandor.jpeg", alt: "El Resplandor" },
+             { titulo: "Psicosis", autor: "Robert Bloch", precio: "14200.00", imagen: "images/psicosis.webp", alt: "Psicosis" },
+             { titulo: "La Casa Infernal", autor: "Richard Matheson", precio: "18800.00", imagen: "images/casa-infernal.jpeg", alt: "La Casa Infernal" },
+             { titulo: "Historias de Ultratumba", autor: "Edgar Allan Poe", precio: "17500.00", imagen: "images/historias-ultratumba.webp", alt: "Historias de Ultratumba" },
+             { titulo: "El Exorcista", autor: "William Peter Blatty", precio: "19100.00", imagen: "images/exorcista.png", alt: "El Exorcista" },
+             { titulo: "El Gato Negro", autor: "Edgar Allan Poe", precio: "13500.00", imagen: "images/gato-negro.webp", alt: "El Gato Negro" },
+             { titulo: "Los Mitos de Cthulhu", autor: "H.P. Lovecraft", precio: "27300.00", imagen: "images/mitos-cthulhu.jpg", alt: "Los Mitos de Cthulhu" },
+             { titulo: "Coraline", autor: "Neil Gaiman", precio: "16000.00", imagen: "images/coraline.jpeg", alt: "Coraline" },
+             { titulo: "El Silencio de los Corderos", autor: "Thomas Harris", precio: "21500.00", imagen: "images/silencio-corderos.png", alt: "El Silencio de los Corderos" },
+        ];
+
+        const librosProgramadores = [
+            { titulo: "Aprendiendo C#", autor: "Matías Quinteros", precio: "21999.00", imagen: "images/aprende-csharp.webp", alt: "Aprendiendo C#" }, 
+            { titulo: "Clean Code", autor: "Robert C. Martin", precio: "45000.00", imagen: "images/clean-code.webp", alt: "Clean Code" },
+            { titulo: "The Pragmatic Programmer", autor: "Andrew Hunt", precio: "38000.00", imagen: "images/pragmatic.webp", alt: "The Pragmatic Programmer" },
+            { titulo: "Designing Data-Intensive Applications", autor: "Martin Kleppmann", precio: "55000.00", imagen: "images/designing.webp", alt: "Designing Data-Intensive Applications" },
+            { titulo: "Grokking Algorithms", autor: "Aditya Bhargava", precio: "32000.00", imagen: "images/grokking.png", alt: "Grokking Algorithms" },
+            { titulo: "JavaScript: The Good Parts", autor: "Douglas Crockford", precio: "25000.00", imagen: "images/javascript-good.jpg", alt: "JavaScript: The Good Parts" },
+            { titulo: "Code Complete 2", autor: "Steve McConnell", precio: "48000.00", imagen: "images/code-complete-2.jpg", alt: "Code Complete 2" },
+            { titulo: "Refactoring", autor: "Martin Fowler", precio: "42000.00", imagen: "images/refactoring.jpg", alt: "Refactoring" },
+            { titulo: "Head First Design Patterns", autor: "Elisabeth Freeman", precio: "39000.00", imagen: "images/head-first.jpg", alt: "Head First Design Patterns" },
+            { titulo: "Python Crash Course", autor: "Eric Matthes", precio: "30000.00", imagen: "images/python-crash.webp", alt: "Python Crash Course" },
+            { titulo: "HTML and CSS: Design and Build Websites", autor: "Jon Duckett", precio: "28000.00", imagen: "images/html-css.webp", alt: "HTML and CSS" },
+            { titulo: "Automate the Boring Stuff with Python", autor: "Al Sweigart", precio: "29000.00", imagen: "images/automate.webp", alt: "Automate the Boring Stuff" },
+        ];
+
+        const librosManga = [
+            { titulo: "Recuerdos de Emanon", autor: "Shinji Kaijo", precio: "21999.00", imagen: "images/Emanon-portada.jpg", alt: "Recuerdos de Emanon" }, 
+            { titulo: "Tokyo Revengers Vol. 1", autor: "Ken Wakui", precio: "14999.00", imagen: "images/tokyo.webp", alt: "Tokio Revengers Vol. 1" },
+            { titulo: "Attack on Titan Vol. 1", autor: "Hajime Isayama", precio: "15500.00", imagen: "images/aot.webp", alt: "Attack on Titan Vol. 1" },
+            { titulo: "Death Note Vol. 1", autor: "Tsugumi Ohba", precio: "14000.00", imagen: "images/death-note.webp", alt: "Death Note Vol. 1" },
+            { titulo: "One Piece Vol. 1", autor: "Eiichiro Oda", precio: "16000.00", imagen: "images/one-piece.png", alt: "One Piece Vol. 1" },
+            { titulo: "My Hero Academia Vol. 1", autor: "Kōhei Horikoshi", precio: "15000.00", imagen: "images/mha.jpg", alt: "My Hero Academia Vol. 1" },
+            { titulo: "Jujutsu Kaisen Vol. 1", autor: "Gege Akutami", precio: "15200.00", imagen: "images/jjk.webp", alt: "Jujutsu Kaisen Vol. 1" },
+            { titulo: "Demon Slayer Vol. 1", autor: "Koyoharu Gotouge", precio: "14800.00", imagen: "images/demon-slayer.webp", alt: "Demon Slayer Vol. 1" },
+            { titulo: "Dragon Ball Vol. 1", autor: "Akira Toriyama", precio: "13500.00", imagen: "images/dragon-ball.webp", alt: "Dragon Ball Vol. 1" },
+            { titulo: "Chainsaw Man Vol. 1", autor: "Tatsuki Fujimoto", precio: "15300.00", imagen: "images/chainsaw-man.jpg", alt: "Chainsaw Man Vol. 1" },
+            { titulo: "Fullmetal Alchemist Vol. 1", autor: "Hiromu Arakawa", precio: "15700.00", imagen: "images/fma.jpg", alt: "Fullmetal Alchemist Vol. 1" },
+            { titulo: "Berserk Vol. 1", autor: "Kentaro Miura", precio: "20000.00", imagen: "images/berserk.webp", alt: "Berserk Vol. 1" },
+        ];
+        
+        const librosInfantil = [
+            { titulo: "El Principito", autor: "Antoine de Saint-Exupéry", precio: "12500.00", imagen: "images/principito.webp", alt: "El Principito" },
+            { titulo: "¿Dónde Viven los Monstruos?", autor: "Maurice Sendak", precio: "13000.00", imagen: "images/monstruos.jpg", alt: "¿Dónde Viven los Monstruos?" },
+            { titulo: "Matilda", autor: "Roald Dahl", precio: "14500.00", imagen: "images/matilda.webp", alt: "Matilda" },
+            { titulo: "Harry Potter y la Piedra Filosofal", autor: "J.K. Rowling", precio: "18000.00", imagen: "images/harry-potter.jpg", alt: "Harry Potter 1" },
+            { titulo: "Pinocho", autor: "Carlo Collodi", precio: "11000.00", imagen: "images/pinocho.jpeg", alt: "Pinocho" },
+            { titulo: "Alicia en el País de las Maravillas", autor: "Lewis Carroll", precio: "12800.00", imagen: "images/alicia.jpg", alt: "Alicia en el País de las Maravillas" },
+            { titulo: "Diario de Greg", autor: "Jeff Kinney", precio: "15000.00", imagen: "images/diario-greg.jpg", alt: "Diario de Greg" },
+            { titulo: "Cuentos de Buenas Noches para Niñas Rebeldes", autor: "Elena Favilli", precio: "17500.00", imagen: "images/rebeldes.jpeg", alt: "Cuentos de Buenas Noches" },
+            { titulo: "El Grúfalo", autor: "Julia Donaldson", precio: "11500.00", imagen: "images/grufalo.webp", alt: "El Grúfalo" },
+            { titulo: "Charlie y la Fábrica de Chocolate", autor: "Roald Dahl", precio: "13800.00", imagen: "images/charlie-chocolate.webp", alt: "Charlie y la Fábrica de Chocolate" },
+            { titulo: "Las Crónicas de Narnia", autor: "C.S. Lewis", precio: "21000.00", imagen: "images/narnia.webp", alt: "Las Crónicas de Narnia" },
+            { titulo: "Un Mundo de Monstruos", autor: "Varios", precio: "10500.00", imagen: "images/mundo-monstruos.jpg", alt: "Un Mundo de Monstruos" },
+        ];
+
+        const librosPorSlide = 6; 
+
+        function crearCardHTML(libro) {
+            const precioFormateado = parseFloat(libro.precio).toLocaleString('es-AR', {
+                style: 'currency',
+                currency: 'ARS', 
+                minimumFractionDigits: 2,
+            });
+            return `
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="card h-100 text-center border-secondary">
+                        <img src="${libro.imagen}" class="card-img-top" alt="${libro.alt}">
+                        <div class="card-body">
+                            <h6 class="fw-bold">${libro.titulo}</h6>
+                            <p class="mb-1">${libro.autor}</p>
+                            <p class="fw-semibold">${precioFormateado}</p> 
+                            <button class="btn btn-warning btn-sm">Pedir</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generarCarousel(data, targetInnerId, targetCarouselId) {
+            const carouselInner = document.getElementById(targetInnerId);
+            const indicatorsContainer = document.querySelector(`#${targetCarouselId} .carousel-indicators`); 
+            
+            if (!carouselInner || data.length === 0) {
+                 if(carouselInner) carouselInner.innerHTML = '<div class="carousel-item active"><div class="row"><div class="col-12 text-center py-5"><p>¡Pronto tendremos más libros en esta sección!</p></div></div></div>';
+                 if(indicatorsContainer) indicatorsContainer.innerHTML = '';
+                 const carousel = document.getElementById(targetCarouselId);
+                 if (carousel) {
+                     const controls = carousel.querySelectorAll('.carousel-control-prev, .carousel-control-next');
+                     controls.forEach(control => control.style.display = 'none');
+                 }
+                 return;
+            }
+
+            let slidesHTML = ''; 
+            let indicatorsHTML = '';
+
+            for (let i = 0; i < data.length; i += librosPorSlide) {
+                const slideLibros = data.slice(i, i + librosPorSlide);
+                const slideIndex = i / librosPorSlide;
+                const isActive = i === 0 ? ' active' : '';
+                
+                const slideContent = `
+                    <div class="row g-4 justify-content-center"> ${slideLibros.map(crearCardHTML).join('')}
+                    </div>
+                `;
+
+                slidesHTML += `
+                    <div class="carousel-item${isActive}">
+                        ${slideContent}
+                    </div>
+                `;
+
+                indicatorsHTML += `
+                    <button type="button" data-bs-target="#${targetCarouselId}" data-bs-slide-to="${slideIndex}" 
+                        class="${isActive.trim()}" aria-current="${i === 0}" aria-label="Slide ${slideIndex + 1}"></button>
+                `;
+            }
+
+            carouselInner.innerHTML = slidesHTML;
+
+            if (indicatorsContainer) {
+                indicatorsContainer.innerHTML = indicatorsHTML;
+            }
+        }
+
+        function updateUIForUser() {
+            const userDataJSON = localStorage.getItem('usuario'); 
+            const userGreetingText = document.getElementById('user-greeting-text');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown');
+            const btnAccederHeader = document.getElementById('btnAccederHeader');
+            const btnLogout = document.getElementById('btn-logout');
+
+            if (!userGreetingText || !userMenuDropdown || !btnAccederHeader || !btnLogout) {
+                console.error("Faltan elementos clave en el HTML.");
+                return; 
+            }
+
+            if (userDataJSON) {
+                try {
+                    const userData = JSON.parse(userDataJSON);
+                    const userName = userData.nombre && userData.apellido ? 
+                                     `${userData.nombre} ${userData.apellido}` : 
+                                      userData.email || 'Usuario'; 
+
+                    userMenuDropdown.classList.remove('d-none');
+                    btnAccederHeader.classList.add('d-none');
+
+                    userGreetingText.innerHTML = `👤 Hola, ${userName}`;
+                    
+                    btnLogout.addEventListener('click', handleLogout, { once: true }); 
+
+                } catch (e) {
+                    console.error("Error al parsear datos de usuario de localStorage:", e);
+                    localStorage.removeItem('usuario'); 
+                    updateUIForUser(); 
+                }
+            } else {
+                userMenuDropdown.classList.add('d-none');
+                btnAccederHeader.classList.remove('d-none');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+            window.location.reload(); 
+        }
+
+function applyTheme(theme) {
+    const htmlElement = document.documentElement;
+    const body = document.body;
+    const icon = document.getElementById('theme-icon');
+    const toggleButton = document.getElementById('theme-toggle');
+
+    htmlElement.setAttribute('data-theme', theme);
+    body.setAttribute('data-bs-theme', theme);
+    localStorage.setItem('theme', theme);
+    localStorage.setItem('tema', theme);
+
+    const userMenuDropdown = document.querySelector('#user-menu-dropdown .dropdown-menu');
+    const navbar = document.querySelector('nav.navbar');
+    const hRulers = document.querySelectorAll('hr');
+
+    if (icon) {
+        if (theme === 'dark') {
+            icon.className = 'bi bi-moon-stars-fill';
+        } else {
+            icon.className = 'bi bi-sun-fill';
+        }
+    }
+
+    if (theme === 'light') {
+        if (toggleButton) {
+            toggleButton.classList.remove('btn-outline-warning');
+            toggleButton.classList.add('btn-secondary'); 
+        }
+        
+        if (navbar) navbar.classList.replace('border-secondary-subtle', 'border-primary-subtle');
+        if (userMenuDropdown) userMenuDropdown.classList.remove('dropdown-menu-dark');
+        
+        const hrClassRemove = 'border-secondary-subtle';
+        const hrClassAdd = 'border-primary-subtle';
+        hRulers.forEach(hr => {
+            hr.classList.remove(hrClassRemove);
+            hr.classList.add(hrClassAdd);
+        });
+
+    } else {
+        if (toggleButton) {
+            toggleButton.classList.remove('btn-secondary');
+            toggleButton.classList.add('btn-outline-warning'); 
+        }
+        
+        if (navbar) navbar.classList.replace('border-primary-subtle', 'border-secondary-subtle');
+        if (userMenuDropdown) userMenuDropdown.classList.add('dropdown-menu-dark');
+
+        const hrClassRemove = 'border-primary-subtle';
+        const hrClassAdd = 'border-secondary-subtle';
+        hRulers.forEach(hr => {
+            hr.classList.remove(hrClassRemove);
+            hr.classList.add(hrClassAdd);
+        });
+    }
+}
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+    let storedTheme = localStorage.getItem('theme') || localStorage.getItem('tema');
+    
+    if (!storedTheme) {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+            storedTheme = 'light';
+        } else {
+            storedTheme = 'dark'; 
+        }
+    }
+    
+    applyTheme(storedTheme); 
+    
+    const toggleButton = document.getElementById('theme-toggle');
+    if (toggleButton) {
+        toggleButton.addEventListener('click', toggleTheme);
+    }
+    
+    generarCarousel(librosNovelas, 'carouselNovelasInner', 'carouselNovelas');
+    generarCarousel(librosManga, 'carouselMangaInner', 'carouselManga'); 
+    generarCarousel(librosInfantil, 'carouselInfantilInner', 'carouselInfantil');
+    generarCarousel(librosTerror, 'carouselTerrorInner', 'carouselTerror');
+    generarCarousel(librosProgramadores, 'carouselProgramadoresInner', 'carouselProgramadores'); 
+
+    updateUIForUser();
+});
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggleButton = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        const storedTheme = localStorage.getItem('theme');
+        let currentTheme = storedTheme || 'light'; 
+
+        function applyTheme(theme) {
+            body.setAttribute('data-bs-theme', theme);
+            
+            if (theme === 'dark') {
+                themeIcon.classList.remove('bi-sun-fill');
+                themeIcon.classList.add('bi-moon-stars-fill');
+            } else {
+                themeIcon.classList.remove('bi-moon-stars-fill');
+                themeIcon.classList.add('bi-sun-fill');
+            }
+            
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+        }
+
+        applyTheme(currentTheme);
+
+        toggleButton.addEventListener('click', () => {
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+    });
+</script>
+
+<script>
+    function updateUIForUser() {
+        const userDataJSON = localStorage.getItem('usuario'); 
+        
+        const userGreetingText = document.getElementById('user-greeting-text');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown'); 
+        const btnAccederHeader = document.getElementById('btnAccederHeader'); 
+        
+        if (!userGreetingText || !userMenuDropdown || !btnAccederHeader) {
+            console.error("Faltan elementos clave en el HTML.");
+            return; 
+        }
+
+        if (userDataJSON) {
+            try {
+                const userData = JSON.parse(userDataJSON);
+                const fullName = `${userData.nombre} ${userData.apellido}`; 
+
+                userMenuDropdown.classList.remove('d-none');
+                btnAccederHeader.classList.add('d-none');
+
+                userGreetingText.innerHTML = `👤 Hola, ${fullName}`;
+
+            } catch (e) {
+                console.error("Error al parsear datos de usuario de localStorage:", e);
+                localStorage.removeItem('usuario'); 
+                userMenuDropdown.classList.add('d-none');
+                btnAccederHeader.classList.remove('d-none');
+            }
+        } else {
+            userMenuDropdown.classList.add('d-none');
+            btnAccederHeader.classList.remove('d-none');
+        }
+    }
+
+    function handleLogout() {
+        localStorage.removeItem('usuario'); 
+        localStorage.removeItem('token'); 
+        
+        updateUIForUser(); 
+        window.location.href = 'index.html'; 
+    }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    updateUIForUser(); 
+
+    const logoutBtn = document.getElementById("btn-logout");
+    if (logoutBtn) {
+        logoutBtn.onclick = handleLogout;
+    }
+});
+</script>
+</body>
+</html>

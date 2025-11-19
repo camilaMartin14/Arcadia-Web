@@ -76,10 +76,17 @@ const url = `${API_BASE}/api/libro/filtrar?${params}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const data = await res.json();
-    ultimoListado = Array.isArray(data) ? data : [];
+const data = await res.json();
+    ultimoListado = Array.isArray(data) ? data : [];
 
-    render();
+    ultimoListado.sort((a, b) => {
+        const idA = a.cod_libro ?? a.CodLibro ?? a.codigo ?? a.Codigo ?? 0;
+        const idB = b.cod_libro ?? b.CodLibro ?? b.codigo ?? b.Codigo ?? 0;
+        
+        return idB - idA;
+    });
+
+    render();
 
   } catch (err) {
     console.error('Error buscando libros', err);
@@ -450,12 +457,20 @@ const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
 
 
 async function guardarAlta() {
-  const payload = tomarPayload();
-  const res = await fetch(`${API_BASE}/api/libro`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-  });
-  if (!res.ok) return alert('No se pudo crear el libro');
-  bsModal.hide(); await buscarLibros();
+  const payload = tomarPayload();
+  const res = await fetch(`${API_BASE}/api/libro`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+  });
+  
+  if (!res.ok) return alert('No se pudo crear el libro');
+
+  const libroNuevo = await res.json(); 
+
+  bsModal.hide(); 
+  
+  ultimoListado.unshift(libroNuevo);
+
+  render(); 
 }
 
 async function guardarEdicion(id) {

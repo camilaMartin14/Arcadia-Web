@@ -19,7 +19,7 @@ public partial class Factura
 
     public int IdFormaEnvio { get; set; }
 
-    public decimal? CostoEnvio { get; set; }
+    public decimal CostoEnvio { get; set; }
 
     public virtual Cliente CodClienteNavigation { get; set; }
 

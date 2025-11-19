@@ -15,7 +15,7 @@ public partial class Usuario
 
     public string Rol { get; set; }
 
-    public DateTime? FechaAlta { get; set; }
+    public DateTime FechaAlta { get; set; }
 
     public virtual ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
 }

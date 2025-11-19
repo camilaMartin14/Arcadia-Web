@@ -11,9 +11,9 @@ public partial class Contacto
 
     public string Contacto1 { get; set; }
 
-    public int? IdTipoContacto { get; set; }
+    public int IdTipoContacto { get; set; }
 
-    public int? CodCliente { get; set; }
+    public int CodCliente { get; set; }
 
     public virtual Cliente CodClienteNavigation { get; set; }
 

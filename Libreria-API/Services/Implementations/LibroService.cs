@@ -118,7 +118,13 @@ namespace Libreria_API.Services.Implementations
                 LibrosGeneros = new List<LibrosGenero>()
             };
 
-
+            foreach (var idAutor in autoresIds)
+            {
+                libro.AutoresLibros.Add(new AutoresLibro
+                {
+                    IdAutor = idAutor,
+                });
+            }
 
             _repo.Add(libro);
             _repo.SaveChanges();
@@ -154,6 +160,7 @@ namespace Libreria_API.Services.Implementations
             if (dto.FechaLanzamiento.HasValue)
                 libro.FechaLanzamiento = dto.FechaLanzamiento.Value;
 
+            ReemplazarAutores(libro.CodLibro, autoresIds);
 
             _repo.SaveChanges();
 
@@ -481,7 +488,21 @@ namespace Libreria_API.Services.Implementations
             _context.SaveChanges();
             return nuevo.IdSexo;
         }
+        private void ReemplazarAutores(int codLibro, List<int> nuevosIds)
+        {
+            _context.AutoresLibros
+                .Where(al => al.IdLibro == codLibro)
+                .ExecuteDelete();
 
+            foreach (var idAutor in nuevosIds)
+            {
+                _context.AutoresLibros.Add(new AutoresLibro
+                {
+                    IdAutor = idAutor,
+                    IdLibro = codLibro // Asignamos ambas claves foráneas
+                });
+            }
+        }
 
 
 

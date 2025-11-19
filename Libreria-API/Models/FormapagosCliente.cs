@@ -9,11 +9,11 @@ public partial class FormapagosCliente
 {
     public int IdFormapagoCliente { get; set; }
 
-    public int? NumTarjeta { get; set; }
+    public int NumTarjeta { get; set; }
 
-    public DateOnly? FechaVencimiento { get; set; }
+    public DateOnly FechaVencimiento { get; set; }
 
-    public int? Cvv { get; set; }
+    public int Cvv { get; set; }
 
     public int CodCliente { get; set; }
 

@@ -117,9 +117,7 @@ public partial class LibreriaContext : DbContext
 
             entity.ToTable("autores_libros");
 
-            entity.Property(e => e.IdAutorLibro)
-                .ValueGeneratedNever()
-                .HasColumnName("id_autor_libro");
+            entity.Property(e => e.IdAutorLibro).HasColumnName("id_autor_libro");
             entity.Property(e => e.IdAutor).HasColumnName("id_autor");
             entity.Property(e => e.IdLibro).HasColumnName("id_libro");
 
@@ -214,6 +212,7 @@ public partial class LibreriaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("dpto");
             entity.Property(e => e.Email)
+                .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("email");
             entity.Property(e => e.FechaNacimiento).HasColumnName("fecha_nacimiento");
@@ -270,6 +269,7 @@ public partial class LibreriaContext : DbContext
             entity.Property(e => e.IdContacto).HasColumnName("id_contacto");
             entity.Property(e => e.CodCliente).HasColumnName("cod_cliente");
             entity.Property(e => e.Contacto1)
+                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("contacto");
@@ -277,10 +277,12 @@ public partial class LibreriaContext : DbContext
 
             entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.Contactos)
                 .HasForeignKey(d => d.CodCliente)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_contactos_clientes");
 
             entity.HasOne(d => d.IdTipoContactoNavigation).WithMany(p => p.Contactos)
                 .HasForeignKey(d => d.IdTipoContacto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_contactos_tipos");
         });
 
@@ -371,9 +373,7 @@ public partial class LibreriaContext : DbContext
 
             entity.ToTable("facturas");
 
-            entity.Property(e => e.NroFactura)
-                .ValueGeneratedNever()
-                .HasColumnName("nro_factura");
+            entity.Property(e => e.NroFactura).HasColumnName("nro_factura");
             entity.Property(e => e.CodCliente).HasColumnName("cod_cliente");
             entity.Property(e => e.CostoEnvio)
                 .HasColumnType("decimal(10, 2)")
@@ -532,6 +532,7 @@ public partial class LibreriaContext : DbContext
 
             entity.Property(e => e.CodLibro).HasColumnName("cod_libro");
             entity.Property(e => e.Descripcion)
+                .IsRequired()
                 .HasMaxLength(200)
                 .IsUnicode(false)
                 .HasColumnName("descripcion");
@@ -570,9 +571,7 @@ public partial class LibreriaContext : DbContext
 
             entity.ToTable("libros_categorias");
 
-            entity.Property(e => e.IdLibroCategoria)
-                .ValueGeneratedNever()
-                .HasColumnName("id_libro_categoria");
+            entity.Property(e => e.IdLibroCategoria).HasColumnName("id_libro_categoria");
             entity.Property(e => e.IdCategoria).HasColumnName("id_categoria");
             entity.Property(e => e.IdLibro).HasColumnName("id_libro");
 
@@ -593,9 +592,7 @@ public partial class LibreriaContext : DbContext
 
             entity.ToTable("libros_generos");
 
-            entity.Property(e => e.IdLibroGenero)
-                .ValueGeneratedNever()
-                .HasColumnName("id_libro_genero");
+            entity.Property(e => e.IdLibroGenero).HasColumnName("id_libro_genero");
             entity.Property(e => e.IdGenero).HasColumnName("id_genero");
             entity.Property(e => e.IdLibro).HasColumnName("id_libro");
 
@@ -711,7 +708,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<TrackingEnvio>(entity =>
         {
-            entity.HasKey(e => e.IdTracking).HasName("PK__tracking__8877058D97E7AD69");
+            entity.HasKey(e => e.IdTracking).HasName("PK__tracking__8877058D5A66EEE6");
 
             entity.ToTable("tracking_envios");
 
@@ -739,22 +736,23 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__5B65BF97E50A9084");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__5B65BF97062551EA");
 
-            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE0413A1B71").IsUnique();
+            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE026658E68").IsUnique();
 
             entity.Property(e => e.ContrasenaHash)
                 .IsRequired()
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.FechaAlta)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("(sysdatetime())")
                 .HasColumnType("datetime");
             entity.Property(e => e.NombreUsuario)
                 .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Rol)
+                .IsRequired()
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasDefaultValue("Cliente");

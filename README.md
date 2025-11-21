@@ -113,10 +113,9 @@ PLUS --> Hacer que el catalogo no sea harcodeado sino que se muestre desde el ba
 📝 Lista de Tareas Cronológicas
 
 🛠️ Fase 1: Base de Datos y Estructura
-  Agregar campos de activo e inactivo a los libros para la baja lógica.
-  Agregar más inserts coherentes de categorías y géneros literarios.
-
-  Unificar estilos en un único archivo CSS.
+  ✅Agregar campos de activo e inactivo a los libros para la baja lógica.
+  ✅Agregar más inserts coherentes de categorías y géneros literarios.
+  ✅Unificar estilos en un único archivo CSS.
   Unificar mejor los archivos .js (reorganizar scripts por funcionalidad o pantalla).
 
 🗑️ Fase 2: Implementación de la Baja Lógica

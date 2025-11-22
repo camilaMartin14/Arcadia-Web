@@ -14,10 +14,8 @@ namespace Libreria_API.Services.Interfaces
         );
 
         LibroDTO? GetLibroByCodigo(int codigo);
-
-        // NUEVOS:
         LibroDTO CreateLibro(LibroCreateUpdateDTO dto);
         LibroDTO? UpdateLibro(int codigo, LibroCreateUpdateDTO dto);
-        bool DeleteLibro(int codigo);
+        Task<bool> SoftDeleteLibro(int id, bool estado);
     }
 }

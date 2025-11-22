@@ -29,5 +29,11 @@ namespace Libreria_API.Services.Implementations
 
         public void Delete(int nroPedido)
             => _repo.Delete(nroPedido);
+
+        public async Task<bool> SoftDeletePedido(int id, bool estado)
+        {
+            var isUpdated = await _repo.SoftDeletePedido(id, false);
+            return isUpdated;
+        }
     }
 }

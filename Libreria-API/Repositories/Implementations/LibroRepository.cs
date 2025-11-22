@@ -49,5 +49,16 @@ namespace Libreria_API.Repositories.Implementations
         {
             _context.SaveChanges();
         }
+
+        public async Task<bool> SoftDeleteLibro(int id, bool estado)
+        {
+            var libro = await _context.Libros.FindAsync(id);
+            if (libro == null)
+            {
+                return false;
+            }
+            libro.Activo = estado;
+            return await _context.SaveChangesAsync() > 0;
+    }
     }
 }

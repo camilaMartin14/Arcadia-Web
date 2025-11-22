@@ -11,6 +11,7 @@ namespace Libreria_API.Services.Interfaces
         PedidoDTORead? GetPedidoById(int id);
         string ObtenerEstadoActualPedido(int nroPedido);
         void Update(Pedido pedido);
-        void Delete(int nroPedido);
+
+        Task<bool> SoftDeletePedido(int id, bool estado);
     }
 }

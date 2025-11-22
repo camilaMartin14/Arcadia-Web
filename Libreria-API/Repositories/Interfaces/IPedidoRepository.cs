@@ -12,5 +12,7 @@ namespace Libreria_API.Repositories.Interfaces
         string ObtenerEstadoActualPedido(int nroPedido);
         void Update(Pedido pedido);
         void Delete(int nroPedido);
+
+        Task<bool> SoftDeletePedido(int id, bool estado);
     }
 }

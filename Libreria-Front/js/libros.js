@@ -103,12 +103,9 @@ function render() {
   show('#sinResultados', !hay);
   if (vista === 'tabla') {
     show('#contenedorTabla', true);
-    show('#contenedorCards', false);
     renderTabla(ultimoListado);
   } else {
     show('#contenedorTabla', false);
-    show('#contenedorCards', true);
-    renderCards(ultimoListado);
   }
 }
 
@@ -335,72 +332,39 @@ function capitalizar(texto) {
 }
 
 function renderTabla(list) {
-  const tbody = $('#tblLibros tbody');
-  if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-secondary py-4">No se encontraron libros.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = list.map(l => {
-    const titulo = l.titulo ?? l.Titulo ?? '';
-    const idioma = l.idioma ?? l.Idioma ?? '';
-    const precio = l.precio ?? l.Precio ?? 0;
-    const stock  = l.stock ?? l.Stock ?? 0;
-    const autores = (l.autores ?? l.Autores ?? []).join?.(', ') || (l.autor ?? '');
-    const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo ?? '';
+    const tbody = $('#tblLibros tbody');
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center text-secondary py-4">No se encontraron libros.</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = list.map(l => {
+        const titulo = l.titulo ?? l.Titulo ?? '';
+        const idioma = l.idioma ?? l.Idioma ?? '';
+        const precio = l.precio ?? l.Precio ?? 0;
+        const stock  = l.stock ?? l.Stock ?? 0;
+        const autores = (l.autores ?? l.Autores ?? []).join?.(', ') || (l.autor ?? '');
+        const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo ?? '';
 
-    return `
-      <tr>
-        <td>${titulo}</td>
-        <td>${autores}</td>
-        <td>${idioma}</td>
-        <td class="text-end">${fmtCurrency.format(precio)}</td>
-        <td class="text-center">${stock}</td>
-        <td class="text-end">
-          <button class="btn btn-sm btn-outline-info" title="Ver" data-action="ver" data-id="${cod}">
-            <i class="bi bi-eye"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-warning" title="Editar" data-action="editar" data-id="${cod}">
-            <i class="bi bi-pencil"></i>
-          </button>
-        </td>
-      </tr>`;
-  }).join('');
-}
-
-function renderCards(list) {
-  const grid = $('#contenedorCards');
-  grid.innerHTML = !list.length ? '' : list.map(l => {
-    const titulo = l.titulo ?? l.Titulo ?? '';
-    const idioma = l.idioma ?? l.Idioma ?? '';
-    const precio = l.precio ?? l.Precio ?? 0;
-    const stock  = l.stock ?? l.Stock ?? 0;
-    const autores = (l.autores ?? l.Autores ?? []).join?.(', ') || (l.autor ?? '');
-    const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo ?? '';
-
-    return `
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="small text-secondary">#${cod}</div>
-            <h5 class="card-title mb-1">${titulo}</h5>
-            <div class="small">Autor(es): ${autores || '-'}</div>
-            <div class="small">Idioma: ${idioma || '-'}</div>
-            <div class="d-flex justify-content-between align-items-center mt-2">
-              <span class="fw-semibold">${fmtCurrency.format(precio)}</span>
-              <span class="badge ${stock>0 ? 'text-bg-success' : 'text-bg-secondary'}">${stock>0 ? 'En stock' : 'Sin stock'}</span>
-            </div>
-          </div>
-          <div class="card-footer d-flex gap-2">
-            <button class="btn btn-sm btn-outline-info w-100" data-action="ver" data-id="${cod}">
-              <i class="bi bi-eye"></i> Ver
-            </button>
-            <button class="btn btn-sm btn-outline-warning w-100" data-action="editar" data-id="${cod}">
-              <i class="bi bi-pencil"></i> Editar
-            </button>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+        return `
+            <tr data-id="${cod}">
+                <td>${titulo}</td>
+                <td>${autores}</td>
+                <td>${idioma}</td>
+                <td class="text-end">${fmtCurrency.format(precio)}</td>
+                <td class="text-center">${stock}</td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-info" title="Ver" data-action="ver" data-id="${cod}">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" title="Editar" data-action="editar" data-id="${cod}">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" title="Dar de baja" data-action="eliminar" data-id="${cod}">
+                        <i class="bi bi-trash"></i> 
+                    </button>
+                </td>
+            </tr>`;
+    }).join('');
 }
 
 let bsModal;
@@ -534,7 +498,6 @@ $('#btnLimpiar').addEventListener('click', () => {
 $('#btnABMAlta').addEventListener('click', () => abrirModal('alta'));
 
 $('#vistaTabla').addEventListener('change', () => { vista='tabla'; render(); });
-$('#vistaCards').addEventListener('change', () => { vista='cards'; render(); });
 
 $('#btnTema')?.addEventListener('click', toggleTheme);
 
@@ -615,3 +578,55 @@ function idValido(id) {
     const s = String(id).trim();
     return s !== "" && s !== "null" && s !== "undefined";
 }
+
+async function eliminarLibro(id) {
+    if (!confirm(`¿Estás seguro de que deseas dar de baja el libro con código ${id}?`)) {
+        return;
+    }
+
+    if (bsModal) {
+        bsModal.hide();
+    }
+    setCargando(true);
+
+    try {
+        const res = await fetch(`${API_BASE}/api/libro/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (res.ok) {
+            alert(`Libro ${id} dado de baja (lógica) correctamente.`);
+            await buscarLibros();
+        } else {
+            const errorText = await res.text();
+            alert(`Error al dar de baja el libro ${id}. Status: ${res.status}. Mensaje: ${errorText || 'Error desconocido'}`);
+        }
+    } catch (err) {
+        console.error('Error en la baja lógica:', err);
+        alert('Error de red o interno al intentar dar de baja el libro.');
+    } finally {
+        setCargando(false);
+    }
+}
+
+document.addEventListener('click', async (e) => {
+    const target = e.target.closest('[data-action][data-id]');
+    if (!target) return;
+
+    const action = target.dataset.action;
+    const id = target.dataset.id;
+
+    if (action === 'ver' || action === 'editar') {
+        const libro = ultimoListado.find(l => {
+            const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
+            return String(cod) === String(id);
+        });
+        if (libro) {
+            abrirModal(action === 'ver' ? 'detalle' : 'edicion', libro);
+        } else {
+            alert(`No se encontró el libro con código ${id}`);
+        }
+    } else if (action === 'eliminar') {
+        await eliminarLibro(id);
+    }
+});

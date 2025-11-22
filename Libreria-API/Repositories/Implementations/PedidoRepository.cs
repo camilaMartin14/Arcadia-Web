@@ -177,5 +177,16 @@ namespace Libreria_API.Repositories.Implementations
             _context.Pedidos.Remove(pedido);
             _context.SaveChanges();
         }
+
+        public async Task<bool> SoftDeletePedido(int id, bool estado)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido == null)
+            {
+                return false;
+            }
+            pedido.Activo = estado;
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

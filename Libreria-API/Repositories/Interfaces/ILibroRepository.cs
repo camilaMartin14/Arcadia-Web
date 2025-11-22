@@ -13,5 +13,7 @@ namespace Libreria_API.Repositories.Interfaces
         void Update(Libro libro);
         void Delete(Libro libro);
         void SaveChanges();
+
+        Task<bool> SoftDeleteLibro(int id, bool estado);
     }
 }

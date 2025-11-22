@@ -504,7 +504,10 @@ namespace Libreria_API.Services.Implementations
             }
         }
 
-
-
+        public async Task<bool> SoftDeleteLibro(int id, bool estado)
+        {
+            var isUpdated = await _repo.SoftDeleteLibro(id, false);
+            return isUpdated;
+        }
     }
 }

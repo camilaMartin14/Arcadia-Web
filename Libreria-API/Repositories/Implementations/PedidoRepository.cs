@@ -55,6 +55,7 @@ namespace Libreria_API.Repositories.Implementations
                 .Select(p => new PedidoDTORead
                 {
                     NroPedido = p.NroPedido,
+                    Activo = p.Activo,
                     Fecha = p.Fecha,
                     FechaEntrega = p.FechaEntrega,
                     InstruccionesAdicionales = p.InstruccionesAdicionales,
@@ -92,6 +93,7 @@ namespace Libreria_API.Repositories.Implementations
                     NroPedido = p.NroPedido,
                     Fecha = p.Fecha,
                     FechaEntrega = p.FechaEntrega,
+                    Activo = p.Activo,
                     InstruccionesAdicionales = p.InstruccionesAdicionales,
                     CodCliente = p.CodCliente,
                     NombreCliente = p.CodClienteNavigation.Nombre,

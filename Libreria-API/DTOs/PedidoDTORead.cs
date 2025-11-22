@@ -5,6 +5,7 @@ namespace Libreria_API.DTOs
 {
     public class PedidoDTORead
     {
+        public bool Activo { get; set; }
         public int NroPedido { get; set; }
         public DateTime Fecha { get; set; }
         public DateOnly FechaEntrega { get; set; }

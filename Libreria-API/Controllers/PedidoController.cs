@@ -99,6 +99,21 @@ namespace Libreria_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            try
+            {
+                await _service.SoftDeletePedido(id, false);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error interno");
+                throw;
+            }
+
+        }
     }
 }
 

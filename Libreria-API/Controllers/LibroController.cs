@@ -63,16 +63,21 @@ namespace Libreria_API.Controllers
 
             return Ok(actualizado);
         }
-
-        [HttpDelete("{codigo:int}")]
-        public IActionResult EliminarLibro(int codigo)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var ok = _service.DeleteLibro(codigo);
+            try
+            {
+                await _service.SoftDeleteLibro(id, false);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error interno");
+                throw;
+            }
 
-            if (!ok)
-                return NotFound($"No se encontró el libro con código {codigo}.");
-
-            return NoContent(); // 204 sin cuerpo
         }
+
     }
 }

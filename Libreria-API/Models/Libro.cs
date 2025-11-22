@@ -25,6 +25,8 @@ public partial class Libro
 
     public int IdIdioma { get; set; }
 
+    public bool Activo { get; set; }
+
     public virtual ICollection<AutoresLibro> AutoresLibros { get; set; } = new List<AutoresLibro>();
 
     public virtual ICollection<DetalleFactura> DetalleFacturas { get; set; } = new List<DetalleFactura>();

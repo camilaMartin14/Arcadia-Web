@@ -531,6 +531,7 @@ public partial class LibreriaContext : DbContext
             entity.ToTable("libros");
 
             entity.Property(e => e.CodLibro).HasColumnName("cod_libro");
+            entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.Descripcion)
                 .IsRequired()
                 .HasMaxLength(200)
@@ -628,6 +629,7 @@ public partial class LibreriaContext : DbContext
             entity.ToTable("pedidos");
 
             entity.Property(e => e.NroPedido).HasColumnName("nro_pedido");
+            entity.Property(e => e.Activo).HasDefaultValue(true);
             entity.Property(e => e.CodCliente).HasColumnName("cod_cliente");
             entity.Property(e => e.Fecha)
                 .HasColumnType("datetime")

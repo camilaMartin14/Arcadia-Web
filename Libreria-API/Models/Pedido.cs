@@ -19,6 +19,8 @@ public partial class Pedido
 
     public int IdFormaEnvio { get; set; }
 
+    public bool Activo { get; set; }
+
     public virtual Cliente CodClienteNavigation { get; set; }
 
     public virtual ICollection<DetallePedido> DetallePedidos { get; set; } = new List<DetallePedido>();

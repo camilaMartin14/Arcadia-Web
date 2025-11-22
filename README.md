@@ -62,7 +62,7 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
   ✅Eliminar completamente el método de delete de Pedidos.
   Implementar la baja lógica de los pedidos (usando un campo como activo o estado).
   ✅Eliminar el método de delete de Libros.
-  Implementar la baja lógica de Libros (usando los campos activo/inactivo creados en el punto 2).
+  ✅🚧Implementar la baja lógica de Libros (usando los campos activo/inactivo creados en el punto 2).
 
 🔒 Fase 3: Validación y Corrección de Formularios
   Corregir la validación para que la fecha de entrega no pueda ser anterior a hoy.

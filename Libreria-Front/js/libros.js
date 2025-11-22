@@ -412,21 +412,27 @@ function abrirModal(modo, libro = null) {
 
   $('#modalTitulo').textContent = title;
 
-  $('#btnEliminar').classList.toggle('d-none', modo !== 'edicion');
+  const btnEliminar = $('#btnEliminar');
+  if (btnEliminar) {
+    btnEliminar.classList.toggle('d-none', modo !== 'edicion');
+  }
 
   const soloLectura = (modo === 'detalle');
   ['#mTitulo','#mPrecio','#mStock','#mIdioma', '#mEditorial'] 
     .forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
   ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
 
-  $('#btnGuardar').classList.toggle('d-none', soloLectura);
+  const btnGuardar = $('#btnGuardar');
+  if (btnGuardar) {
+    btnGuardar.classList.toggle('d-none', soloLectura);
+  }
 
   $('#mId').value = libro?.cod_libro ?? libro?.CodLibro ?? libro?.codigo ?? libro?.Codigo ?? '';
   $('#mTitulo').value    = libro?.titulo ?? libro?.Titulo ?? '';
   $('#mPrecio').value    = libro?.precio ?? libro?.Precio ?? 0;
   $('#mStock').value     = libro?.stock ?? libro?.Stock ?? 0;
 
-const mIsbn = $('#mISBN');
+const mIsbn = $('#mIsbn');
 if (mIsbn) mIsbn.value = libro?.isbn ?? libro?.Isbn ?? '';
 
 const mDescripcion = $('#mDescripcion');
@@ -451,7 +457,9 @@ const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
     if (modo === 'edicion') return guardarEdicion($('#mId').value);
   };
 
-  $('#btnEliminar').onclick = () => eliminarLibro($('#mId').value);
+  if (btnEliminar) {
+    btnEliminar.onclick = () => eliminarLibro($('#mId').value);
+  }
 }
 
 
@@ -516,7 +524,7 @@ function tomarPayload() {
     precio: getNum('#mPrecio'),
     stock: getNum('#mStock'),
 
-    isbn: getVal('#mISBN'),
+    isbn: getVal('#mIsbn'),
     descripcion: getVal('#mDescripcion'),
     fechaLanzamiento: getVal('#mFechaLanzamiento'),
   };
@@ -571,6 +579,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelector('#filtroActivos')
       .addEventListener('change', buscarLibros);
+
+  try {
+    await cargarCatalogos();
+    renderCatalogoSelects();
+  } catch (e) {
+    console.warn('No se pudieron cargar los catálogos al inicio', e);
+  }
 
   buscarLibros();
 });

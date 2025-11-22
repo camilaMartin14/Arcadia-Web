@@ -7,7 +7,6 @@ const $ = (sel) => document.querySelector(sel);
 let modoFormulario = "crear";
 let pedidoSeleccionado = null;
 
-// Variables para las instancias de los modales de Bootstrap
 let modalPedidoBS = null;
 let modalEstadoBS = null;
 
@@ -155,6 +154,9 @@ function renderPedidos(pedidos) {
                 <button class="btn btn-sm btn-outline-secondary action-sm" title="Cambiar estado" onclick="cambiarEstado(${p.nroPedido})">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
+                <button class="btn btn-sm btn-outline-danger action-sm" title="Dar de baja" onclick="eliminarPedido(${p.nroPedido})">
+                    <i class="bi bi-trash"></i>
+                </button>
             </td>`;
         tbody.appendChild(tr);
     });
@@ -167,6 +169,30 @@ function limpiarFiltros() {
 }
 
 // --- FUNCIONES GLOBALES PARA ACCIONES (Ver, Editar) ---
+window.eliminarPedido = async function (nroPedido) {
+    if (!confirm(`¿Estás seguro de que deseas dar de baja el Pedido #${nroPedido}? Esta acción es una baja lógica.`)) {
+        return;
+    }
+
+    try {
+        const resp = await fetch(`${API_PEDIDOS}/${nroPedido}`, {
+            method: 'DELETE',
+        });
+
+        if (resp.ok) {
+            alert(`Pedido #${nroPedido} dado de baja (lógica) correctamente.`);
+            cargarPedidos();
+        } else if (resp.status === 404) {
+            alert(`Error: Pedido #${nroPedido} no encontrado.`);
+        } else {
+            const errorText = await resp.text();
+            throw new Error(`Error ${resp.status}: ${errorText || 'Error desconocido del servidor'}`);
+        }
+    } catch (err) {
+        console.error('Error en la baja lógica del pedido:', err);
+        alert(`Ocurrió un error al dar de baja el pedido: ${err.message}`);
+    }
+};
 
 window.verPedido = async function (nroPedido) {
   try {
@@ -426,4 +452,29 @@ async function guardarCambioEstado() {
     console.error(err);
     alert("Ocurrió un error al cambiar el estado.");
   }
+}
+
+async function eliminarPedido(nroPedido) {
+    if (!confirm(`¿Estás seguro de que deseas dar de baja el Pedido #${nroPedido}? Esta acción es una baja lógica.`)) {
+        return;
+    }
+
+    try {
+        const resp = await fetch(`${API_PEDIDOS}/${nroPedido}`, {
+            method: 'DELETE',
+        });
+
+        if (resp.ok) {
+            alert(`Pedido #${nroPedido} dado de baja (lógica) correctamente.`);
+            cargarPedidos();
+        } else if (resp.status === 404) {
+            alert(`Error: Pedido #${nroPedido} no encontrado.`);
+        } else {
+            const errorText = await resp.text();
+            throw new Error(`Error ${resp.status}: ${errorText || 'Error desconocido del servidor'}`);
+        }
+    } catch (err) {
+        console.error('Error en la baja lógica del pedido:', err);
+        alert(`Ocurrió un error al dar de baja el pedido: ${err.message}`);
+    }
 }

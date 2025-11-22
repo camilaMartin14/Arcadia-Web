@@ -1,5 +1,7 @@
 import { API_BASE } from "./config.js";
 
+
+
 const $ = (sel) => document.querySelector(sel);
 const fmtCurrency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
 
@@ -52,19 +54,27 @@ function toggleTheme() {
 }
 
 function buildParams() {
-  const p = new URLSearchParams();
-  const titulo = $('#fTitulo').value.trim();
-  const autor = $('#fAutor').value.trim();
-  const categoria = $('#fCategoria').value.trim();
-  const idioma = $('#fIdioma').value.trim();
-  const genero = $('#fGenero').value.trim();
-  if (titulo)    p.append('titulo', titulo);
-  if (autor)     p.append('autor', autor);
-  if (categoria) p.append('categoria', categoria);
-  if (idioma)    p.append('idioma', idioma);
-  if (genero)    p.append('genero', genero);
-  return p.toString();
+  const p = new URLSearchParams();
+  const titulo = $('#fTitulo').value.trim();
+  const autor = $('#fAutor').value.trim();
+  const categoria = $('#fCategoria').value.trim();
+  const idioma = $('#fIdioma').value.trim();
+  const genero = $('#fGenero').value.trim();
+  
+  const activo = $('#filtroActivos').checked; 
+
+  if (titulo)    p.append('titulo', titulo);
+  if (autor)     p.append('autor', autor);
+  if (categoria) p.append('categoria', categoria);
+  if (idioma)    p.append('idioma', idioma);
+  if (genero)    p.append('genero', genero);
+
+  p.append('activo', activo ? 'true' : 'false');
+
+  return p.toString();
 }
+
+
 
 async function buscarLibros(e) {
   if (e) e.preventDefault();
@@ -111,10 +121,18 @@ function render() {
 
 async function cargarCatalogos() {
   try {
-    const endpoints = ["autores", "categorias", "generos", "idiomas", "editoriales"]; 
-    const solicitudes = endpoints.map((ep) => fetch(`${API_BASE}/api/catalogos/${ep}`));
+    const titulo = document.getElementById("filtroTitulo")?.value || "";
+    const mostrarSoloActivos = document.getElementById("filtroActivos")?.checked ?? false; 
+    
+    const activoParam = mostrarSoloActivos ? "&activo=true" : ""; 
+
+    const url = `${API_BASE}/api/libro/filtrar?titulo=${encodeURIComponent(titulo)}${activoParam}`;
+
+    const endpoints = ["autores", "categorias", "generos", "idiomas", "editoriales"];
+    const solicitudes = endpoints.map(ep => fetch(`${API_BASE}/api/catalogos/${ep}`));
+    
     const respuestas = await Promise.all(solicitudes);
-    const datos = await Promise.all(respuestas.map((res) => res.ok ? res.json() : []));
+    const datos = await Promise.all(respuestas.map(res => res.ok ? res.json() : []));
 
     catalogos.autores = datos[0] ?? [];
     catalogos.categorias = datos[1] ?? [];
@@ -122,12 +140,14 @@ async function cargarCatalogos() {
     catalogos.idiomas = datos[3] ?? [];
     catalogos.editoriales = datos[4] ?? [];
 
-console.log("Catálogos cargados:", catalogos);
+    console.log("Catálogos cargados:", catalogos);
 
+    const response = await fetch(url); // Aunque esta línea no afecta la carga de catálogos, la mantengo si tiene algún propósito lateral.
   } catch (err) {
     console.error("Error al cargar catálogos:", err);
   }
-} 
+}
+
 
 
 function renderCatalogoSelects() {
@@ -389,7 +409,6 @@ function abrirModal(modo, libro = null) {
   $('#mPrecio').value    = libro?.precio ?? libro?.Precio ?? 0;
   $('#mStock').value     = libro?.stock ?? libro?.Stock ?? 0;
 
-  // --> Agrego estos que son not null en mi BD
 const mIsbn = $('#mISBN');
 if (mIsbn) mIsbn.value = libro?.isbn ?? libro?.Isbn ?? '';
 
@@ -450,7 +469,6 @@ function tomarPayload() {
   const idiomaSeleccionado = obtenerValoresSelect('#mIdioma')[0] ?? 0;
   const editorialSeleccionada = obtenerValoresSelect('#mEditorial')[0] ?? 0;
 
-  // Helper para leer valores sin romper si el campo no existe
   const getVal = (sel) => {
     const el = $(sel);
     return el ? el.value.trim() : "";
@@ -481,7 +499,6 @@ function tomarPayload() {
     precio: getNum('#mPrecio'),
     stock: getNum('#mStock'),
 
-    // Campos nuevos protegidos (no rompen si no están en HTML)
     isbn: getVal('#mISBN'),
     descripcion: getVal('#mDescripcion'),
     fechaLanzamiento: getVal('#mFechaLanzamiento'),
@@ -532,12 +549,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
- document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+  document.querySelector('#formLibros')
+      .addEventListener('submit', buscarLibros);
 
-  await cargarCatalogos();
-  renderCatalogoSelects();
-  buscarLibros();
+  document.querySelector('#filtroActivos')
+      .addEventListener('change', buscarLibros);
 });
+
 
 function extractIdAndName(tipo, item) {
     let id;

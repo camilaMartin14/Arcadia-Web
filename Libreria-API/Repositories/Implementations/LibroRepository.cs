@@ -23,8 +23,6 @@ namespace Libreria_API.Repositories.Implementations
                 .Include(l => l.LibrosCategoria).ThenInclude(lc => lc.IdCategoriaNavigation)
                 .Include(l => l.LibrosGeneros).ThenInclude(lg => lg.IdGeneroNavigation);
         }
-
-        // NUEVO
         public Libro? GetByCodigo(int codigo)
         {
             return QueryLibros().FirstOrDefault(l => l.CodLibro == codigo);

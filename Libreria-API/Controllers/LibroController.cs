@@ -21,9 +21,10 @@ namespace Libreria_API.Controllers
             [FromQuery] string? autor,
             [FromQuery] string? categoria,
             [FromQuery] string? idioma,
+            [FromQuery] bool? activo,
             [FromQuery] string? genero)
         {
-            var libros = _service.GetLibrosByFilters(titulo, autor, categoria, idioma, genero);
+            var libros = _service.GetLibrosByFilters(titulo, autor, categoria, idioma, genero, activo);
             return Ok(libros);
         }
 

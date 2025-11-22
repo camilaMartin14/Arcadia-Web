@@ -10,7 +10,8 @@ namespace Libreria_API.Services.Interfaces
             string? autor,
             string? categoria,
             string? idioma,
-            string? genero
+            string? genero,
+            bool? activo
         );
 
         LibroDTO? GetLibroByCodigo(int codigo);

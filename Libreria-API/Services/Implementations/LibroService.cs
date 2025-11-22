@@ -25,11 +25,12 @@ namespace Libreria_API.Services.Implementations
 
 
         public IEnumerable<LibroDTO> GetLibrosByFilters(
-            string? titulo,
-            string? autor,
-            string? categoria,
-            string? idioma,
-            string? genero)
+    string? titulo,
+    string? autor,
+    string? categoria,
+    string? idioma,
+    string? genero,
+    bool? activo)
         {
             var query = _repo.QueryLibros();
 
@@ -44,8 +45,7 @@ namespace Libreria_API.Services.Implementations
                 var a = autor.Trim();
                 query = query.Where(l =>
                     l.AutoresLibros.Any(al =>
-                        (al.IdAutorNavigation.Nombre + " " + al.IdAutorNavigation.Apellido)
-                            .Contains(a)
+                        (al.IdAutorNavigation.Nombre + " " + al.IdAutorNavigation.Apellido).Contains(a)
                     )
                 );
             }
@@ -78,8 +78,12 @@ namespace Libreria_API.Services.Implementations
                 );
             }
 
-            var libros = query.ToList();
+            if (activo.HasValue)
+            {
+                query = query.Where(l => l.Activo == activo.Value);
+            }
 
+            var libros = query.ToList();
             return libros.Select(MapToDto);
         }
 
@@ -203,12 +207,16 @@ namespace Libreria_API.Services.Implementations
                     .ToList(),
                 Precio = l.Precio,
                 Stock = l.Stock,
+
                 AutoresIds = l.AutoresLibros.Select(al => al.IdAutor).ToList(),
                 CategoriasIds = l.LibrosCategoria.Select(lc => lc.IdCategoria).ToList(),
                 GenerosIds = l.LibrosGeneros.Select(lg => lg.IdGenero).ToList(),
-                IdIdioma = l.IdIdioma
+                IdIdioma = l.IdIdioma,
+
+                Activo = l.Activo
             };
         }
+
 
         private int ResolveEditorialId(LibroCreateUpdateDTO dto)
         {

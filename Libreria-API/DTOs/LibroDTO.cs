@@ -4,7 +4,7 @@ namespace Libreria_API.DTOs
 {
     public class LibroDTO
     {
-        // Código que verá el Front (columna "Código")
+        public bool Activo { get; set; }
         public string Codigo { get; set; }
         public string Titulo { get; set; }
         public string Editorial { get; set; }

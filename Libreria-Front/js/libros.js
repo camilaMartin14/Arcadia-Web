@@ -61,7 +61,7 @@ function buildParams() {
   const idioma = $('#fIdioma').value.trim();
   const genero = $('#fGenero').value.trim();
   
-  const activo = $('#filtroActivos').checked; 
+  const mostrarTodos = $('#filtroActivos').checked; 
 
   if (titulo)    p.append('titulo', titulo);
   if (autor)     p.append('autor', autor);
@@ -69,9 +69,19 @@ function buildParams() {
   if (idioma)    p.append('idioma', idioma);
   if (genero)    p.append('genero', genero);
 
-  p.append('activo', activo ? 'true' : 'false');
+  if (!mostrarTodos) {
+    p.append('activo', 'true');
+  }
 
-  return p.toString();
+  return p.toString();
+}
+
+function esActivo(l) {
+  const v = l.activo ?? l.Activo ?? l.estado ?? l.Estado ?? l.vigente ?? l.Vigente;
+  if (v !== undefined) return v === true || v === 1 || v === 'true' || v === '1' || v === 'Activo';
+  const b = l.baja_logica ?? l.BajaLogica ?? l.baja ?? l.Baja;
+  if (b !== undefined) return !(b === true || b === 1 || b === 'true' || b === '1');
+  return true;
 }
 
 
@@ -87,7 +97,12 @@ const url = `${API_BASE}/api/libro/filtrar?${params}`;
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
 const data = await res.json();
-    ultimoListado = Array.isArray(data) ? data : [];
+    ultimoListado = Array.isArray(data) ? data : [];
+
+    const mostrarTodos = $('#filtroActivos')?.checked ?? false;
+    if (!mostrarTodos) {
+      ultimoListado = ultimoListado.filter(esActivo);
+    }
 
     ultimoListado.sort((a, b) => {
         const idA = a.cod_libro ?? a.CodLibro ?? a.codigo ?? a.Codigo ?? 0;
@@ -120,13 +135,13 @@ function render() {
 }
 
 async function cargarCatalogos() {
-  try {
-    const titulo = document.getElementById("filtroTitulo")?.value || "";
-    const mostrarSoloActivos = document.getElementById("filtroActivos")?.checked ?? false; 
+  try {
+    const titulo = document.getElementById("filtroTitulo")?.value || "";
+    const mostrarTodos = document.getElementById("filtroActivos")?.checked ?? false; 
     
-    const activoParam = mostrarSoloActivos ? "&activo=true" : ""; 
+    const activoParam = mostrarTodos ? "" : "&activo=true"; 
 
-    const url = `${API_BASE}/api/libro/filtrar?titulo=${encodeURIComponent(titulo)}${activoParam}`;
+    const url = `${API_BASE}/api/libro/filtrar?titulo=${encodeURIComponent(titulo)}${activoParam}`;
 
     const endpoints = ["autores", "categorias", "generos", "idiomas", "editoriales"];
     const solicitudes = endpoints.map(ep => fetch(`${API_BASE}/api/catalogos/${ep}`));
@@ -364,6 +379,7 @@ function renderTabla(list) {
         const stock  = l.stock ?? l.Stock ?? 0;
         const autores = (l.autores ?? l.Autores ?? []).join?.(', ') || (l.autor ?? '');
         const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo ?? '';
+        const activo = esActivo(l) ? 'Sí' : 'No';
 
         return `
             <tr data-id="${cod}">
@@ -372,6 +388,7 @@ function renderTabla(list) {
                 <td>${idioma}</td>
                 <td class="text-end">${fmtCurrency.format(precio)}</td>
                 <td class="text-center">${stock}</td>
+                <td class="text-center">${activo}</td>
                 <td class="text-end">
                     <button class="btn btn-sm btn-outline-info" title="Ver" data-action="ver" data-id="${cod}">
                         <i class="bi bi-eye"></i>

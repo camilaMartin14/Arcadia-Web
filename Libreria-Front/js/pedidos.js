@@ -143,12 +143,14 @@ function renderPedidos(pedidos) {
 
     pedidos.forEach(p => {
         const tr = document.createElement("tr");
+        const activo = (p.activo === true || p.activo === 1 || p.estado === 'Activo' || p.bajaLogica === false) ? 'Sí' : 'No';
         tr.innerHTML = `
             <td>${p.nroPedido}</td>
             <td>${new Date(p.fecha).toLocaleString()}</td>
             <td class="d-none">${p.nombreCliente ?? p.codCliente}</td> 
             <td>${p.nombreFormaEnvio ?? p.idFormaEnvio}</td>
             <td>${p.estadoActual ?? 'Sin estado'}</td>
+            <td class="text-center">${activo}</td>
             <td class="text-end">
                 <button class="btn btn-sm btn-outline-info action-sm" onclick="verPedido(${p.nroPedido})">
                     <i class="bi bi-eye"></i>

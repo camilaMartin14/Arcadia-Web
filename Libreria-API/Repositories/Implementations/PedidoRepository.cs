@@ -14,6 +14,22 @@ namespace Libreria_API.Repositories.Implementations
 
         public void Create(Pedido pedido)
         {
+            // Forzar precio desde base y validar stock por cada detalle
+            if (pedido.DetallePedidos != null)
+            {
+                foreach (var detalle in pedido.DetallePedidos)
+                {
+                    var libro = _context.Libros.FirstOrDefault(l => l.CodLibro == detalle.CodLibro);
+                    if (libro == null)
+                        throw new KeyNotFoundException($"Libro no encontrado (código: {detalle.CodLibro})");
+
+                    if (detalle.Cantidad > libro.Stock)
+                        throw new Exception($"La cantidad del libro '{libro.Titulo}' supera el stock disponible.");
+
+                    detalle.Precio = libro.Precio;
+                }
+            }
+
             _context.Pedidos.Add(pedido);
             _context.SaveChanges(); // Genera NroPedido
 
@@ -21,6 +37,10 @@ namespace Libreria_API.Repositories.Implementations
             {
                 detalle.NroPedido = pedido.NroPedido;
             }
+
+            // Guardar detalles actualizados
+            if (pedido.DetallePedidos.Any())
+                _context.SaveChanges();
 
             var primerTracking = new TrackingEnvio
             {

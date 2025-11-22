@@ -512,13 +512,8 @@ async function guardarAlta() {
   
   if (!res.ok) return alert('No se pudo crear el libro');
 
-  const libroNuevo = await res.json(); 
-
-  bsModal.hide(); 
-  
-  ultimoListado.unshift(libroNuevo);
-
-  render(); 
+  bsModal.hide();
+  await buscarLibros();
 }
 
 async function guardarEdicion(id) {

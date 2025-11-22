@@ -1,4 +1,4 @@
-﻿using Libreria_API.DTOs;
+using Libreria_API.DTOs;
 using Libreria_API.Models;
 using Libreria_API.Repositories.Interfaces;
 using Libreria_API.Services.Interfaces;
@@ -18,6 +18,7 @@ namespace Libreria_API.Services.Implementations
                 throw new Exception("La fecha de entrega no puede ser anterior a hoy.");
 
             pedido.Fecha = DateTime.Now;
+            pedido.Activo = true;
 
             _repo.Create(pedido);
         }

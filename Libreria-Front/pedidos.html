@@ -322,9 +322,14 @@
                         <label class="form-label">Fecha entrega</label>
                         <input type="date" id="fechaEntrega" class="form-control" required />
                     </div>
-                    <div class="col-md-4" id="grupoCodCliente">
-                        <label class="form-label">Cliente (código)</label>
-                        <input type="number" id="codCliente" class="form-control" />
+                    <div class="col-md-4" id="grupoSelectorCliente">
+                        <label class="form-label">Cliente</label>
+                        <input type="text" id="clienteNombre" list="datalistClientes" class="form-control" placeholder="Buscar cliente..." />
+                    </div>
+                    <div class="col-md-4" id="grupoCodigoClienteDisplay">
+                        <label class="form-label">Código</label>
+                        <input type="number" id="codClienteDisplay" class="form-control" disabled />
+                        <input type="hidden" id="codCliente" />
                     </div>
                     <div class="col-md-4 d-none" id="grupoNombreCliente">
                         <label class="form-label">Nombre</label>
@@ -354,7 +359,7 @@
                             <table class="table table-sm align-middle table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 25%;">Cód. Libro</th>
+                                        <th style="width: 35%;">Título</th>
                                         <th style="width: 20%;">Cantidad</th>
                                         <th style="width: 25%;">Precio unit.</th>
                                     </tr>
@@ -363,6 +368,8 @@
                                 </tbody>
                             </table>
                         </div>
+                        <datalist id="datalistLibros"></datalist>
+                        <datalist id="datalistClientes"></datalist>
                         <button type="button" id="btnAgregarDetalle" class="btn btn-sm btn-outline-info">
                             <i class="bi bi-plus-circle"></i> Agregar libro
                         </button>

@@ -1,6 +1,8 @@
 import { API_BASE } from "./config.js";
 
 const API_PEDIDOS = `${API_BASE}/api/pedido`;
+const API_LIBROS = `${API_BASE}/api/libro/filtrar`;
+const API_CLIENTES = `${API_BASE}/api/cliente`;
 
 const $ = (sel) => document.querySelector(sel);
 
@@ -10,6 +12,10 @@ let pedidoSeleccionado = null;
 let modalPedidoBS = null;
 let modalEstadoBS = null;
 let botonesAccionesOcultos = [];
+let catalogoLibros = [];
+let mapaTituloALibro = new Map();
+let catalogoClientes = [];
+let mapaNombreCliente = new Map();
 
 function applyTheme(theme) {
   document.body.setAttribute("data-bs-theme", theme);
@@ -109,7 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btnGuardarEstado")?.addEventListener("click", guardarCambioEstado);
   
   // Carga inicial
-  cargarPedidos();
+  Promise.all([cargarCatalogoLibros(), cargarCatalogoClientes()])
+    .then(() => cargarPedidos());
 });
 
 // --- FUNCIONES DE CARGA DE DATOS ---
@@ -139,16 +146,24 @@ function renderPedidos(pedidos) {
     const mostrarSoloActivos = $("#filtroActivos")?.checked;
 
     if (mostrarSoloActivos) {
-        pedidos = pedidos.filter(p => p.activo === true || p.activo === 1);
+        pedidos = pedidos.filter(p => (p.activo === true) || (p.activo === 1) || (String(p.activo).toLowerCase() === 'true'));
     }
 
     const tbody = document.getElementById("tbodyPedidos");
     const sinResultados = document.getElementById("sinResultados");
     tbody.innerHTML = "";
 
+    pedidos = (Array.isArray(pedidos) ? pedidos.slice() : [])
+        .sort((a, b) => {
+            const na = Number(a.nroPedido ?? a.NroPedido ?? 0);
+            const nb = Number(b.nroPedido ?? b.NroPedido ?? 0);
+            return nb - na; // Descendente: más recientes primero
+        });
+
     pedidos.forEach(p => {
         const tr = document.createElement("tr");
-        const activo = (p.activo === true || p.activo === 1 || p.estado === 'Activo' || p.bajaLogica === false) ? 'Sí' : 'No';
+        const activoFlag = (p.activo === true) || (p.activo === 1) || (String(p.activo).toLowerCase() === 'true');
+        const activo = activoFlag ? 'Sí' : 'No';
         const nombreCompleto = [p.nombreCliente, p.apellidoCliente].filter(Boolean).join(' ');
         tr.innerHTML = `
             <td>${p.nroPedido}</td>
@@ -250,11 +265,19 @@ function abrirFormularioNuevo() {
     fechaInput.value = new Date().toISOString().slice(0, 16);
     fechaInput.disabled = true;
   }
+  const hoy = new Date().toISOString().slice(0, 10);
+  const fechaEnt = document.getElementById('fechaEntrega');
+  if (fechaEnt) {
+    fechaEnt.min = hoy;
+    fechaEnt.value = hoy;
+  }
 
-  const grupoCod = document.getElementById('grupoCodCliente');
+  const grupoSel = document.getElementById('grupoSelectorCliente');
+  const grupoCodDisp = document.getElementById('grupoCodigoClienteDisplay');
   const grupoNom = document.getElementById('grupoNombreCliente');
   const grupoApe = document.getElementById('grupoApellidoCliente');
-  if (grupoCod) grupoCod.classList.remove('d-none');
+  if (grupoSel) grupoSel.classList.remove('d-none');
+  if (grupoCodDisp) grupoCodDisp.classList.remove('d-none');
   if (grupoNom) grupoNom.classList.add('d-none');
   if (grupoApe) grupoApe.classList.add('d-none');
   
@@ -278,11 +301,16 @@ function abrirFormularioEdicion(pedido, soloLectura) {
   document.getElementById("fecha").disabled = true;
   // Ajuste de formato fecha para input date
   $("#fechaEntrega").value = pedido.fechaEntrega ? pedido.fechaEntrega.split('T')[0] : "";
+  const hoy = new Date().toISOString().slice(0, 10);
+  const fechaEnt = document.getElementById('fechaEntrega');
+  if (fechaEnt) fechaEnt.min = hoy;
   const inputCliente = document.getElementById("codCliente");
   if (soloLectura) {
-    const grupoCod = document.getElementById('grupoCodCliente');
+    const grupoCod = document.getElementById('grupoCodigoClienteDisplay');
     const grupoNom = document.getElementById('grupoNombreCliente');
     const grupoApe = document.getElementById('grupoApellidoCliente');
+    const grupoSel = document.getElementById('grupoSelectorCliente');
+    if (grupoSel) grupoSel.classList.add('d-none');
     if (grupoCod) grupoCod.classList.add('d-none');
     if (grupoNom) grupoNom.classList.remove('d-none');
     if (grupoApe) grupoApe.classList.remove('d-none');
@@ -293,13 +321,18 @@ function abrirFormularioEdicion(pedido, soloLectura) {
     if (nomInput) nomInput.value = nombre;
     if (apeInput) apeInput.value = apellido;
   } else {
-    const grupoCod = document.getElementById('grupoCodCliente');
+    const grupoSel = document.getElementById('grupoSelectorCliente');
+    const grupoCod = document.getElementById('grupoCodigoClienteDisplay');
     const grupoNom = document.getElementById('grupoNombreCliente');
     const grupoApe = document.getElementById('grupoApellidoCliente');
+    if (grupoSel) grupoSel.classList.remove('d-none');
     if (grupoCod) grupoCod.classList.remove('d-none');
     if (grupoNom) grupoNom.classList.add('d-none');
     if (grupoApe) grupoApe.classList.add('d-none');
     $("#codCliente").value = pedido.codCliente ?? "";
+    $("#codClienteDisplay").value = pedido.codCliente ?? "";
+    const nombreComp = `${pedido.apellidoCliente ?? pedido.ApellidoCliente ?? ''} ${pedido.nombreCliente ?? pedido.NombreCliente ?? ''}`.trim();
+    $("#clienteNombre").value = nombreComp;
   }
   $("#idFormaEnvio").value = pedido.idFormaEnvio ?? "";
   $("#instrucciones").value = pedido.instruccionesAdicionales ?? "";
@@ -310,16 +343,56 @@ function abrirFormularioEdicion(pedido, soloLectura) {
     tbodyDetalles.innerHTML = "";
     (pedido.detalles || []).forEach((det) => {
       const tr = document.createElement("tr");
-      const colsBase = `
-        <td><input type="number" class="form-control form-control-sm det-codLibro" value="${det.codLibro}" ${soloLectura ? "disabled" : ""}></td>
-        <td><input type="number" class="form-control form-control-sm det-cantidad" value="${det.cantidad}" ${soloLectura ? "disabled" : ""}></td>
-        <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" value="${det.precio}" ${soloLectura ? "disabled" : ""}></td>`;
-      const colAccion = soloLectura ? "" : `<td><button type="button" class="btn btn-sm btn-outline-danger btnQuitarDetalle"><i class=\"bi bi-x\"></i></button></td>`;
-      tr.innerHTML = colsBase + colAccion;
-      
-      if (!soloLectura) {
+      const libroSel = catalogoLibros.find(l => String(l.cod) === String(det.codLibro));
+      const tituloSel = libroSel ? libroSel.titulo : '';
+      if (soloLectura) {
+        tr.innerHTML = `
+          <td>
+            <input type="text" class="form-control form-control-sm det-titulo" value="${tituloSel}" disabled>
+            <input type="hidden" class="det-codLibro" value="${det.codLibro}">
+          </td>
+          <td><input type="number" class="form-control form-control-sm det-cantidad" value="${det.cantidad}" disabled></td>
+          <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" value="${det.precio}" disabled></td>`;
+      } else {
+        tr.innerHTML = `
+          <td>
+            <input type="text" class="form-control form-control-sm det-titulo" list="datalistLibros" value="${tituloSel}" placeholder="Buscar título..." required>
+            <input type="hidden" class="det-codLibro" value="${det.codLibro}">
+          </td>
+          <td><input type="number" class="form-control form-control-sm det-cantidad" min="1" value="${det.cantidad}" required></td>
+          <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" value="${det.precio}" disabled></td>
+          <td><button type="button" class="btn btn-sm btn-outline-danger btnQuitarDetalle"><i class=\"bi bi-x\"></i></button></td>`;
+        const inpTitulo = tr.querySelector('.det-titulo');
+        const inpCod = tr.querySelector('.det-codLibro');
+        const inpPrecio = tr.querySelector('.det-precio');
+        const inpCant = tr.querySelector('.det-cantidad');
+        const aplicarLibro = () => {
+          const val = (inpTitulo.value || '').toLowerCase();
+          const libro = mapaTituloALibro.get(val);
+          if (!libro) {
+            inpCod.value = '';
+            inpPrecio.value = '';
+            inpCant.max = '';
+            return;
+          }
+          inpCod.value = String(libro.cod);
+          inpPrecio.value = String(libro.precio);
+          inpCant.max = String(Math.max(0, libro.stock));
+        };
+        inpTitulo.addEventListener('change', aplicarLibro);
+        inpTitulo.addEventListener('input', aplicarLibro);
+        inpCant.addEventListener('input', () => {
+          if (inpCant.max) {
+            const max = Number(inpCant.max);
+            if (Number(inpCant.value) > max) {
+              inpCant.value = String(max);
+              alert('La cantidad no puede superar el stock disponible.');
+            }
+          }
+        });
         tr.querySelector(".btnQuitarDetalle").addEventListener("click", () => tr.remove());
       }
+      
       tbodyDetalles.appendChild(tr);
     });
     limpiarFilasVaciasDetalles();
@@ -373,6 +446,12 @@ function limpiarFormularioPedido() {
   const apeInput = document.getElementById('apellidoCliente');
   if (nomInput) nomInput.value = "";
   if (apeInput) apeInput.value = "";
+  const nombreSel = document.getElementById('clienteNombre');
+  const codDisp = document.getElementById('codClienteDisplay');
+  const codHidden = document.getElementById('codCliente');
+  if (nombreSel) nombreSel.value = "";
+  if (codDisp) codDisp.value = "";
+  if (codHidden) codHidden.value = "";
 }
 
 function agregarFilaDetalle() {
@@ -381,11 +460,42 @@ function agregarFilaDetalle() {
 
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input type="number" class="form-control form-control-sm det-codLibro" required></td>
+    <td>
+      <input type="text" class="form-control form-control-sm det-titulo" list="datalistLibros" placeholder="Buscar título..." required>
+      <input type="hidden" class="det-codLibro">
+    </td>
     <td><input type="number" class="form-control form-control-sm det-cantidad" min="1" value="1" required></td>
-    <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" required></td>
+    <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" disabled></td>
     <td><button type="button" class="btn btn-sm btn-outline-danger btnQuitarDetalle"><i class="bi bi-x"></i></button></td>
   `;
+  const inpTitulo = tr.querySelector('.det-titulo');
+  const inpCod = tr.querySelector('.det-codLibro');
+  const inpPrecio = tr.querySelector('.det-precio');
+  const inpCant = tr.querySelector('.det-cantidad');
+  const aplicarLibro = () => {
+    const val = (inpTitulo.value || '').toLowerCase();
+    const libro = mapaTituloALibro.get(val);
+    if (!libro) {
+      inpCod.value = '';
+      inpPrecio.value = '';
+      inpCant.max = '';
+      return;
+    }
+    inpCod.value = String(libro.cod);
+    inpPrecio.value = String(libro.precio);
+    inpCant.max = String(Math.max(0, libro.stock));
+  };
+  inpTitulo.addEventListener('change', aplicarLibro);
+  inpTitulo.addEventListener('input', aplicarLibro);
+  inpCant.addEventListener('input', () => {
+    if (inpCant.max) {
+      const max = Number(inpCant.max);
+      if (Number(inpCant.value) > max) {
+        inpCant.value = String(max);
+        alert('La cantidad no puede superar el stock disponible.');
+      }
+    }
+  });
   tr.querySelector(".btnQuitarDetalle").addEventListener("click", () => tr.remove());
   tbody.appendChild(tr);
 }
@@ -398,12 +508,34 @@ async function onSubmitPedido(e) {
   // Si estamos en modo ver, no hacemos submit (aunque el botón está oculto)
   if (modoFormulario === "ver") return;
 
-  const pedidoBody = armarBodyPedido();
+  const hoyStr = new Date().toISOString().slice(0,10);
+  const fechaEntregaVal = $("#fechaEntrega").value;
+  if (fechaEntregaVal && fechaEntregaVal < hoyStr) {
+    alert("La fecha de entrega no puede ser anterior a hoy.");
+    return;
+  }
+  let pedidoBody;
+  try {
+    pedidoBody = armarBodyPedido();
+  } catch (err) {
+    alert(err.message);
+    return;
+  }
 
   // Validación básica
   if (!pedidoBody.codCliente || !pedidoBody.fechaEntrega) {
       alert("Por favor complete los campos obligatorios.");
       return;
+  }
+  if (!pedidoBody.detalles || pedidoBody.detalles.length === 0) {
+      alert("Agregue al menos un libro al pedido.");
+      return;
+  }
+  for (const det of pedidoBody.detalles) {
+      if (!det.codLibro || !det.cantidad) {
+          alert("Los campos de libro no pueden estar en blanco.");
+          return;
+      }
   }
 
   try {
@@ -453,16 +585,21 @@ function armarBodyPedido() {
   document.querySelectorAll("#tbodyDetalles tr").forEach((tr) => {
     const codLibro = tr.querySelector(".det-codLibro").value;
     const cantidad = tr.querySelector(".det-cantidad").value;
-    const precio = tr.querySelector(".det-precio").value;
-
-    if (codLibro && cantidad && precio) {
-      detalles.push({
-        codLibro: parseInt(codLibro),
-        cantidad: parseInt(cantidad),
-        precio: parseFloat(precio),
-        nroPedido: nroPedido ? parseInt(nroPedido) : 0,
-      });
+    const titulo = tr.querySelector('.det-titulo')?.value || '';
+    if (!titulo || !codLibro || !cantidad) {
+      return;
     }
+    const libro = catalogoLibros.find(l => String(l.cod) === String(codLibro));
+    const precio = libro ? Number(libro.precio) : 0;
+    if (libro && Number(cantidad) > Number(libro.stock)) {
+      throw new Error(`La cantidad de "${libro.titulo}" supera el stock disponible.`);
+    }
+    detalles.push({
+      codLibro: parseInt(codLibro),
+      cantidad: parseInt(cantidad),
+      precio: parseFloat(precio),
+      nroPedido: nroPedido ? parseInt(nroPedido) : 0,
+    });
   });
 
   const body = {
@@ -559,4 +696,69 @@ function limpiarFilasVaciasDetalles() {
     const vacio = (!cod || cod === "0") && (!cant || cant === "0") && (!precio || precio === "0");
     if (vacio) tr.remove();
   });
+}
+async function cargarCatalogoLibros() {
+  try {
+    const resp = await fetch(`${API_LIBROS}?activo=true`);
+    if (!resp.ok) throw new Error('No se pudo cargar catálogo de libros');
+    const data = await resp.json();
+    catalogoLibros = Array.isArray(data) ? data.map(l => ({
+      cod: Number(l.codigo ?? l.Codigo ?? l.codLibro ?? l.CodLibro ?? 0),
+      titulo: String(l.titulo ?? l.Titulo ?? ''),
+      precio: Number(l.precio ?? l.Precio ?? 0),
+      stock: Number(l.stock ?? l.Stock ?? 0)
+    })) : [];
+    mapaTituloALibro = new Map();
+    const dl = document.getElementById('datalistLibros');
+    if (dl) {
+      dl.innerHTML = '';
+      catalogoLibros.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.titulo;
+        dl.appendChild(opt);
+        const key = item.titulo.toLowerCase();
+        if (!mapaTituloALibro.has(key)) {
+          mapaTituloALibro.set(key, item);
+        }
+      });
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+async function cargarCatalogoClientes() {
+  try {
+    const resp = await fetch(`${API_CLIENTES}`);
+    if (!resp.ok) throw new Error('No se pudo cargar catálogo de clientes');
+    const data = await resp.json();
+    catalogoClientes = Array.isArray(data) ? data.map(c => ({
+      cod: Number(c.codigo ?? c.Codigo ?? 0),
+      nombre: String(c.nombre ?? c.Nombre ?? '')
+    })) : [];
+    mapaNombreCliente = new Map();
+    const dl = document.getElementById('datalistClientes');
+    if (dl) {
+      dl.innerHTML = '';
+      catalogoClientes.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.nombre;
+        dl.appendChild(opt);
+        const key = item.nombre.toLowerCase();
+        if (!mapaNombreCliente.has(key)) mapaNombreCliente.set(key, item);
+      });
+    }
+    const inp = document.getElementById('clienteNombre');
+    const codDisp = document.getElementById('codClienteDisplay');
+    const codHidden = document.getElementById('codCliente');
+    const aplicar = () => {
+      const val = (inp?.value || '').toLowerCase();
+      const cli = mapaNombreCliente.get(val);
+      if (codDisp) codDisp.value = cli ? String(cli.cod) : '';
+      if (codHidden) codHidden.value = cli ? String(cli.cod) : '';
+    };
+    inp?.addEventListener('input', aplicar);
+    inp?.addEventListener('change', aplicar);
+  } catch (e) {
+    console.error(e);
+  }
 }

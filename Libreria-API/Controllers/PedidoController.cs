@@ -72,23 +72,7 @@ namespace Libreria_API.Controllers
             }
         }
 
-        [HttpDelete("{nroPedido}")]
-        public IActionResult Delete(int nroPedido)
-        {
-            try
-            {
-                _service.Delete(nroPedido);
-                return NoContent();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        
 
 
         [HttpGet("{nroPedido}/estado")]

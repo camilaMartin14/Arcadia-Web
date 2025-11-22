@@ -481,12 +481,6 @@ async function guardarEdicion(id) {
   bsModal.hide(); await buscarLibros();
 }
 
-async function eliminarLibro(id) {
-  if (!confirm('¿Eliminar libro?')) return;
-  const res = await fetch(`${API_BASE}/api/libro/${id}`, { method: 'DELETE' });
-  if (!res.ok) return alert('No se pudo eliminar el libro');
-  bsModal.hide(); await buscarLibros();
-}
 
 function tomarPayload() {
   const idiomaSeleccionado = obtenerValoresSelect('#mIdioma')[0] ?? 0;

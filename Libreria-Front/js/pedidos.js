@@ -155,9 +155,6 @@ function renderPedidos(pedidos) {
                 <button class="btn btn-sm btn-outline-secondary action-sm" title="Cambiar estado" onclick="cambiarEstado(${p.nroPedido})">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger action-sm" title="Eliminar" onclick="eliminarPedido(${p.nroPedido})">
-                    <i class="bi bi-trash"></i>
-                </button>
             </td>`;
         tbody.appendChild(tr);
     });
@@ -430,28 +427,3 @@ async function guardarCambioEstado() {
     alert("Ocurrió un error al cambiar el estado.");
   }
 }
-
-// --- LÓGICA DE ELIMINAR ---
-
-window.eliminarPedido = async function (nroPedido) {
-  const confirma = confirm(
-    `¿Está seguro que desea eliminar el pedido N° ${nroPedido}?`
-  );
-  if (!confirma) return;
-
-  try {
-    const resp = await fetch(`${API_PEDIDOS}/${nroPedido}`, {
-      method: "DELETE",
-    });
-
-    if (resp.status === 204 || resp.ok) {
-      alert("Pedido eliminado correctamente.");
-      cargarPedidos();
-    } else {
-      throw new Error("No se pudo eliminar el pedido.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Ocurrió un error al eliminar el pedido.");
-  }
-};

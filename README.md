@@ -60,7 +60,7 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
 
 🗑️ Fase 2: Implementación de la Baja Lógica
   ✅Eliminar completamente el método de delete de Pedidos.
-  Implementar la baja lógica de los pedidos (usando un campo como activo o estado).
+  ✅Implementar la baja lógica de los pedidos (usando un campo como activo o estado).
   ✅Eliminar el método de delete de Libros.
   ✅Implementar la baja lógica de Libros (usando los campos activo/inactivo creados en el punto 2).
 
@@ -100,4 +100,4 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
 
 ✅ESTETICO (2): Corregir la sección "Nuestras sucursales" (quitar la animación al cambiar el tema y ampliar el título de la página).
 
-URGENTE: Solucionar filtro de activos/inactivos de libros
+URGENTE: ✅ Solucionar filtro de activos/inactivos de libros

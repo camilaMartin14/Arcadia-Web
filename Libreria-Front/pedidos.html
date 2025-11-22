@@ -316,15 +316,23 @@
 
                     <div class="col-md-4">
                         <label class="form-label">Fecha</label>
-                        <input type="datetime-local" id="fecha" class="form-control" required />
+                        <input type="datetime-local" id="fecha" class="form-control" disabled />
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Fecha entrega</label>
                         <input type="date" id="fechaEntrega" class="form-control" required />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" id="grupoCodCliente">
                         <label class="form-label">Cliente (código)</label>
-                        <input type="number" id="codCliente" class="form-control" required />
+                        <input type="number" id="codCliente" class="form-control" />
+                    </div>
+                    <div class="col-md-4 d-none" id="grupoNombreCliente">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" id="nombreCliente" class="form-control" />
+                    </div>
+                    <div class="col-md-4 d-none" id="grupoApellidoCliente">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" id="apellidoCliente" class="form-control" />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Forma de envío</label>
@@ -349,7 +357,6 @@
                                         <th style="width: 25%;">Cód. Libro</th>
                                         <th style="width: 20%;">Cantidad</th>
                                         <th style="width: 25%;">Precio unit.</th>
-                                        <th style="width: 10%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyDetalles">

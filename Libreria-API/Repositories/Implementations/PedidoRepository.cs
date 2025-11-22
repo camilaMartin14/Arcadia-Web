@@ -61,6 +61,7 @@ namespace Libreria_API.Repositories.Implementations
                     InstruccionesAdicionales = p.InstruccionesAdicionales,
                     CodCliente = p.CodCliente,
                     NombreCliente = p.CodClienteNavigation.Nombre,
+                    ApellidoCliente = p.CodClienteNavigation.Apellido,
                     IdFormaEnvio = p.IdFormaEnvio,
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
                     EstadoActual = p.TrackingEnvios
@@ -97,6 +98,7 @@ namespace Libreria_API.Repositories.Implementations
                     InstruccionesAdicionales = p.InstruccionesAdicionales,
                     CodCliente = p.CodCliente,
                     NombreCliente = p.CodClienteNavigation.Nombre,
+                    ApellidoCliente = p.CodClienteNavigation.Apellido,
                     IdFormaEnvio = p.IdFormaEnvio,
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
                     EstadoActual = p.TrackingEnvios
@@ -152,7 +154,6 @@ namespace Libreria_API.Repositories.Implementations
             if (existente == null)
                 throw new KeyNotFoundException("Pedido no encontrado");
 
-            existente.Fecha = pedido.Fecha;
             existente.FechaEntrega = pedido.FechaEntrega;
             existente.InstruccionesAdicionales = pedido.InstruccionesAdicionales;
             existente.CodCliente = pedido.CodCliente;

@@ -10,8 +10,17 @@ namespace Libreria_API.Services.Implementations
         private readonly IPedidoRepository _repo;
         public PedidoService(IPedidoRepository repo) => _repo = repo;
 
-        public void Create(Pedido pedido) => _repo.Create(pedido);
+        public void Create(Pedido pedido)
+        {
+            var hoy = DateOnly.FromDateTime(DateTime.Today);
 
+            if (pedido.FechaEntrega < hoy)
+                throw new Exception("La fecha de entrega no puede ser anterior a hoy.");
+
+            pedido.Fecha = DateTime.Now;
+
+            _repo.Create(pedido);
+        }
         public List<PedidoDTORead> GetAll(DateTime? fecha, int? codigoCliente)
             => _repo.GetAll(fecha, codigoCliente);
 

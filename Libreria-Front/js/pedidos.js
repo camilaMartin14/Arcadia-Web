@@ -9,6 +9,7 @@ let pedidoSeleccionado = null;
 
 let modalPedidoBS = null;
 let modalEstadoBS = null;
+let botonesAccionesOcultos = [];
 
 function applyTheme(theme) {
   document.body.setAttribute("data-bs-theme", theme);
@@ -54,6 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalPedidoEl = document.getElementById('modalPedido');
   if (modalPedidoEl) {
     modalPedidoBS = new bootstrap.Modal(modalPedidoEl);
+    modalPedidoEl.addEventListener('hidden.bs.modal', () => {
+      botonesAccionesOcultos.forEach(btn => btn.classList.remove('d-none'));
+      botonesAccionesOcultos = [];
+    });
   }
 
   const modalEstadoEl = document.getElementById('modalEstado');
@@ -144,10 +149,11 @@ function renderPedidos(pedidos) {
     pedidos.forEach(p => {
         const tr = document.createElement("tr");
         const activo = (p.activo === true || p.activo === 1 || p.estado === 'Activo' || p.bajaLogica === false) ? 'Sí' : 'No';
+        const nombreCompleto = [p.nombreCliente, p.apellidoCliente].filter(Boolean).join(' ');
         tr.innerHTML = `
             <td>${p.nroPedido}</td>
             <td>${new Date(p.fecha).toLocaleString()}</td>
-            <td class="d-none">${p.nombreCliente ?? p.codCliente}</td> 
+            <td class="d-none">${nombreCompleto || p.codCliente}</td> 
             <td>${p.nombreFormaEnvio ?? p.idFormaEnvio}</td>
             <td>${p.estadoActual ?? 'Sin estado'}</td>
             <td class="text-center">${activo}</td>
@@ -234,9 +240,23 @@ function abrirFormularioNuevo() {
   
   limpiarFormularioPedido();
   toggleSoloLectura(false); // Habilitar campos
+  const thAcc = document.getElementById('thAccionesDetalle');
+  if (thAcc) thAcc.classList.remove('d-none');
 
   const titulo = $("#tituloModalPedido");
   if (titulo) titulo.textContent = "Nuevo pedido";
+  const fechaInput = document.getElementById("fecha");
+  if (fechaInput) {
+    fechaInput.value = new Date().toISOString().slice(0, 16);
+    fechaInput.disabled = true;
+  }
+
+  const grupoCod = document.getElementById('grupoCodCliente');
+  const grupoNom = document.getElementById('grupoNombreCliente');
+  const grupoApe = document.getElementById('grupoApellidoCliente');
+  if (grupoCod) grupoCod.classList.remove('d-none');
+  if (grupoNom) grupoNom.classList.add('d-none');
+  if (grupoApe) grupoApe.classList.add('d-none');
   
   modalPedidoBS.show();
 }
@@ -255,9 +275,32 @@ function abrirFormularioEdicion(pedido, soloLectura) {
   $("#nroPedido").value = pedido.nroPedido;
   // Ajuste de formato fecha para input datetime-local
   $("#fecha").value = pedido.fecha ? new Date(pedido.fecha).toISOString().slice(0, 16) : "";
+  document.getElementById("fecha").disabled = true;
   // Ajuste de formato fecha para input date
   $("#fechaEntrega").value = pedido.fechaEntrega ? pedido.fechaEntrega.split('T')[0] : "";
-  $("#codCliente").value = pedido.codCliente ?? "";
+  const inputCliente = document.getElementById("codCliente");
+  if (soloLectura) {
+    const grupoCod = document.getElementById('grupoCodCliente');
+    const grupoNom = document.getElementById('grupoNombreCliente');
+    const grupoApe = document.getElementById('grupoApellidoCliente');
+    if (grupoCod) grupoCod.classList.add('d-none');
+    if (grupoNom) grupoNom.classList.remove('d-none');
+    if (grupoApe) grupoApe.classList.remove('d-none');
+    const nombre = pedido.nombreCliente ?? pedido.NombreCliente ?? "";
+    const apellido = pedido.apellidoCliente ?? pedido.ApellidoCliente ?? "";
+    const nomInput = document.getElementById('nombreCliente');
+    const apeInput = document.getElementById('apellidoCliente');
+    if (nomInput) nomInput.value = nombre;
+    if (apeInput) apeInput.value = apellido;
+  } else {
+    const grupoCod = document.getElementById('grupoCodCliente');
+    const grupoNom = document.getElementById('grupoNombreCliente');
+    const grupoApe = document.getElementById('grupoApellidoCliente');
+    if (grupoCod) grupoCod.classList.remove('d-none');
+    if (grupoNom) grupoNom.classList.add('d-none');
+    if (grupoApe) grupoApe.classList.add('d-none');
+    $("#codCliente").value = pedido.codCliente ?? "";
+  }
   $("#idFormaEnvio").value = pedido.idFormaEnvio ?? "";
   $("#instrucciones").value = pedido.instruccionesAdicionales ?? "";
 
@@ -267,22 +310,37 @@ function abrirFormularioEdicion(pedido, soloLectura) {
     tbodyDetalles.innerHTML = "";
     (pedido.detalles || []).forEach((det) => {
       const tr = document.createElement("tr");
-      tr.innerHTML = `
+      const colsBase = `
         <td><input type="number" class="form-control form-control-sm det-codLibro" value="${det.codLibro}" ${soloLectura ? "disabled" : ""}></td>
         <td><input type="number" class="form-control form-control-sm det-cantidad" value="${det.cantidad}" ${soloLectura ? "disabled" : ""}></td>
-        <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" value="${det.precio}" ${soloLectura ? "disabled" : ""}></td>
-        <td>${soloLectura ? "" : '<button type="button" class="btn btn-sm btn-outline-danger btnQuitarDetalle"><i class="bi bi-x"></i></button>'}</td>
-      `;
+        <td><input type="number" step="0.01" class="form-control form-control-sm det-precio" value="${det.precio}" ${soloLectura ? "disabled" : ""}></td>`;
+      const colAccion = soloLectura ? "" : `<td><button type="button" class="btn btn-sm btn-outline-danger btnQuitarDetalle"><i class=\"bi bi-x\"></i></button></td>`;
+      tr.innerHTML = colsBase + colAccion;
       
       if (!soloLectura) {
         tr.querySelector(".btnQuitarDetalle").addEventListener("click", () => tr.remove());
       }
       tbodyDetalles.appendChild(tr);
     });
+    limpiarFilasVaciasDetalles();
   }
 
   // 4. Configurar estado de campos (Lectura vs Edición)
   toggleSoloLectura(soloLectura);
+  const thAcc = document.getElementById('thAccionesDetalle');
+  if (thAcc) thAcc.classList.toggle('d-none', soloLectura);
+
+  if (soloLectura) {
+    const btnEditar = document.querySelector(`button[onclick="editarPedido(${pedido.nroPedido})"]`);
+    const btnEstado = document.querySelector(`button[onclick="cambiarEstado(${pedido.nroPedido})"]`);
+    const btnEliminar = document.querySelector(`button[onclick="eliminarPedido(${pedido.nroPedido})"]`);
+    [btnEditar, btnEstado, btnEliminar].forEach(btn => {
+      if (btn && !btn.classList.contains('d-none')) {
+        btn.classList.add('d-none');
+        botonesAccionesOcultos.push(btn);
+      }
+    });
+  }
 
   modalPedidoBS.show();
 }
@@ -311,6 +369,10 @@ function limpiarFormularioPedido() {
   $("#formPedido")?.reset();
   $("#tbodyDetalles").innerHTML = "";
   $("#nroPedido").value = "";
+  const nomInput = document.getElementById('nombreCliente');
+  const apeInput = document.getElementById('apellidoCliente');
+  if (nomInput) nomInput.value = "";
+  if (apeInput) apeInput.value = "";
 }
 
 function agregarFilaDetalle() {
@@ -339,7 +401,7 @@ async function onSubmitPedido(e) {
   const pedidoBody = armarBodyPedido();
 
   // Validación básica
-  if (!pedidoBody.codCliente || !pedidoBody.fecha) {
+  if (!pedidoBody.codCliente || !pedidoBody.fechaEntrega) {
       alert("Por favor complete los campos obligatorios.");
       return;
   }
@@ -382,7 +444,6 @@ async function onSubmitPedido(e) {
 
 function armarBodyPedido() {
   const nroPedido = $("#nroPedido").value;
-  const fecha = $("#fecha").value;
   const fechaEntrega = $("#fechaEntrega").value;
   const codCliente = $("#codCliente").value;
   const idFormaEnvio = $("#idFormaEnvio").value;
@@ -404,15 +465,16 @@ function armarBodyPedido() {
     }
   });
 
-  return {
+  const body = {
     nroPedido: nroPedido ? parseInt(nroPedido) : 0,
-    fecha: fecha,
     fechaEntrega: fechaEntrega,
     instruccionesAdicionales: instrucciones,
     codCliente: parseInt(codCliente),
     idFormaEnvio: parseInt(idFormaEnvio),
     detalles: detalles,
   };
+
+  return body;
 }
 
 // --- LÓGICA DE CAMBIO DE ESTADO ---
@@ -485,4 +547,16 @@ async function eliminarPedido(nroPedido) {
         console.error('Error en la baja lógica del pedido:', err);
         alert(`Ocurrió un error al dar de baja el pedido: ${err.message}`);
     }
+}
+
+function limpiarFilasVaciasDetalles() {
+  const tbody = document.getElementById("tbodyDetalles");
+  if (!tbody) return;
+  Array.from(tbody.querySelectorAll("tr")).forEach((tr) => {
+    const cod = tr.querySelector(".det-codLibro")?.value;
+    const cant = tr.querySelector(".det-cantidad")?.value;
+    const precio = tr.querySelector(".det-precio")?.value;
+    const vacio = (!cod || cod === "0") && (!cant || cant === "0") && (!precio || precio === "0");
+    if (vacio) tr.remove();
+  });
 }

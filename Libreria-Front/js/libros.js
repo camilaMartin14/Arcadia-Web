@@ -418,9 +418,9 @@ function abrirModal(modo, libro = null) {
   }
 
   const soloLectura = (modo === 'detalle');
-  ['#mTitulo','#mPrecio','#mStock','#mIdioma', '#mEditorial'] 
-    .forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
-  ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
+  ['#mTitulo','#mPrecio','#mStock','#mIdioma','#mEditorial','#mIsbn','#mDescripcion','#mFechaLanzamiento'] 
+		.forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
+  ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
 
   const btnGuardar = $('#btnGuardar');
   if (btnGuardar) {
@@ -439,11 +439,46 @@ const mDescripcion = $('#mDescripcion');
 if (mDescripcion) mDescripcion.value = libro?.descripcion ?? libro?.Descripcion ?? '';
 
 const mFecha = $('#mFechaLanzamiento');
-if (mFecha) mFecha.value = libro?.fecha_lanzamiento ?? libro?.FechaLanzamiento ?? '';
+if (mFecha) {
+  const rawFecha = libro?.fechaLanzamiento ?? libro?.fecha_lanzamiento ?? libro?.FechaLanzamiento ?? '';
+  const val = typeof rawFecha === 'string' ? rawFecha.split('T')[0] : '';
+  mFecha.value = val;
+}
+
+  const listaAutores = $('#listaAutores');
+  const listaCategorias = $('#listaCategorias');
+  const listaGeneros = $('#listaGeneros');
+  if (listaAutores && listaAutores.children.length === 0) renderDropdown('autores', catalogos.autores);
+  if (listaCategorias && listaCategorias.children.length === 0) renderDropdown('categorias', catalogos.categorias);
+  if (listaGeneros && listaGeneros.children.length === 0) renderDropdown('generos', catalogos.generos);
 
   setSeleccionDesdeLibro('autores', obtenerIdsDesdeLibro(libro, 'autoresIds'));
-  setSeleccionDesdeLibro('categorias', obtenerIdsDesdeLibro(libro, 'categoriasIds'));
-  setSeleccionDesdeLibro('generos', obtenerIdsDesdeLibro(libro, 'generosIds'));
+  const catsIds = obtenerIdsDesdeLibro(libro, 'categoriasIds');
+  if (catsIds.length) setSeleccionDesdeLibro('categorias', catsIds);
+  else {
+    const nombresCats = libro?.categorias ?? libro?.Categorias ?? [];
+    const idsCats = obtenerIdsPorNombre('categorias', nombresCats);
+    setSeleccionDesdeLibro('categorias', idsCats);
+  }
+  const gensIds = obtenerIdsDesdeLibro(libro, 'generosIds');
+  if (gensIds.length) setSeleccionDesdeLibro('generos', gensIds);
+  else {
+    const nombresGens = libro?.generos ?? libro?.Generos ?? [];
+    const idsGens = obtenerIdsPorNombre('generos', nombresGens);
+    setSeleccionDesdeLibro('generos', idsGens);
+  }
+
+  if (soloLectura) {
+    if ((selecciones.categorias || []).length === 0) {
+      setResumenNombres('categorias', libro?.categorias ?? libro?.Categorias ?? []);
+    }
+    if ((selecciones.generos || []).length === 0) {
+      setResumenNombres('generos', libro?.generos ?? libro?.Generos ?? []);
+    }
+    if ((selecciones.autores || []).length === 0) {
+      setResumenNombres('autores', libro?.autores ?? libro?.Autores ?? []);
+    }
+  }
   const idiomaSeleccionado = libro?.idIdioma ?? libro?.IdIdioma ?? '';
   setSelectValues('#mIdioma', idiomaSeleccionado ? [idiomaSeleccionado] : []);
 const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
@@ -464,12 +499,18 @@ const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
 
 
 async function guardarAlta() {
-  const payload = tomarPayload();
-  const res = await fetch(`${API_BASE}/api/libro`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
-  });
-  
-  if (!res.ok) return alert('No se pudo crear el libro');
+  const fechaVal = $('#mFechaLanzamiento')?.value || '';
+  const hoy = new Date().toISOString().slice(0, 10);
+  if (fechaVal && fechaVal > hoy) {
+    alert('La fecha de lanzamiento no puede ser posterior a hoy.');
+    return;
+  }
+  const payload = tomarPayload();
+  const res = await fetch(`${API_BASE}/api/libro`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+  });
+  
+  if (!res.ok) return alert('No se pudo crear el libro');
 
   const libroNuevo = await res.json(); 
 
@@ -481,11 +522,18 @@ async function guardarAlta() {
 }
 
 async function guardarEdicion(id) {
+  const fechaVal = $('#mFechaLanzamiento')?.value || '';
+  const hoy = new Date().toISOString().slice(0, 10);
+  if (fechaVal && fechaVal > hoy) {
+    alert('La fecha de lanzamiento no puede ser posterior a hoy.');
+    return;
+  }
   const payload = tomarPayload();
   const res = await fetch(`${API_BASE}/api/libro/${id}`, {
     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
   });
   if (!res.ok) return alert('No se pudo actualizar el libro');
+  alert('Editado correctamente.');
   bsModal.hide(); await buscarLibros();
 }
 
@@ -588,6 +636,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   buscarLibros();
+  const mFecha = document.getElementById('mFechaLanzamiento');
+  if (mFecha) {
+    mFecha.setAttribute('max', new Date().toISOString().slice(0, 10));
+  }
 });
 
 
@@ -623,7 +675,36 @@ function extractIdAndName(tipo, item) {
             nombre = item.nombre ?? item.Nombre ?? '';
     }
     return { id: String(id), nombre: nombre };
-} 
+}
+
+function obtenerIdsPorNombre(tipo, nombres) {
+  const lista = catalogos[tipo] || [];
+  const target = new Set((nombres || []).map(n => String(n).trim().toLowerCase()));
+  const ids = [];
+  lista.forEach((item) => {
+    const { id, nombre } = extractIdAndName(tipo, item);
+    const match = String(nombre).trim().toLowerCase();
+    if (target.has(match)) ids.push(id);
+  });
+  return ids;
+}
+
+function setResumenNombres(tipo, nombres) {
+  const resumen = $(`#resumen${capitalizar(tipo)}`);
+  const boton = document.getElementById(`dropdown${capitalizar(tipo)}`);
+  const textoSpan = boton?.querySelector('.dropdown-text');
+  const texto = Array.isArray(nombres) && nombres.length > 0
+    ? nombres.join(', ')
+    : obtenerPlaceholder(tipo);
+  if (resumen) resumen.textContent = texto;
+  if (textoSpan) {
+    textoSpan.textContent = texto;
+    textoSpan.classList.toggle('text-muted', !(Array.isArray(nombres) && nombres.length > 0));
+  } else if (boton) {
+    boton.textContent = texto;
+    boton.classList.toggle('text-muted', !(Array.isArray(nombres) && nombres.length > 0));
+  }
+}
 
 function idValido(id) {
     if (id === null || id === undefined) return false;
@@ -669,14 +750,26 @@ document.addEventListener('click', async (e) => {
     const id = target.dataset.id;
 
     if (action === 'ver' || action === 'editar') {
-        const libro = ultimoListado.find(l => {
-            const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
-            return String(cod) === String(id);
-        });
-        if (libro) {
-            abrirModal(action === 'ver' ? 'detalle' : 'edicion', libro);
-        } else {
-            alert(`No se encontró el libro con código ${id}`);
+        try {
+            const res = await fetch(`${API_BASE}/api/libro/${id}`);
+            if (res.ok) {
+                const libro = await res.json();
+                abrirModal(action === 'ver' ? 'detalle' : 'edicion', libro);
+            } else {
+                const libroFallback = ultimoListado.find(l => {
+                    const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
+                    return String(cod) === String(id);
+                });
+                if (libroFallback) abrirModal(action === 'ver' ? 'detalle' : 'edicion', libroFallback);
+                else alert(`No se encontró el libro con código ${id}`);
+            }
+        } catch (err) {
+            const libroFallback = ultimoListado.find(l => {
+                const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
+                return String(cod) === String(id);
+            });
+            if (libroFallback) abrirModal(action === 'ver' ? 'detalle' : 'edicion', libroFallback);
+            else alert(`No se encontró el libro con código ${id}`);
         }
     } else if (action === 'eliminar') {
         await eliminarLibro(id);

@@ -101,6 +101,9 @@ namespace Libreria_API.Services.Implementations
 
         public LibroDTO CreateLibro(LibroCreateUpdateDTO dto)
         {
+            var hoy = DateOnly.FromDateTime(DateTime.Today);
+            if (dto.FechaLanzamiento.HasValue && dto.FechaLanzamiento.Value > hoy)
+                throw new Exception("La fecha de lanzamiento no puede ser posterior a hoy.");
             var editorialId = ResolveEditorialId(dto);
             var idiomaId = ResolveIdiomaId(dto);
             var autoresIds = ResolveAutorIds(dto);
@@ -142,6 +145,9 @@ namespace Libreria_API.Services.Implementations
             var libro = _context.Libros.FirstOrDefault(l => l.CodLibro == codigo);
             if (libro == null)
                 return null;
+            var hoy = DateOnly.FromDateTime(DateTime.Today);
+            if (dto.FechaLanzamiento.HasValue && dto.FechaLanzamiento.Value > hoy)
+                throw new Exception("La fecha de lanzamiento no puede ser posterior a hoy.");
 
             var editorialId = ResolveEditorialId(dto);
             var idiomaId = ResolveIdiomaId(dto);
@@ -195,6 +201,7 @@ namespace Libreria_API.Services.Implementations
                 Codigo = l.CodLibro.ToString(),
                 Titulo = l.Titulo,
                 Editorial = l.IdEditorialNavigation?.Editorial ?? "",
+                IdEditorial = l.IdEditorial,
                 Idioma = l.IdIdiomaNavigation?.Idioma1 ?? "",
                 Autores = l.AutoresLibros
                     .Select(al => $"{al.IdAutorNavigation.Nombre} {al.IdAutorNavigation.Apellido}")
@@ -207,6 +214,9 @@ namespace Libreria_API.Services.Implementations
                     .ToList(),
                 Precio = l.Precio,
                 Stock = l.Stock,
+                Descripcion = l.Descripcion,
+                Isbn = l.Isbn,
+                FechaLanzamiento = l.FechaLanzamiento,
 
                 AutoresIds = l.AutoresLibros.Select(al => al.IdAutor).ToList(),
                 CategoriasIds = l.LibrosCategoria.Select(lc => lc.IdCategoria).ToList(),

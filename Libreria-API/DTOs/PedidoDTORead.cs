@@ -13,6 +13,8 @@ namespace Libreria_API.DTOs
         public int CodCliente { get; set; }
         public string? NombreCliente { get; set; }
         public string? ApellidoCliente { get; set; }
+        public int? NroDocCliente { get; set; }
+        public string? UsuarioCliente { get; set; }
         public int IdFormaEnvio { get; set; }
         public string? NombreFormaEnvio { get; set; }
         public string? EstadoActual { get; set; }

@@ -571,6 +571,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelector('#filtroActivos')
       .addEventListener('change', buscarLibros);
+
+  buscarLibros();
 });
 
 

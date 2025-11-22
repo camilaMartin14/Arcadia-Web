@@ -65,9 +65,9 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
   ✅Implementar la baja lógica de Libros (usando los campos activo/inactivo creados en el punto 2).
 
 🔒 Fase 3: Validación y Corrección de Formularios
-  Corregir la validación para que la fecha de entrega no pueda ser anterior a hoy.
+  ✅Corregir la validación para que la fecha de entrega no pueda ser anterior a hoy.
   
-  Agregar notificación o validación para evitar inserciones si se deja un campo en blanco al agregar un libro.
+  ✅Agregar notificación o validación para evitar inserciones si se deja un campo en blanco al agregar un libro.
   
   Agregar notificación de pedidos y libros creados correctamente
   
@@ -76,7 +76,7 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
 🔎 Fase 4: Optimización de Vistas y Filtros
   Corregir el comportamiento de los combos de Libros (carga, y asegurar la lógica de negocio para la selección simple o múltiple).
   
-  Corregir la funcionalidad de "ver" (el ojito) y "eliminar" (baja lógica) en la vista de Libros.
+  ✅Corregir la funcionalidad de "ver" (el ojito) y "eliminar" (baja lógica) en la vista de Libros.
   
   Agregar paginado a la vista de Pedidos.
   
@@ -92,7 +92,7 @@ Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecni
   
   Agregar filtros por año de publicación y por editorial.
   
-  Quitar la columna vacía y sobrante en la vista "Ver Pedidos".
+  ✅Quitar la columna vacía y sobrante en la vista "Ver Pedidos".
   
 
 ✨ Fase 5: Estética y Diseño (UX)

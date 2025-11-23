@@ -58,6 +58,7 @@ namespace Libreria_API.Repositories.Implementations
         {
             var query = _context.Pedidos
                 .Include(p => p.CodClienteNavigation)
+                    .ThenInclude(c => c.IdUsuarioNavigation)
                 .Include(p => p.IdFormaEnvioNavigation)
                 .Include(p => p.DetallePedidos)
                     .ThenInclude(d => d.CodLibroNavigation)
@@ -84,6 +85,8 @@ namespace Libreria_API.Repositories.Implementations
                     ApellidoCliente = p.CodClienteNavigation.Apellido,
                     IdFormaEnvio = p.IdFormaEnvio,
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
+                    NroDocCliente = p.CodClienteNavigation.NroDoc,
+                    UsuarioCliente = p.CodClienteNavigation.IdUsuarioNavigation.NombreUsuario,
                     EstadoActual = p.TrackingEnvios
                         .OrderByDescending(t => t.FechaEstado)
                         .Select(t => t.IdEstadoEnvioNavigation.EstadoActual)
@@ -103,6 +106,7 @@ namespace Libreria_API.Repositories.Implementations
         {
             return _context.Pedidos
                 .Include(p => p.CodClienteNavigation)
+                    .ThenInclude(c => c.IdUsuarioNavigation)
                 .Include(p => p.IdFormaEnvioNavigation)
                 .Include(p => p.DetallePedidos)
                     .ThenInclude(d => d.CodLibroNavigation)
@@ -121,6 +125,8 @@ namespace Libreria_API.Repositories.Implementations
                     ApellidoCliente = p.CodClienteNavigation.Apellido,
                     IdFormaEnvio = p.IdFormaEnvio,
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
+                    NroDocCliente = p.CodClienteNavigation.NroDoc,
+                    UsuarioCliente = p.CodClienteNavigation.IdUsuarioNavigation.NombreUsuario,
                     EstadoActual = p.TrackingEnvios
                         .OrderByDescending(t => t.FechaEstado)
                         .Select(t => t.IdEstadoEnvioNavigation.EstadoActual)

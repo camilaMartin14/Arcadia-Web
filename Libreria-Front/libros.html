@@ -103,6 +103,14 @@
           
           
         </div>
+        <div class="col-sm-6 col-lg-4">
+          <label class="form-label">Editorial</label>
+          <input id="fEditorial" class="form-control" placeholder="Ej: Sudamericana">
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <label class="form-label">Año publicación</label>
+          <input id="fAnio" type="number" min="0" class="form-control" placeholder="Ej: 2020">
+        </div>
         <div class="col-12 d-flex gap-2">
         <button id="btnBuscar" class="btn btn-info">
         <i class="bi bi-search"></i> Buscar
@@ -162,6 +170,21 @@
             </thead>
             <tbody><tr><td colspan="7" class="text-center text-secondary py-4">—</td></tr></tbody>
           </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <div>
+            <label class="form-label me-2">Tamaño página</label>
+            <select id="librosPageSize" class="form-select form-select-sm" style="width:auto;display:inline-block">
+              <option>5</option>
+              <option selected>10</option>
+              <option>20</option>
+            </select>
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="libPrev">Anterior</button>
+            <span class="btn btn-outline-light btn-sm" id="libPageInfo">Página 1</span>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="libNext">Siguiente</button>
+          </div>
         </div>
       </div>
 

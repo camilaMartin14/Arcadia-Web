@@ -7,6 +7,8 @@ const fmtCurrency = new Intl.NumberFormat("es-AR", { style: "currency", currency
 
 let vista = "tabla";
 let ultimoListado = [];
+let libPage = 1;
+let libPageSize = 10;
 const catalogos = {
   autores: [],
   categorias: [],
@@ -111,6 +113,20 @@ const data = await res.json();
         return idB - idA;
     });
 
+    const editorialTxt = ($('#fEditorial')?.value || '').toLowerCase();
+    const anioVal = Number($('#fAnio')?.value || 0);
+    if (editorialTxt) {
+      ultimoListado = ultimoListado.filter(l => String(l.editorial ?? l.Editorial ?? '').toLowerCase().includes(editorialTxt));
+    }
+    if (anioVal) {
+      ultimoListado = ultimoListado.filter(l => {
+        const raw = l.fechaLanzamiento ?? l.FechaLanzamiento ?? '';
+        const y = typeof raw === 'string' && raw ? Number(String(raw).split('T')[0].slice(0,4)) : 0;
+        return y === anioVal;
+      });
+    }
+
+    libPage = 1;
     render();
 
   } catch (err) {
@@ -128,7 +144,16 @@ function render() {
   show('#sinResultados', !hay);
   if (vista === 'tabla') {
     show('#contenedorTabla', true);
-    renderTabla(ultimoListado);
+    const sel = document.getElementById('librosPageSize');
+    if (sel) libPageSize = Number(sel.value || 10);
+    const start = (libPage - 1) * libPageSize;
+    const pageItems = ultimoListado.slice(start, start + libPageSize);
+    renderTabla(pageItems);
+    const info = document.getElementById('libPageInfo');
+    if (info) {
+      const totalPages = Math.max(1, Math.ceil(ultimoListado.length / libPageSize));
+      info.textContent = `Página ${libPage} de ${totalPages}`;
+    }
   } else {
     show('#contenedorTabla', false);
   }
@@ -511,6 +536,7 @@ async function guardarAlta() {
   });
   
   if (!res.ok) return alert('No se pudo crear el libro');
+  alert('Creado correctamente.');
 
   bsModal.hide();
   await buscarLibros();
@@ -524,6 +550,7 @@ async function guardarEdicion(id) {
     return;
   }
   const payload = tomarPayload();
+  if (!confirm('¿Seguro que quiere modificar el libro?')) return;
   const res = await fetch(`${API_BASE}/api/libro/${id}`, {
     method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
   });
@@ -769,4 +796,10 @@ document.addEventListener('click', async (e) => {
     } else if (action === 'eliminar') {
         await eliminarLibro(id);
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('librosPageSize')?.addEventListener('change', () => { libPage = 1; render(); });
+  document.getElementById('libPrev')?.addEventListener('click', () => { if (libPage > 1) { libPage--; render(); } });
+  document.getElementById('libNext')?.addEventListener('click', () => { const totalPages = Math.max(1, Math.ceil(ultimoListado.length / libPageSize)); if (libPage < totalPages) { libPage++; render(); } });
 });

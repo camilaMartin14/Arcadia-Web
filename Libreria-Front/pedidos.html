@@ -176,19 +176,56 @@
 
       <form class="row g-3">
 
-        <div class="col-sm-6 col-lg-4">
+        <div class="col-sm-6 col-lg-3">
 
-          <label class="form-label" for="filtroFecha">Fecha</label>
+          <label class="form-label" for="filtroFechaDesde">Fecha desde</label>
 
-          <input type="date" id="filtroFecha" class="form-control">
+          <input type="date" id="filtroFechaDesde" class="form-control">
+
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+
+          <label class="form-label" for="filtroFechaHasta">Fecha hasta</label>
+
+          <input type="date" id="filtroFechaHasta" class="form-control">
+
+        </div>
+
+        <div class="col-sm-6 col-lg-2">
+
+          <label class="form-label" for="filtroNro">N° Pedido</label>
+
+          <input type="number" id="filtroNro" class="form-control" placeholder="Ej: 101">
+
+        </div>
+
+        <div class="col-sm-6 col-lg-2">
+
+          <label class="form-label" for="filtroFormaEnvio">Forma envío</label>
+
+          <select id="filtroFormaEnvio" class="form-select">
+            <option value="">Todas</option>
+            <option value="1">Retiro en tienda</option>
+            <option value="2">Moto en CABA</option>
+            <option value="3">Correo nacional</option>
+          </select>
+
+        </div>
+
+        <div class="col-sm-6 col-lg-2">
+
+          <label class="form-label" for="filtroEstado">Estado</label>
+
+          <input type="text" id="filtroEstado" class="form-control" placeholder="Ej: Pendiente">
 
         </div>
 
         <div class="col-sm-6 col-lg-4">
 
-          <label class="form-label" for="filtroCodCliente">Código de cliente</label>
+          <label class="form-label" for="filtroCliente">Cliente</label>
 
-          <input type="number" id="filtroCodCliente" class="form-control" placeholder="Ej: 1001">
+          <input type="text" id="filtroCliente" class="form-control" placeholder="Usuario, Nombre Apellido o DNI">
 
         </div>
 
@@ -293,6 +330,22 @@
 
         <i class="bi bi-emoji-frown"></i> No se encontraron pedidos.
 
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-2">
+        <div>
+          <label class="form-label me-2">Tamaño página</label>
+          <select id="pedidosPageSize" class="form-select form-select-sm" style="width:auto;display:inline-block">
+            <option>5</option>
+            <option selected>10</option>
+            <option>20</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="pedPrev">Anterior</button>
+          <span class="btn btn-outline-light btn-sm" id="pedPageInfo">Página 1</span>
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="pedNext">Siguiente</button>
+        </div>
       </div>
 
     </section>

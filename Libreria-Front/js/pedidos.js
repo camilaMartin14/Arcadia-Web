@@ -16,6 +16,9 @@ let catalogoLibros = [];
 let mapaTituloALibro = new Map();
 let catalogoClientes = [];
 let mapaNombreCliente = new Map();
+let pedPage = 1;
+let pedPageSize = 10;
+let pedLast = [];
 
 function applyTheme(theme) {
   document.body.setAttribute("data-bs-theme", theme);
@@ -104,6 +107,9 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btnLimpiarFiltros")?.addEventListener("click", limpiarFiltros);
 
   $("#filtroActivos")?.addEventListener("change", cargarPedidos);
+  document.getElementById('pedidosPageSize')?.addEventListener('change', () => { pedPage = 1; renderPedidos(filtrarPedidos(pedLast)); });
+  document.getElementById('pedPrev')?.addEventListener('click', () => { if (pedPage > 1) { pedPage--; renderPedidos(pedLast); } });
+  document.getElementById('pedNext')?.addEventListener('click', () => { const totalPages = Math.max(1, Math.ceil(pedLast.length / pedPageSize)); if (pedPage < totalPages) { pedPage++; renderPedidos(pedLast); } });
 
   $("#btnNuevoPedido")?.addEventListener("click", () => abrirFormularioNuevo());
 
@@ -135,11 +141,40 @@ async function cargarPedidos() {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error("Error al obtener pedidos");
     const pedidos = await resp.json();
-    renderPedidos(pedidos);
+    const filtrados = filtrarPedidos(pedidos);
+    pedPage = 1;
+    renderPedidos(filtrados);
   } catch (err) {
     console.error(err);
     alert("Ocurrió un error al cargar los pedidos.");
   }
+}
+
+function filtrarPedidos(pedidos) {
+  const desde = document.getElementById('filtroFechaDesde')?.value || '';
+  const hasta = document.getElementById('filtroFechaHasta')?.value || '';
+  const nro = document.getElementById('filtroNro')?.value || '';
+  const forma = document.getElementById('filtroFormaEnvio')?.value || '';
+  const estado = (document.getElementById('filtroEstado')?.value || '').toLowerCase();
+  const clienteTxt = (document.getElementById('filtroCliente')?.value || '').toLowerCase();
+
+  let lista = Array.isArray(pedidos) ? pedidos.slice() : [];
+  lista = lista.filter(p => {
+    const f = new Date(p.fecha || p.Fecha);
+    const fstr = f.toISOString().slice(0,10);
+    if (desde && fstr < desde) return false;
+    if (hasta && fstr > hasta) return false;
+    if (nro && String(p.nroPedido ?? p.NroPedido) !== String(nro)) return false;
+    if (forma && String(p.idFormaEnvio ?? p.IdFormaEnvio) !== String(forma)) return false;
+    const est = String(p.estadoActual ?? p.EstadoActual ?? '').toLowerCase();
+    if (estado && !est.includes(estado)) return false;
+    const nom = [p.nombreCliente ?? p.NombreCliente, p.apellidoCliente ?? p.ApellidoCliente].filter(Boolean).join(' ').toLowerCase();
+    const dni = String(p.nroDocCliente ?? p.NroDocCliente ?? '').toLowerCase();
+    const usu = String(p.usuarioCliente ?? p.UsuarioCliente ?? '').toLowerCase();
+    if (clienteTxt && !(nom.includes(clienteTxt) || dni.includes(clienteTxt) || usu.includes(clienteTxt))) return false;
+    return true;
+  });
+  return lista;
 }
 
 function renderPedidos(pedidos) {
@@ -160,7 +195,13 @@ function renderPedidos(pedidos) {
             return nb - na; // Descendente: más recientes primero
         });
 
-    pedidos.forEach(p => {
+    pedLast = pedidos;
+    const psSel = document.getElementById('pedidosPageSize');
+    if (psSel) pedPageSize = Number(psSel.value || 10);
+    const start = (pedPage - 1) * pedPageSize;
+    const pageItems = pedidos.slice(start, start + pedPageSize);
+
+    pageItems.forEach(p => {
         const tr = document.createElement("tr");
         const activoFlag = (p.activo === true) || (p.activo === 1) || (String(p.activo).toLowerCase() === 'true');
         const activo = activoFlag ? 'Sí' : 'No';
@@ -188,12 +229,24 @@ function renderPedidos(pedidos) {
             </td>`;
         tbody.appendChild(tr);
     });
+
+    const info = document.getElementById('pedPageInfo');
+    if (info) {
+      const totalPages = Math.max(1, Math.ceil(pedidos.length / pedPageSize));
+      info.textContent = `Página ${pedPage} de ${totalPages}`;
+    }
 }
 
 
 function limpiarFiltros() {
   if ($("#filtroFecha")) $("#filtroFecha").value = "";
   if ($("#filtroCodCliente")) $("#filtroCodCliente").value = "";
+  const fDesde = $("#filtroFechaDesde"); if (fDesde) fDesde.value = "";
+  const fHasta = $("#filtroFechaHasta"); if (fHasta) fHasta.value = "";
+  const fNro = $("#filtroNro"); if (fNro) fNro.value = "";
+  const fForma = $("#filtroFormaEnvio"); if (fForma) fForma.value = "";
+  const fEstado = $("#filtroEstado"); if (fEstado) fEstado.value = "";
+  const fCliente = $("#filtroCliente"); if (fCliente) fCliente.value = "";
   cargarPedidos();
 }
 
@@ -553,6 +606,7 @@ async function onSubmitPedido(e) {
         throw new Error("Error al crear pedido");
       }
     } else if (modoFormulario === "editar") {
+      if (!confirm("¿Seguro que quiere modificar el pedido?")) return;
       const nro = pedidoSeleccionado;
       resp = await fetch(`${API_PEDIDOS}/${nro}`, {
         method: "PUT",

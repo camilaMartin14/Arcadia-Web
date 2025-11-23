@@ -207,17 +207,19 @@ async function cargarCatalogos() {
 
 
 function renderCatalogoSelects() {
-	 renderDropdown('autores', catalogos.autores);
-	 renderDropdown('categorias', catalogos.categorias);
-	 renderDropdown('generos', catalogos.generos);
-	 popularSelect('#mIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
-popularSelect('#mEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
+    ['autores', 'categorias', 'generos'].forEach(tipo => {
+        const lista = $(`#lista${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`);
+        if (lista) lista.innerHTML = ''; // limpiar opciones previas
+        renderDropdown(tipo, catalogos[tipo]);
+    });
 
-  popularSelect('#fIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
-  popularSelect('#fGenero', catalogos.generos, { tipo: 'generos', placeholder: 'Seleccioná un género', incluyeVacio: true });
-  popularSelect('#fCategoria', catalogos.categorias, { tipo: 'categorias', placeholder: 'Seleccioná una categoría', incluyeVacio: true });
-  popularSelect('#fEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
+    popularSelect('#mIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+    popularSelect('#mEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
 
+    popularSelect('#fIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+    popularSelect('#fGenero', catalogos.generos, { tipo: 'generos', placeholder: 'Seleccioná un género', incluyeVacio: true });
+    popularSelect('#fCategoria', catalogos.categorias, { tipo: 'categorias', placeholder: 'Seleccioná una categoría', incluyeVacio: true });
+    popularSelect('#fEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
 }
 
 
@@ -443,97 +445,78 @@ function renderTabla(list) {
 
 let bsModal;
 function abrirModal(modo, libro = null) {
-  const title = modo === 'alta' ? 'Nuevo libro'
-              : (modo === 'edicion' ? 'Editar libro'
-              : 'Detalle de libro');
+    const title = modo === 'alta' ? 'Nuevo libro' :
+                  modo === 'edicion' ? 'Editar libro' : 'Detalle de libro';
+    $('#modalTitulo').textContent = title;
 
-  $('#modalTitulo').textContent = title;
+    $('#btnEliminar')?.classList.toggle('d-none', modo !== 'edicion');
+    $('#btnGuardar')?.classList.toggle('d-none', modo === 'detalle');
 
-  const btnEliminar = $('#btnEliminar');
-  if (btnEliminar) {
-    btnEliminar.classList.toggle('d-none', modo !== 'edicion');
-  }
+    const soloLectura = (modo === 'detalle');
 
-  const soloLectura = (modo === 'detalle');
-  ['#mTitulo','#mPrecio','#mStock','#mIdioma','#mEditorial','#mIsbn','#mDescripcion','#mFechaLanzamiento'] 
-		.forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
-  ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
+    ['#mTitulo','#mPrecio','#mStock','#mIdioma','#mEditorial','#mIsbn','#mDescripcion','#mFechaLanzamiento']
+        .forEach(sel => { const campo = $(sel); if (campo) campo.disabled = soloLectura; });
 
-  const btnGuardar = $('#btnGuardar');
-  if (btnGuardar) {
-    btnGuardar.classList.toggle('d-none', soloLectura);
-  }
+    ['autores','categorias','generos'].forEach(tipo => toggleDropdownLectura(tipo, soloLectura));
 
-  $('#mId').value = libro?.cod_libro ?? libro?.CodLibro ?? libro?.codigo ?? libro?.Codigo ?? '';
-  $('#mTitulo').value    = libro?.titulo ?? libro?.Titulo ?? '';
-  $('#mPrecio').value    = libro?.precio ?? libro?.Precio ?? 0;
-  $('#mStock').value     = libro?.stock ?? libro?.Stock ?? 0;
+    const contGeneros = document.getElementById('dropdownGeneros')?.closest('.col-md-4');
+    const contCategorias = document.getElementById('dropdownCategorias')?.closest('.col-md-4');
+    if (contGeneros) contGeneros.classList.toggle('d-none', soloLectura);
+    if (contCategorias) contCategorias.classList.toggle('d-none', soloLectura);
 
-const mIsbn = $('#mIsbn');
-if (mIsbn) mIsbn.value = libro?.isbn ?? libro?.Isbn ?? '';
+    $('#mId').value = libro?.cod_libro ?? libro?.CodLibro ?? libro?.codigo ?? libro?.Codigo ?? '';
+    $('#mTitulo').value = libro?.titulo ?? libro?.Titulo ?? '';
+    $('#mPrecio').value = libro?.precio ?? libro?.Precio ?? 0;
+    $('#mStock').value = libro?.stock ?? libro?.Stock ?? 0;
+    $('#mIsbn').value = libro?.isbn ?? libro?.Isbn ?? '';
+    $('#mDescripcion').value = libro?.descripcion ?? libro?.Descripcion ?? '';
+    const rawFecha = libro?.fechaLanzamiento ?? libro?.fecha_lanzamiento ?? libro?.FechaLanzamiento ?? '';
+    $('#mFechaLanzamiento').value = typeof rawFecha === 'string' ? rawFecha.split('T')[0] : '';
 
-const mDescripcion = $('#mDescripcion');
-if (mDescripcion) mDescripcion.value = libro?.descripcion ?? libro?.Descripcion ?? '';
+    renderCatalogoSelects();
 
-const mFecha = $('#mFechaLanzamiento');
-if (mFecha) {
-  const rawFecha = libro?.fechaLanzamiento ?? libro?.fecha_lanzamiento ?? libro?.FechaLanzamiento ?? '';
-  const val = typeof rawFecha === 'string' ? rawFecha.split('T')[0] : '';
-  mFecha.value = val;
-}
+    const autorIds = obtenerIdsDesdeLibro(libro, 'autoresIds');
+    setSeleccionDesdeLibro('autores', autorIds.length ? autorIds : obtenerIdsPorNombre('autores', libro?.autores ?? libro?.Autores ?? []));
 
-  const listaAutores = $('#listaAutores');
-  const listaCategorias = $('#listaCategorias');
-  const listaGeneros = $('#listaGeneros');
-  if (listaAutores && listaAutores.children.length === 0) renderDropdown('autores', catalogos.autores);
-  if (listaCategorias && listaCategorias.children.length === 0) renderDropdown('categorias', catalogos.categorias);
-  if (listaGeneros && listaGeneros.children.length === 0) renderDropdown('generos', catalogos.generos);
+    const catIds = obtenerIdsDesdeLibro(libro, 'categoriasIds');
+    setSeleccionDesdeLibro('categorias', catIds.length ? catIds : obtenerIdsPorNombre('categorias', libro?.categorias ?? libro?.Categorias ?? []));
 
-  setSeleccionDesdeLibro('autores', obtenerIdsDesdeLibro(libro, 'autoresIds'));
-  const catsIds = obtenerIdsDesdeLibro(libro, 'categoriasIds');
-  if (catsIds.length) setSeleccionDesdeLibro('categorias', catsIds);
-  else {
-    const nombresCats = libro?.categorias ?? libro?.Categorias ?? [];
-    const idsCats = obtenerIdsPorNombre('categorias', nombresCats);
-    setSeleccionDesdeLibro('categorias', idsCats);
-  }
-  const gensIds = obtenerIdsDesdeLibro(libro, 'generosIds');
-  if (gensIds.length) setSeleccionDesdeLibro('generos', gensIds);
-  else {
-    const nombresGens = libro?.generos ?? libro?.Generos ?? [];
-    const idsGens = obtenerIdsPorNombre('generos', nombresGens);
-    setSeleccionDesdeLibro('generos', idsGens);
-  }
+    const genIds = obtenerIdsDesdeLibro(libro, 'generosIds');
+    setSeleccionDesdeLibro('generos', genIds.length ? genIds : obtenerIdsPorNombre('generos', libro?.generos ?? libro?.Generos ?? []));
 
-  if (soloLectura) {
-    setResumenNombres('categorias', libro?.categorias ?? libro?.Categorias ?? []);
-    setResumenNombres('generos', libro?.generos ?? libro?.Generos ?? []);
-    setResumenNombres('autores', libro?.autores ?? libro?.Autores ?? []);
-  }
-  const idiomaSeleccionado = libro?.idIdioma ?? libro?.IdIdioma ?? '';
-  setSelectValues('#mIdioma', idiomaSeleccionado ? [idiomaSeleccionado] : []);
-const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
-  setSelectValues('#mEditorial', editorialSeleccionada ? [editorialSeleccionada] : []);
-  bsModal ??= new bootstrap.Modal($('#modalLibro'));
-  bsModal.show();
-
-  $('#formABM').onsubmit = (e) => {
-    e.preventDefault();
-    const form = $('#formABM');
-    if (form && !form.checkValidity()) {
-      form.reportValidity();
-      return;
+    if (soloLectura) {
+        const nombresAut = libro?.autores ?? libro?.Autores ?? [];
+        const nombresCat = libro?.categorias ?? libro?.Categorias ?? [];
+        const nombresGen = libro?.generos ?? libro?.Generos ?? [];
+        setResumenNombres('autores', nombresAut);
+        setResumenNombres('categorias', nombresCat);
+        setResumenNombres('generos', nombresGen);
+        setResumenTextoLectura('categorias', nombresCat, true);
+        setResumenTextoLectura('generos', nombresGen, true);
+    } else {
+        setResumenTextoLectura('categorias', [], false);
+        setResumenTextoLectura('generos', [], false);
     }
-    if (!validarSeleccionesObligatorias()) return;
-    if (modo === 'alta') return guardarAlta();
-    if (modo === 'edicion') return guardarEdicion($('#mId').value);
-  };
 
-  if (btnEliminar) {
-    btnEliminar.onclick = () => eliminarLibro($('#mId').value);
-  }
+    const idIdioma = libro?.idIdioma ?? libro?.IdIdioma ?? '';
+    setSelectValues('#mIdioma', idIdioma ? [idIdioma] : []);
+    const idEditorial = libro?.idEditorial ?? libro?.IdEditorial ?? '';
+    setSelectValues('#mEditorial', idEditorial ? [idEditorial] : []);
+
+    bsModal ??= new bootstrap.Modal($('#modalLibro'));
+    bsModal.show();
 }
 
+async function abrirModalSeguro(modo, libro = null) {
+    const endpoints = ['autores','categorias','generos','idiomas','editoriales'];
+    const hayCatalogos = endpoints.every(ep => Array.isArray(catalogos[ep]) && catalogos[ep].length > 0);
+
+    if (!hayCatalogos) {
+        await cargarCatalogos();
+    }
+
+    abrirModal(modo, libro);
+}
 
 async function guardarAlta() {
   const fechaVal = $('#mFechaLanzamiento')?.value || '';
@@ -662,7 +645,7 @@ $('#btnLimpiar').addEventListener('click', () => {
     .forEach(s => $(s).value = '');
   buscarLibros();
 });
-$('#btnABMAlta').addEventListener('click', () => abrirModal('alta'));
+$('#btnABMAlta').addEventListener('click', () => abrirModalSeguro('alta'));
 
 $('#vistaTabla').addEventListener('change', () => { vista='tabla'; render(); });
 
@@ -782,6 +765,18 @@ function setResumenNombres(tipo, nombres) {
     boton.classList.toggle('text-muted', !(Array.isArray(nombres) && nombres.length > 0));
   }
 }
+function setResumenTextoLectura(tipo, nombres, soloLectura) {
+  const wrap = document.getElementById(`dropdown${capitalizar(tipo)}`)?.closest('.dropdown');
+  const input = document.getElementById(`m${capitalizar(tipo)}Texto`);
+  const texto = Array.isArray(nombres) && nombres.length > 0 ? nombres.join(', ') : '';
+  if (soloLectura) {
+    if (wrap) wrap.classList.add('d-none');
+    if (input) { input.classList.remove('d-none'); input.value = texto; input.readOnly = true; }
+  } else {
+    if (wrap) wrap.classList.remove('d-none');
+    if (input) { input.classList.add('d-none'); input.value = ''; }
+  }
+}
 
 function idValido(id) {
     if (id === null || id === undefined) return false;
@@ -829,29 +824,18 @@ document.addEventListener('click', async (e) => {
     if (action === 'ver' || action === 'editar') {
         try {
             const res = await fetch(`${API_BASE}/api/libro/${id}`);
-            if (res.ok) {
-                const libro = await res.json();
-                abrirModal(action === 'ver' ? 'detalle' : 'edicion', libro);
-            } else {
-                const libroFallback = ultimoListado.find(l => {
-                    const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
-                    return String(cod) === String(id);
-                });
-                if (libroFallback) abrirModal(action === 'ver' ? 'detalle' : 'edicion', libroFallback);
-                else alert(`No se encontró el libro con código ${id}`);
-            }
+            const libro = res.ok ? await res.json() : ultimoListado.find(l => String(l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo) === String(id));
+            if (!libro) return alert(`No se encontró el libro con código ${id}`);
+            
+            await abrirModalSeguro(action === 'ver' ? 'detalle' : 'edicion', libro);
         } catch (err) {
-            const libroFallback = ultimoListado.find(l => {
-                const cod = l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo;
-                return String(cod) === String(id);
-            });
-            if (libroFallback) abrirModal(action === 'ver' ? 'detalle' : 'edicion', libroFallback);
+            const libroFallback = ultimoListado.find(l => String(l.cod_libro ?? l.CodLibro ?? l.codigo ?? l.Codigo) === String(id));
+            if (libroFallback) await abrirModalSeguro(action === 'ver' ? 'detalle' : 'edicion', libroFallback);
             else alert(`No se encontró el libro con código ${id}`);
         }
-    } else if (action === 'eliminar') {
-        await eliminarLibro(id);
     }
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('librosPageSize')?.addEventListener('change', () => { libPage = 1; render(); });

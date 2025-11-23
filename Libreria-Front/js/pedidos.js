@@ -119,6 +119,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Eventos del Modal Estado
   $("#btnGuardarEstado")?.addEventListener("click", guardarCambioEstado);
+ 
+  const fDesde = document.getElementById('filtroFechaDesde');
+  const fHasta = document.getElementById('filtroFechaHasta');
+  const hoyStr = new Date().toISOString().slice(0,10);
+  if (fDesde) fDesde.max = hoyStr;
+  if (fHasta && fDesde) fHasta.min = fDesde.value || '';
+  fDesde?.addEventListener('change', () => {
+    if (fHasta) {
+      fHasta.min = fDesde.value || '';
+      if (fHasta.value && fDesde.value && fHasta.value < fDesde.value) {
+        fHasta.value = fDesde.value;
+      }
+    }
+    if (fDesde.value && fDesde.value > hoyStr) {
+      alert('La fecha desde no puede ser posterior a hoy.');
+      fDesde.value = hoyStr;
+    }
+  });
+  fHasta?.addEventListener('change', () => {
+    const d = fDesde?.value || '';
+    const h = fHasta.value || '';
+    if (d && h && h < d) {
+      alert('La fecha hasta no puede ser menor a la fecha desde.');
+      fHasta.value = d;
+    }
+  });
   
   // Carga inicial
   Promise.all([cargarCatalogoLibros(), cargarCatalogoClientes()])
@@ -130,6 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
 async function cargarPedidos() {
   const desde = document.getElementById('filtroFechaDesde')?.value || '';
   const hasta = document.getElementById('filtroFechaHasta')?.value || '';
+  const hoyStr = new Date().toISOString().slice(0,10);
+
+  if (desde && desde > hoyStr) {
+    alert('La fecha desde no puede ser posterior a hoy.');
+    return;
+  }
 
   if (desde && hasta && hasta < desde) {
     alert('La fecha hasta no puede ser menor a la fecha desde.');
@@ -478,6 +510,11 @@ function toggleSoloLectura(bloquear) {
     const campos = document.querySelectorAll("#formPedido input, #formPedido select, #formPedido textarea");
     campos.forEach(el => el.disabled = bloquear);
 
+    const codDisp = document.getElementById('codClienteDisplay');
+    if (codDisp) {
+      codDisp.disabled = true;
+    }
+
     // Ocultar/Mostrar botón Guardar
     const btnGuardar = $("#btnGuardarPedido");
     if (btnGuardar) {
@@ -684,14 +721,12 @@ window.cambiarEstado = async function (nroPedido) {
   document.getElementById("estadoNroPedido").textContent = nroPedido;
   
   document.getElementById("nuevoEstado").value = "";
-  document.getElementById("observacionesEstado").value = "";
 
   modalEstadoBS.show();
 };
 
 async function guardarCambioEstado() {
   const nuevoEstadoId = $("#nuevoEstado").value;
-  const obs = $("#observacionesEstado").value;
 
   if (!nuevoEstadoId) {
     alert("Debe seleccionar un nuevo estado.");
@@ -704,7 +739,6 @@ async function guardarCambioEstado() {
 
   const body = {
     nuevoEstadoId: parseInt(nuevoEstadoId),
-    observaciones: obs,
   };
 
   try {

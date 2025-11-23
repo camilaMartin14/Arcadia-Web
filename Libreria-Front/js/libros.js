@@ -63,7 +63,7 @@ function buildParams() {
   const idioma = $('#fIdioma').value.trim();
   const genero = $('#fGenero').value.trim();
   
-  const mostrarTodos = $('#filtroActivos').checked; 
+  const mostrarSoloActivos = $('#filtroActivos').checked; 
 
   if (titulo)    p.append('titulo', titulo);
   if (autor)     p.append('autor', autor);
@@ -71,7 +71,7 @@ function buildParams() {
   if (idioma)    p.append('idioma', idioma);
   if (genero)    p.append('genero', genero);
 
-  if (!mostrarTodos) {
+  if (mostrarSoloActivos) {
     p.append('activo', 'true');
   }
 
@@ -101,8 +101,8 @@ const url = `${API_BASE}/api/libro/filtrar?${params}`;
 const data = await res.json();
     ultimoListado = Array.isArray(data) ? data : [];
 
-    const mostrarTodos = $('#filtroActivos')?.checked ?? false;
-    if (!mostrarTodos) {
+    const mostrarSoloActivos = $('#filtroActivos')?.checked ?? false;
+    if (mostrarSoloActivos) {
       ultimoListado = ultimoListado.filter(esActivo);
     }
 
@@ -162,9 +162,9 @@ function render() {
 async function cargarCatalogos() {
   try {
     const titulo = document.getElementById("filtroTitulo")?.value || "";
-    const mostrarTodos = document.getElementById("filtroActivos")?.checked ?? false; 
+    const mostrarSoloActivos = document.getElementById("filtroActivos")?.checked ?? false; 
     
-    const activoParam = mostrarTodos ? "" : "&activo=true"; 
+    const activoParam = mostrarSoloActivos ? "&activo=true" : ""; 
 
     const url = `${API_BASE}/api/libro/filtrar?titulo=${encodeURIComponent(titulo)}${activoParam}`;
 
@@ -513,6 +513,12 @@ const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
 
   $('#formABM').onsubmit = (e) => {
     e.preventDefault();
+    const form = $('#formABM');
+    if (form && !form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    if (!validarSeleccionesObligatorias()) return;
     if (modo === 'alta') return guardarAlta();
     if (modo === 'edicion') return guardarEdicion($('#mId').value);
   };
@@ -525,12 +531,20 @@ const editorialSeleccionada = libro?.idEditorial ?? libro?.IdEditorial ?? '';
 
 async function guardarAlta() {
   const fechaVal = $('#mFechaLanzamiento')?.value || '';
+  if (!validarCamposTexto()) return;
   const hoy = new Date().toISOString().slice(0, 10);
   if (fechaVal && fechaVal > hoy) {
     alert('La fecha de lanzamiento no puede ser posterior a hoy.');
     return;
   }
+  if (!fechaVal) {
+    alert('La fecha de lanzamiento es obligatoria.');
+    return;
+  }
   const payload = tomarPayload();
+  payload.activo = true;
+  payload.Activo = true;
+  payload.BajaLogica = false;
   const res = await fetch(`${API_BASE}/api/libro`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
   });
@@ -544,9 +558,14 @@ async function guardarAlta() {
 
 async function guardarEdicion(id) {
   const fechaVal = $('#mFechaLanzamiento')?.value || '';
+  if (!validarCamposTexto()) return;
   const hoy = new Date().toISOString().slice(0, 10);
   if (fechaVal && fechaVal > hoy) {
     alert('La fecha de lanzamiento no puede ser posterior a hoy.');
+    return;
+  }
+  if (!fechaVal) {
+    alert('La fecha de lanzamiento es obligatoria.');
     return;
   }
   const payload = tomarPayload();
@@ -600,10 +619,40 @@ function tomarPayload() {
   };
 }
 
+function validarSeleccionesObligatorias() {
+  if (!Array.isArray(selecciones.autores) || selecciones.autores.length === 0) {
+    alert('Debés seleccionar al menos un autor.');
+    return false;
+  }
+  if (!Array.isArray(selecciones.generos) || selecciones.generos.length === 0) {
+    alert('Debés seleccionar al menos un género.');
+    return false;
+  }
+  if (!Array.isArray(selecciones.categorias) || selecciones.categorias.length === 0) {
+    alert('Debés seleccionar al menos una categoría.');
+    return false;
+  }
+  return true;
+}
+
+function validarCamposTexto() {
+  const desc = $('#mDescripcion')?.value.trim() || '';
+  const isbn = $('#mIsbn')?.value.trim() || '';
+  if (!desc) {
+    alert('La descripción no puede estar vacía.');
+    return false;
+  }
+  if (!isbn) {
+    alert('El ISBN no puede estar vacío.');
+    return false;
+  }
+  return true;
+}
+
 
 $('#btnBuscar').addEventListener('click', buscarLibros);
 $('#btnLimpiar').addEventListener('click', () => {
-  ['#fTitulo','#fAutor','#fCategoria','#fIdioma','#fGenero']
+  ['#fTitulo','#fAutor','#fCategoria','#fIdioma','#fGenero','#fEditorial','#fAnio']
     .forEach(s => $(s).value = '');
   buscarLibros();
 });

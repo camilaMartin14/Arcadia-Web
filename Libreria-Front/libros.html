@@ -121,9 +121,9 @@
 
         <button id="btnLimpiar" type="button" class="btn btn-outline-secondary">Limpiar</button>
 <div class="form-check mb-2">
-  <input class="form-check-input" type="checkbox" id="filtroActivos">
+  <input class="form-check-input" type="checkbox" id="filtroActivos" checked>
   <label class="form-check-label" for="filtroActivos">
-    Mostrar todos
+    Mostrar solo activos
   </label>
 </div>
 
@@ -213,12 +213,12 @@
 
             <div class="col-12">
               <label class="form-label">Descripción</label>
-              <textarea id="mDescripcion" class="form-control" rows="4" placeholder="Ingresá una descripción del libro"></textarea>
+              <textarea id="mDescripcion" class="form-control" rows="4" placeholder="Ingresá una descripción del libro" required></textarea>
             </div>
 
             <div class="col-md-4">
               <label class="form-label">ISBN</label>
-              <input id="mIsbn" class="form-control" placeholder="Ej: 978-950-123-456-7">
+              <input id="mIsbn" class="form-control" placeholder="Ej: 978-950-123-456-7" required>
             </div>
 
 
@@ -277,7 +277,7 @@
 
             <div class="col-md-4">
               <label class="form-label">Fecha de Lanzamiento</label>
-              <input id="mFechaLanzamiento" type="date" class="form-control">
+              <input id="mFechaLanzamiento" type="date" class="form-control" required>
             </div>
 
 

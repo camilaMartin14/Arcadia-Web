@@ -22,7 +22,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    // Carga la clave secreta de la configuración (por ejemplo, appsettings.json)
     var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"]);
 
     options.SaveToken = true; // Guarda el token en el HttpContext
@@ -40,11 +39,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 2. Configuración de la autorización
 builder.Services.AddAuthorization();
 
 
-// Configurar CORS para desarrollo: acepta cualquier frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontend",
@@ -75,13 +72,11 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddControllers();
 
-// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -90,7 +85,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// **Importante:** CORS antes de Authorization
 app.UseCors("PermitirFrontend");
 
 app.UseAuthentication();

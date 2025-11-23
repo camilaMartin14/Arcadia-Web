@@ -23,12 +23,9 @@ namespace Libreria_API.Controllers
             return Ok(resultado);
         }
 
-        // --- NUEVOS ENDPOINTS SOLICITADOS ---
-
         [HttpGet("autores")]
         public ActionResult<List<DashboardAuthorDTO>> ObtenerAutores([FromQuery] int meses = 3) // Adaptado 1/3
         {
-            // Ahora pasamos el filtro de meses al servicio
             var resultado = _dashboardService.ObtenerAutoresMasVendidos(meses);
             return Ok(resultado);
         }
@@ -36,7 +33,6 @@ namespace Libreria_API.Controllers
         [HttpGet("envios")]
         public ActionResult<List<DashboardShippingDTO>> ObtenerTiposEnvio([FromQuery] int meses = 3) // Adaptado 2/3
         {
-            // Ahora pasamos el filtro de meses al servicio
             var resultado = _dashboardService.ObtenerTiposEnvio(meses);
             return Ok(resultado);
         }
@@ -44,7 +40,6 @@ namespace Libreria_API.Controllers
         [HttpGet("pagos")]
         public ActionResult<List<DashboardPaymentDTO>> ObtenerFormasPago([FromQuery] int meses = 3) // Adaptado 3/3
         {
-            // Ahora pasamos el filtro de meses al servicio
             var resultado = _dashboardService.ObtenerFormasPago(meses);
             return Ok(resultado);
         }

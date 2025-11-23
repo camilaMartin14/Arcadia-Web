@@ -111,7 +111,6 @@ namespace Libreria_API.Controllers
 
             return Ok(new
             {
-                // El token es la pieza clave para la autenticación futura
                 Token = token,
                 mensaje = "Login exitoso",
                 idCliente = cliente.CodCliente,

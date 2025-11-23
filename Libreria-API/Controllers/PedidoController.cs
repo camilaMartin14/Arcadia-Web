@@ -4,8 +4,6 @@ using Libreria_API.Models;
 using Libreria_API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Libreria_API.Controllers
 {
     [Route("api/[controller]")]
@@ -39,10 +37,8 @@ namespace Libreria_API.Controllers
 
             var pedidoModel = pedido.ConvertToModel();
 
-            // Guardar pedido
             _service.Create(pedidoModel);
 
-            // Recargar pedido con relaciones
             var pedidoRecargado = _service.GetPedidoById(pedidoModel.NroPedido);
             if (pedidoRecargado == null)
                 return BadRequest("No se pudo recuperar el pedido despues de crearlo.");
@@ -71,9 +67,6 @@ namespace Libreria_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        
-
 
         [HttpGet("{nroPedido}/estado")]
         public ActionResult<string> GetEstadoActual(int nroPedido)

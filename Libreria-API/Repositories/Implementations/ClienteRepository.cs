@@ -21,11 +21,9 @@ namespace Libreria_API.Repositories.Implementations
 
         public async Task<Cliente> AgregarClienteConUsuarioAsync(Cliente cliente, Usuario usuario)
         {
-            // Agrego el usuario
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync(); // Guardo
 
-            //Asocio el cliente al usuario recién creado
             cliente.IdUsuario = usuario.IdUsuario;
             _context.Clientes.Add(cliente);
 

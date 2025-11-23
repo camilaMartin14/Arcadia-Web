@@ -120,15 +120,12 @@
         </button>
 
         <button id="btnLimpiar" type="button" class="btn btn-outline-secondary">Limpiar</button>
-<div class="form-check mb-2">
-  <input class="form-check-input" type="checkbox" id="filtroActivos" checked>
-  <label class="form-check-label" for="filtroActivos">
-    Mostrar solo activos
-  </label>
-</div>
-
-
-
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="checkbox" id="filtroActivos" checked>
+          <label class="form-check-label" for="filtroActivos">
+            Mostrar solo activos
+          </label>
+        </div>
         <div class="ms-auto d-flex align-items-center gap-2">
         <span class="small">Vista:</span>
             <div class="btn-group btn-group-sm" role="group">
@@ -151,12 +148,19 @@
             </div>
           </div>
         </div>
-
       <div id="estadoBusqueda" class="small text-secondary mb-2 d-none">Buscando…</div>
-
       <div id="contenedorTabla">
         <div class="table-responsive">
           <table id="tblLibros" class="table table-hover align-middle">
+            <colgroup>
+              <col style="width: 28%">
+              <col style="width: 22%">
+              <col style="width: 12%">
+              <col style="width: 12%">
+              <col style="width: 8%">
+              <col style="width: 8%">
+              <col style="width: 10%">
+            </colgroup>
             <thead>
               <tr>
                 <th>Título</th>
@@ -221,19 +225,15 @@
               <input id="mIsbn" class="form-control" placeholder="Ej: 978-950-123-456-7" required>
             </div>
 
-
-
             <div class="col-md-6">
               <label class="form-label">Autor(es)</label>
               <div class="dropdown w-100">
-                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start text-white" type="button" id="dropdownAutores" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start" type="button" id="dropdownAutores" data-bs-toggle="dropdown" aria-expanded="false">
                   <span id="resumenAutores" class="dropdown-text" data-placeholder="Seleccioná autor/es">Seleccioná autor/es</span>
                 </button>
                 <ul class="dropdown-menu w-100" aria-labelledby="dropdownAutores" id="listaAutores"></ul>
               </div>
             </div>
-           
-
 
             <div class="col-md-4">
                 <label class="form-label">Editorial</label>
@@ -245,13 +245,10 @@
                 <select id="mIdioma" class="form-select" required></select>
             </div>
 
-
-
-
             <div class="col-md-4">
               <label class="form-label">Género(s)</label>
               <div class="dropdown w-100">
-                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start text-white" type="button" id="dropdownGeneros" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start" type="button" id="dropdownGeneros" data-bs-toggle="dropdown" aria-expanded="false">
                   <span id="resumenGeneros" class="dropdown-text" data-placeholder="Seleccioná género/s">Seleccioná género/s</span>
                 </button>
                 <ul class="dropdown-menu w-100" aria-labelledby="dropdownGeneros" id="listaGeneros"></ul>
@@ -260,7 +257,7 @@
             <div class="col-md-4">
               <label class="form-label">Categoría(s)</label>
               <div class="dropdown w-100">
-                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start text-white" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-outline-secondary w-100 dropdown-toggle text-start" type="button" id="dropdownCategorias" data-bs-toggle="dropdown" aria-expanded="false">
                   <span id="resumenCategorias" class="dropdown-text" data-placeholder="Seleccioná categoría/s">Seleccioná categoría/s</span>
                 </button>
                 <ul class="dropdown-menu w-100" aria-labelledby="dropdownCategorias" id="listaCategorias"></ul>
@@ -279,8 +276,6 @@
               <label class="form-label">Fecha de Lanzamiento</label>
               <input id="mFechaLanzamiento" type="date" class="form-control" required>
             </div>
-
-
           </div>
           <div class="modal-footer justify-content-between">
             <div class="ms-auto">

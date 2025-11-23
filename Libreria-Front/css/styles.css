@@ -1,13 +1,9 @@
-/* === NAVBAR ========================================================= */
-
-/* Navbar siempre transparente */
 nav.navbar {
     background-color: transparent !important;
     backdrop-filter: none;
     box-shadow: none;
 }
 
-/* Marca */
 .navbar-brand h1,
 .navbar-brand i {
     text-shadow: none;
@@ -24,10 +20,6 @@ body[data-bs-theme="light"] .navbar-brand i {
     color: #000000;
 }
 
-
-
-/* === VIDEO INICIAL ================================================== */
-/* Quita el espacio superior que genera la navbar */
 body.page-video {
     padding-top: 0 !important;
     margin-top: 0 !important;
@@ -97,7 +89,6 @@ body[data-bs-theme="dark"]  .overlay { background-color: rgba(0,0,0,0.45); }
     margin-bottom: 30px;
 }
 
-/* === CARDS ========================================================== */
 .card {
     transition: transform .2s ease;
 }
@@ -123,8 +114,6 @@ body[data-bs-theme="light"] .card {
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-
-/* === CAROUSEL ======================================================= */
 .carousel-inner {
     padding: 0 60px; 
 }
@@ -137,6 +126,21 @@ body[data-bs-theme="light"] .card {
 .carousel-control-prev,
 .carousel-control-next {
     width: 50px;
+    background: transparent !important;
+    background-image: none !important;
+    border: 0;
+    box-shadow: none;
+    outline: none;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover,
+.carousel-control-prev:focus,
+.carousel-control-next:focus {
+    background: transparent !important;
+    background-image: none !important;
+    outline: none;
+    box-shadow: none;
 }
 
 .carousel-control-prev-icon,
@@ -146,6 +150,20 @@ body[data-bs-theme="light"] .card {
     padding: 8px;
 }
 
+#tblLibros,
+#tablaPedidos {
+    table-layout: fixed;
+}
+
+
+#tblLibros th,
+#tblLibros td,
+#tablaPedidos th,
+#tablaPedidos td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 .carousel-container {
     max-width: 70%;
@@ -188,8 +206,6 @@ body[data-bs-theme="light"] .card {
 
 .carousel-indicators { display: none; }
 
-
-/* === FOOTER ========================================================= */
 .footer-icon {
     height: 30px;
     opacity: 0.9;
@@ -201,8 +217,6 @@ body[data-bs-theme="light"] footer .text-reset {
     color: #000000;
 }
 
-
-/* === TABLAS ========================================================= */
 body[data-bs-theme="dark"] .table thead th {
     color: #9bb5ff;
     border-bottom-color: rgba(255,255,255,0.12);
@@ -221,8 +235,6 @@ body[data-bs-theme="light"] .table tbody tr {
     border-color: rgba(0,0,0,0.05);
 }
 
-
-/* === CODE BLOCKS ==================================================== */
 .code-sql {
     border-radius: 6px;
     padding: 0.75rem;
@@ -241,8 +253,6 @@ body[data-bs-theme="light"] .code-sql {
     border: 1px solid rgba(0,0,0,0.1);
 }
 
-
-/* === BOTONES ======================================================== */
 body[data-bs-theme="light"] .btn-outline-light {
     color: #495057;
     border-color: #ced4da;
@@ -259,8 +269,6 @@ body[data-bs-theme="dark"] .btn-outline-light:hover {
     background-color: rgba(255,255,255,0.1);
 }
 
-
-/* === GENERAL ======================================================== */
 body {
     padding-top: 90px;
 }
@@ -272,4 +280,14 @@ body {
 .section-title {
     letter-spacing: 0.02em;
     font-weight: 600;
+}
+#contenedorTabla {
+    display: flex;
+    flex-direction: column;
+}
+
+#contenedorTabla .table-responsive {
+    flex: 1 1 auto;
+    max-height: none;
+    min-height: 0;
 }

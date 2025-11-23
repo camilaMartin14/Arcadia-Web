@@ -1,7 +1,5 @@
 import { API_BASE } from "./config.js";
 
-
-
 const $ = (sel) => document.querySelector(sel);
 const fmtCurrency = new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 });
 
@@ -29,7 +27,6 @@ const show = (id, v) => $(id).classList.toggle('d-none', !v);
 function applyTheme(theme) {
   document.body.setAttribute('data-bs-theme', theme);
 
-  // Usamos los nuevos IDs del Navbar unificado
   const icon = document.getElementById('theme-icon');
   const btnTema = document.getElementById('theme-toggle');
 
@@ -47,6 +44,7 @@ function applyTheme(theme) {
   }
 
   localStorage.setItem('tema', theme);
+  localStorage.setItem('theme', theme);
 }
 
 function toggleTheme() {
@@ -201,7 +199,6 @@ async function cargarCatalogos() {
 
     console.log("Catálogos cargados:", catalogos);
 
-    const response = await fetch(url); // Aunque esta línea no afecta la carga de catálogos, la mantengo si tiene algún propósito lateral.
   } catch (err) {
     console.error("Error al cargar catálogos:", err);
   }
@@ -293,14 +290,11 @@ function obtenerIdsDesdeLibro(libro, clave) {
 
 function setSeleccionDesdeLibro(tipo, ids) {
     const todos = catalogos[tipo] || [];
-    // Normaliza los IDs del libro a String para una comparación consistente
     const normalizados = (ids || []).map((id) => String(id)).filter((id) => id && id.length > 0);
     const normalizadosSet = new Set(normalizados);
 
     let seleccionados = todos
-        // 1. Mapear cada ítem del catálogo usando la función de ayuda
         .map((item) => extractIdAndName(tipo, item)) 
-        // 2. Filtrar solo aquellos cuyos IDs coinciden con los del libro
         .filter((item) => item.id && normalizadosSet.has(item.id)) 
         .map((item) => ({ id: item.id, nombre: item.nombre }));
         
@@ -320,7 +314,6 @@ function renderDropdown(tipo, items, config = {}) {
     lista.innerHTML = '';
 
     items.forEach((item) => {
-        // 🔑 CAMBIO CLAVE: Usa la función de ayuda para obtener los valores
         const { id, nombre } = extractIdAndName(tipo, item);
         
         if (!id || id === 'null' || id === 'undefined') return; // Si no hay ID válido, no se renderiza
@@ -333,10 +326,8 @@ function renderDropdown(tipo, items, config = {}) {
           </label>`;
         const checkbox = li.querySelector('input');
         checkbox.addEventListener('change', () => {
-            // Asegúrate de que el id sea String
             toggleSeleccion(tipo, id, nombre, checkbox.checked, config.multiple === false);
             if (config.multiple === false && checkbox.checked) {
-                // Si es selección única (como idiomas, aunque ahora se usa popularSelect), desmarca los otros
                 lista.querySelectorAll('input[type="checkbox"]').forEach((chk) => {
                     if (chk !== checkbox) {
                         chk.checked = false;
@@ -350,9 +341,7 @@ function renderDropdown(tipo, items, config = {}) {
     actualizarResumen(tipo);
 }
 
-// CÓDIGO A PEGAR/REEMPLAZAR:
 function toggleSeleccion(tipo, id, nombre, checked, esUnico = false) {
-    // Convierte el ID a String para consistencia con el valor del checkbox (que es String)
     const strId = String(id); 
 
     if (esUnico) {
@@ -361,7 +350,6 @@ function toggleSeleccion(tipo, id, nombre, checked, esUnico = false) {
         const arreglo = selecciones[tipo];
         if (!Array.isArray(arreglo)) return;
 
-        // Compara usando el ID como String
         const existe = arreglo.find((item) => String(item.id) === strId);
         if (checked && !existe) {
             arreglo.push({ id: strId, nombre });
@@ -518,15 +506,9 @@ if (mFecha) {
   }
 
   if (soloLectura) {
-    if ((selecciones.categorias || []).length === 0) {
-      setResumenNombres('categorias', libro?.categorias ?? libro?.Categorias ?? []);
-    }
-    if ((selecciones.generos || []).length === 0) {
-      setResumenNombres('generos', libro?.generos ?? libro?.Generos ?? []);
-    }
-    if ((selecciones.autores || []).length === 0) {
-      setResumenNombres('autores', libro?.autores ?? libro?.Autores ?? []);
-    }
+    setResumenNombres('categorias', libro?.categorias ?? libro?.Categorias ?? []);
+    setResumenNombres('generos', libro?.generos ?? libro?.Generos ?? []);
+    setResumenNombres('autores', libro?.autores ?? libro?.Autores ?? []);
   }
   const idiomaSeleccionado = libro?.idIdioma ?? libro?.IdIdioma ?? '';
   setSelectValues('#mIdioma', idiomaSeleccionado ? [idiomaSeleccionado] : []);
@@ -684,7 +666,7 @@ $('#btnABMAlta').addEventListener('click', () => abrirModal('alta'));
 
 $('#vistaTabla').addEventListener('change', () => { vista='tabla'; render(); });
 
-$('#btnTema')?.addEventListener('click', toggleTheme);
+document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 
 document.addEventListener('DOMContentLoaded', async () => {
   const temaGuardado = localStorage.getItem('tema');
@@ -876,3 +858,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('libPrev')?.addEventListener('click', () => { if (libPage > 1) { libPage--; render(); } });
   document.getElementById('libNext')?.addEventListener('click', () => { const totalPages = Math.max(1, Math.ceil(ultimoListado.length / libPageSize)); if (libPage < totalPages) { libPage++; render(); } });
 });
+
+window.catalogos = catalogos;
+window.cargarCatalogos = cargarCatalogos;

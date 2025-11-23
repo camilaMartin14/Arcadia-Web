@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Libreria_API.DTOs
 {
-    // ... (Otros DTOs: DashboardAuthorDTO, DashboardShippingDTO, DashboardPaymentDTO)
-
     public class DashboardSummaryDTO
     {
         public DateTime FechaInicio { get; set; }
@@ -14,8 +12,6 @@ namespace Libreria_API.DTOs
         public int TotalUnidadesAutores { get; set; }
         public int TotalEnvios { get; set; }
         public decimal TotalFacturacion { get; set; }
-        
-        // ¡Nuevas propiedades solicitadas!
         public int ClientesActivos { get; set; }
         public int EnviosPendientes { get; set; }
         

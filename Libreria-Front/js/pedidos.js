@@ -60,7 +60,6 @@ function requireLogin() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Inicializar los modales de Bootstrap
   const modalPedidoEl = document.getElementById('modalPedido');
   if (modalPedidoEl) {
     modalPedidoBS = new bootstrap.Modal(modalPedidoEl);
@@ -75,7 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
     modalEstadoBS = new bootstrap.Modal(modalEstadoEl);
   }
 
-  // Tema y Usuario
   const temaGuardado = localStorage.getItem("tema");
   const temaInicial =
     temaGuardado ||
@@ -102,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "login.html";
   });
 
-  // Eventos de Botones Principales
   $("#btnBuscarPedidos")?.addEventListener("click", cargarPedidos);
   $("#btnLimpiarFiltros")?.addEventListener("click", limpiarFiltros);
 
@@ -113,11 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   $("#btnNuevoPedido")?.addEventListener("click", () => abrirFormularioNuevo());
 
-  // Eventos del Formulario (Modal Pedido)
   $("#formPedido")?.addEventListener("submit", onSubmitPedido);
   $("#btnAgregarDetalle")?.addEventListener("click", agregarFilaDetalle);
 
-  // Eventos del Modal Estado
   $("#btnGuardarEstado")?.addEventListener("click", guardarCambioEstado);
  
   const fDesde = document.getElementById('filtroFechaDesde');
@@ -146,12 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
-  // Carga inicial
   Promise.all([cargarCatalogoLibros(), cargarCatalogoClientes()])
     .then(() => cargarPedidos());
 });
-
-// --- FUNCIONES DE CARGA DE DATOS ---
 
 async function cargarPedidos() {
   const desde = document.getElementById('filtroFechaDesde')?.value || '';
@@ -284,7 +276,6 @@ function limpiarFiltros() {
   cargarPedidos();
 }
 
-// --- FUNCIONES GLOBALES PARA ACCIONES (Ver, Editar) ---
 window.eliminarPedido = async function (nroPedido) {
     if (!confirm(`¿Estás seguro de que deseas dar de baja el Pedido #${nroPedido}? Esta acción es una baja lógica.`)) {
         return;
@@ -334,8 +325,6 @@ window.editarPedido = async function (nroPedido) {
   }
 };
 
-// --- LÓGICA DEL MODAL DE PEDIDO (ABM) ---
-
 function abrirFormularioNuevo() {
   modoFormulario = "crear";
   pedidoSeleccionado = null;
@@ -375,18 +364,14 @@ function abrirFormularioEdicion(pedido, soloLectura) {
   modoFormulario = soloLectura ? "ver" : "editar";
   pedidoSeleccionado = pedido.nroPedido;
 
-  // 1. Setear Título
   const titulo = $("#tituloModalPedido");
   if (titulo) {
     titulo.textContent = soloLectura ? `Ver Pedido #${pedido.nroPedido}` : `Editar Pedido #${pedido.nroPedido}`;
   }
 
-  // 2. Cargar Datos Cabecera
   $("#nroPedido").value = pedido.nroPedido;
-  // Ajuste de formato fecha para input datetime-local
   $("#fecha").value = pedido.fecha ? new Date(pedido.fecha).toISOString().slice(0, 16) : "";
   document.getElementById("fecha").disabled = true;
-  // Ajuste de formato fecha para input date
   $("#fechaEntrega").value = pedido.fechaEntrega ? pedido.fechaEntrega.split('T')[0] : "";
   const hoy = new Date().toISOString().slice(0, 10);
   const fechaEnt = document.getElementById('fechaEntrega');
@@ -424,7 +409,6 @@ function abrirFormularioEdicion(pedido, soloLectura) {
   $("#idFormaEnvio").value = pedido.idFormaEnvio ?? "";
   $("#instrucciones").value = pedido.instruccionesAdicionales ?? "";
 
-  // 3. Cargar Detalles
   const tbodyDetalles = $("#tbodyDetalles");
   if (tbodyDetalles) {
     tbodyDetalles.innerHTML = "";
@@ -485,7 +469,6 @@ function abrirFormularioEdicion(pedido, soloLectura) {
     limpiarFilasVaciasDetalles();
   }
 
-  // 4. Configurar estado de campos (Lectura vs Edición)
   toggleSoloLectura(soloLectura);
   const thAcc = document.getElementById('thAccionesDetalle');
   if (thAcc) thAcc.classList.toggle('d-none', soloLectura);
@@ -506,7 +489,6 @@ function abrirFormularioEdicion(pedido, soloLectura) {
 }
 
 function toggleSoloLectura(bloquear) {
-    // Bloquear/Desbloquear inputs del formulario
     const campos = document.querySelectorAll("#formPedido input, #formPedido select, #formPedido textarea");
     campos.forEach(el => el.disabled = bloquear);
 
@@ -515,14 +497,12 @@ function toggleSoloLectura(bloquear) {
       codDisp.disabled = true;
     }
 
-    // Ocultar/Mostrar botón Guardar
     const btnGuardar = $("#btnGuardarPedido");
     if (btnGuardar) {
         if (bloquear) btnGuardar.classList.add("d-none");
         else btnGuardar.classList.remove("d-none");
     }
 
-    // Ocultar/Mostrar botón Agregar Detalle
     const btnAgregar = $("#btnAgregarDetalle");
     if (btnAgregar) {
         if (bloquear) btnAgregar.classList.add("d-none");
@@ -595,9 +575,6 @@ function agregarFilaDetalle() {
 async function onSubmitPedido(e) {
   e.preventDefault();
     console.log("-> Se ejecutó onSubmitPedido");
-
-
-  // Si estamos en modo ver, no hacemos submit (aunque el botón está oculto)
   if (modoFormulario === "ver") return;
 
   const hoyStr = new Date().toISOString().slice(0,10);
@@ -614,7 +591,6 @@ async function onSubmitPedido(e) {
     return;
   }
 
-  // Validación básica
   if (!pedidoBody.codCliente || !pedidoBody.fechaEntrega) {
       alert("Por favor complete los campos obligatorios.");
       return;
@@ -706,8 +682,6 @@ function armarBodyPedido() {
 
   return body;
 }
-
-// --- LÓGICA DE CAMBIO DE ESTADO ---
 
 window.cambiarEstado = async function (nroPedido) {
   const pedido = pedLast.find(p => String(p.nroPedido ?? p.NroPedido) === String(nroPedido));

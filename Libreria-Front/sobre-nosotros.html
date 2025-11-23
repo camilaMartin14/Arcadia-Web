@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <style>
-        
         .navbar .navbar-brand h1 {
             color: #ffffff !important;
         }
@@ -18,7 +17,6 @@
         .navbar .fa-solid.fa-book-bookmark {
             color: #ffffff !important;
         }
-
 
         body {
             background-image: url('images/fondo-sobre-nosotros.jpg'); 
@@ -40,21 +38,21 @@
         }
 
         .video-inicial-title {
-            margin-top: 0.5rem; /* más cerca del navbar */
-            font-size: 4rem; /* un poco más pequeño */
+            margin-top: 0.5rem; 
+            font-size: 4rem; 
         }
 
         .card {
-            padding: 2rem !important; /* reducir padding general */
+            padding: 2rem !important; 
         }
 
         .card h2 {
-            font-size: 1.5rem; /* un toque más pequeño */
+            font-size: 1.5rem;
         }
 
         .card p,
         .card li {
-            font-size: 1rem; /* ajustar texto para que no se vea tan grande */
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -164,13 +162,11 @@
         </style>
         
         <div class="row align-items-start">
-
             <div class="col-md-6 col-lg-3 mb-4">
                 <h6 class="text-uppercase fw-bold mb-3">Arcadia</h6>
                 <ul class="list-unstyled">
                     <li><a href="sobre-nosotros.html" class="text-reset text-decoration-none footer-link">Sobre Nosotros</a></li>
                     <li><p class="mb-0"><a href="sucursales.html" class="text-reset text-decoration-none">Sucursales</a></p></li>
-                    
                 </ul>
             </div>
 
@@ -206,7 +202,6 @@
                     </a>
                 </p>
             </div>
-
         </div>
 
         <hr class="mb-4 mt-3 border-secondary-subtle">
@@ -275,7 +270,6 @@
 
     function updateUIForUser() {
         const userDataJSON = localStorage.getItem('usuario');
-
         const userGreetingText = document.getElementById('user-greeting-text');
         const userMenuDropdown = document.getElementById('user-menu-dropdown');
         const btnAccederHeader = document.getElementById('btnAccederHeader');
@@ -315,11 +309,9 @@
     function handleLogout() {
         localStorage.removeItem('usuario');
         localStorage.removeItem('token');
-
         updateUIForUser();
         window.location.href = 'index.html';
     }
-
     document.addEventListener("DOMContentLoaded", updateUIForUser);
 </script>
 </body>

@@ -120,6 +120,7 @@ namespace Libreria_API.Services.Implementations
                 Isbn = BuildIsbn(dto.Isbn),
                 Descripcion = BuildDescripcion(dto.Descripcion),
                 FechaLanzamiento = BuildFecha(dto.FechaLanzamiento),
+                Activo = true,
                 AutoresLibros = new List<AutoresLibro>(),
                 LibrosCategoria = new List<LibrosCategoria>(),
                 LibrosGeneros = new List<LibrosGenero>()
@@ -135,6 +136,26 @@ namespace Libreria_API.Services.Implementations
 
             _repo.Add(libro);
             _repo.SaveChanges();
+
+            foreach (var idCat in categoriasIds)
+            {
+                _context.LibrosCategorias.Add(new LibrosCategoria
+                {
+                    IdLibro = libro.CodLibro,
+                    IdCategoria = idCat
+                });
+            }
+
+            foreach (var idGen in generosIds)
+            {
+                _context.LibrosGeneros.Add(new LibrosGenero
+                {
+                    IdLibro = libro.CodLibro,
+                    IdGenero = idGen
+                });
+            }
+
+            _context.SaveChanges();
 
             var creado = _repo.GetByCodigo(libro.CodLibro)!;
             return MapToDto(creado);
@@ -171,6 +192,8 @@ namespace Libreria_API.Services.Implementations
                 libro.FechaLanzamiento = dto.FechaLanzamiento.Value;
 
             ReemplazarAutores(libro.CodLibro, autoresIds);
+            ReemplazarCategorias(libro.CodLibro, categoriasIds);
+            ReemplazarGeneros(libro.CodLibro, generosIds);
 
             _repo.SaveChanges();
 
@@ -518,6 +541,38 @@ namespace Libreria_API.Services.Implementations
                 {
                     IdAutor = idAutor,
                     IdLibro = codLibro // Asignamos ambas claves foráneas
+                });
+            }
+        }
+
+        private void ReemplazarCategorias(int codLibro, List<int> nuevosIds)
+        {
+            _context.LibrosCategorias
+                .Where(lc => lc.IdLibro == codLibro)
+                .ExecuteDelete();
+
+            foreach (var idCat in nuevosIds)
+            {
+                _context.LibrosCategorias.Add(new LibrosCategoria
+                {
+                    IdLibro = codLibro,
+                    IdCategoria = idCat
+                });
+            }
+        }
+
+        private void ReemplazarGeneros(int codLibro, List<int> nuevosIds)
+        {
+            _context.LibrosGeneros
+                .Where(lg => lg.IdLibro == codLibro)
+                .ExecuteDelete();
+
+            foreach (var idGen in nuevosIds)
+            {
+                _context.LibrosGeneros.Add(new LibrosGenero
+                {
+                    IdLibro = codLibro,
+                    IdGenero = idGen
                 });
             }
         }

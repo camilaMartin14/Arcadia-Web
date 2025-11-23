@@ -10,7 +10,6 @@ namespace Libreria_API.DTOs
         public int IdIdioma { get; set; }
         public decimal Precio { get; set; }
         public int Stock { get; set; }
-
         public List<int> IdsAutores { get; set; } = new();
         public List<int> IdsCategorias { get; set; } = new();
         public List<int> IdsGeneros { get; set; } = new();

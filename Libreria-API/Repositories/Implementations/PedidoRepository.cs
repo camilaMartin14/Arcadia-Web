@@ -14,7 +14,6 @@ namespace Libreria_API.Repositories.Implementations
 
         public void Create(Pedido pedido)
         {
-            // Forzar precio desde base y validar stock por cada detalle
             if (pedido.DetallePedidos != null)
             {
                 foreach (var detalle in pedido.DetallePedidos)
@@ -38,7 +37,6 @@ namespace Libreria_API.Repositories.Implementations
                 detalle.NroPedido = pedido.NroPedido;
             }
 
-            // Guardar detalles actualizados
             if (pedido.DetallePedidos.Any())
                 _context.SaveChanges();
 

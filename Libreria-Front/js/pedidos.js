@@ -128,17 +128,16 @@ document.addEventListener("DOMContentLoaded", () => {
 // --- FUNCIONES DE CARGA DE DATOS ---
 
 async function cargarPedidos() {
-  const fecha = $("#filtroFecha")?.value;
-  const codCli = $("#filtroCodCliente")?.value;
-  const params = new URLSearchParams();
+  const desde = document.getElementById('filtroFechaDesde')?.value || '';
+  const hasta = document.getElementById('filtroFechaHasta')?.value || '';
 
-  if (fecha) params.append("fecha", fecha);
-  if (codCli) params.append("codigoCliente", codCli);
-
-  const url = params.toString() ? `${API_PEDIDOS}?${params.toString()}` : API_PEDIDOS;
+  if (desde && hasta && hasta < desde) {
+    alert('La fecha hasta no puede ser menor a la fecha desde.');
+    return;
+  }
 
   try {
-    const resp = await fetch(url);
+    const resp = await fetch(API_PEDIDOS);
     if (!resp.ok) throw new Error("Error al obtener pedidos");
     const pedidos = await resp.json();
     const filtrados = filtrarPedidos(pedidos);
@@ -206,6 +205,9 @@ function renderPedidos(pedidos) {
         const activoFlag = (p.activo === true) || (p.activo === 1) || (String(p.activo).toLowerCase() === 'true');
         const activo = activoFlag ? 'Sí' : 'No';
         const nombreCompleto = [p.nombreCliente, p.apellidoCliente].filter(Boolean).join(' ');
+        const estadoActual = String(p.estadoActual ?? p.EstadoActual ?? '').toLowerCase();
+        const estadoDisabled = estadoActual === 'recibido' ? 'disabled' : '';
+        const estadoTitle = estadoDisabled ? ' title="Pedidos recibidos no pueden cambiar de estado"' : '';
         tr.innerHTML = `
             <td>${p.nroPedido}</td>
             <td>${new Date(p.fecha).toLocaleString()}</td>
@@ -220,7 +222,7 @@ function renderPedidos(pedidos) {
                 <button class="btn btn-sm btn-outline-warning action-sm" onclick="editarPedido(${p.nroPedido})">
                     <i class="bi bi-pencil"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-secondary action-sm" onclick="cambiarEstado(${p.nroPedido})">
+                <button class="btn btn-sm btn-outline-secondary action-sm" ${estadoDisabled}${estadoTitle} onclick="cambiarEstado(${p.nroPedido})">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-danger action-sm" onclick="eliminarPedido(${p.nroPedido})">
@@ -671,12 +673,18 @@ function armarBodyPedido() {
 // --- LÓGICA DE CAMBIO DE ESTADO ---
 
 window.cambiarEstado = async function (nroPedido) {
+  const pedido = pedLast.find(p => String(p.nroPedido ?? p.NroPedido) === String(nroPedido));
+  const estadoActual = String(pedido?.estadoActual ?? pedido?.EstadoActual ?? '').toLowerCase();
+  if (estadoActual === 'recibido') {
+    alert('Los pedidos recibidos no se pueden cambiar de estado.');
+    return;
+  }
+
   pedidoSeleccionado = nroPedido;
-  $("#estadoNroPedido").textContent = nroPedido;
+  document.getElementById("estadoNroPedido").textContent = nroPedido;
   
-  // Resetear campos del modal
-  $("#nuevoEstado").value = "";
-  $("#observacionesEstado").value = "";
+  document.getElementById("nuevoEstado").value = "";
+  document.getElementById("observacionesEstado").value = "";
 
   modalEstadoBS.show();
 };
@@ -687,6 +695,10 @@ async function guardarCambioEstado() {
 
   if (!nuevoEstadoId) {
     alert("Debe seleccionar un nuevo estado.");
+    return;
+  }
+
+  if (!confirm('¿Seguro desea actualizar el estado?')) {
     return;
   }
 

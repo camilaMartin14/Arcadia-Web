@@ -56,20 +56,32 @@ function toggleTheme() {
 }
 
 function buildParams() {
-  const p = new URLSearchParams();
-  const titulo = $('#fTitulo').value.trim();
-  const autor = $('#fAutor').value.trim();
-  const categoria = $('#fCategoria').value.trim();
-  const idioma = $('#fIdioma').value.trim();
-  const genero = $('#fGenero').value.trim();
-  
+  const p = new URLSearchParams();
+  const titulo = $('#fTitulo').value.trim();
+  const autor = $('#fAutor').value.trim();
+  const catId = $('#fCategoria').value.trim();
+  const idiId = $('#fIdioma').value.trim();
+  const genId = $('#fGenero').value.trim();
+  
   const mostrarSoloActivos = $('#filtroActivos').checked; 
 
-  if (titulo)    p.append('titulo', titulo);
-  if (autor)     p.append('autor', autor);
-  if (categoria) p.append('categoria', categoria);
-  if (idioma)    p.append('idioma', idioma);
-  if (genero)    p.append('genero', genero);
+  if (titulo)    p.append('titulo', titulo);
+  if (autor)     p.append('autor', autor);
+  if (catId) {
+    const item = (catalogos.categorias || []).find(it => String(extractIdAndName('categorias', it).id) === String(catId));
+    const nombre = item ? extractIdAndName('categorias', item).nombre : '';
+    if (nombre) p.append('categoria', nombre);
+  }
+  if (idiId) {
+    const item = (catalogos.idiomas || []).find(it => String(extractIdAndName('idiomas', it).id) === String(idiId));
+    const nombre = item ? extractIdAndName('idiomas', item).nombre : '';
+    if (nombre) p.append('idioma', nombre);
+  }
+  if (genId) {
+    const item = (catalogos.generos || []).find(it => String(extractIdAndName('generos', it).id) === String(genId));
+    const nombre = item ? extractIdAndName('generos', item).nombre : '';
+    if (nombre) p.append('genero', nombre);
+  }
 
   if (mostrarSoloActivos) {
     p.append('activo', 'true');
@@ -113,10 +125,17 @@ const data = await res.json();
         return idB - idA;
     });
 
-    const editorialTxt = ($('#fEditorial')?.value || '').toLowerCase();
+    const editorialId = Number($('#fEditorial')?.value || 0);
     const anioVal = Number($('#fAnio')?.value || 0);
-    if (editorialTxt) {
-      ultimoListado = ultimoListado.filter(l => String(l.editorial ?? l.Editorial ?? '').toLowerCase().includes(editorialTxt));
+    if (editorialId) {
+      const edItem = (catalogos.editoriales || []).find(it => String(extractIdAndName('editoriales', it).id) === String(editorialId));
+      const edNombre = edItem ? extractIdAndName('editoriales', edItem).nombre.toLowerCase() : '';
+      ultimoListado = ultimoListado.filter(l => {
+        const lid = Number(l.idEditorial ?? l.IdEditorial ?? 0);
+        if (lid) return lid === editorialId;
+        const lname = String(l.editorial ?? l.Editorial ?? '').toLowerCase();
+        return edNombre ? lname === edNombre : true;
+      });
     }
     if (anioVal) {
       ultimoListado = ultimoListado.filter(l => {
@@ -191,11 +210,16 @@ async function cargarCatalogos() {
 
 
 function renderCatalogoSelects() {
-  renderDropdown('autores', catalogos.autores);
-  renderDropdown('categorias', catalogos.categorias);
-  renderDropdown('generos', catalogos.generos);
-  popularSelect('#mIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+	 renderDropdown('autores', catalogos.autores);
+	 renderDropdown('categorias', catalogos.categorias);
+	 renderDropdown('generos', catalogos.generos);
+	 popularSelect('#mIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
 popularSelect('#mEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
+
+  popularSelect('#fIdioma', catalogos.idiomas, { tipo: 'idiomas', placeholder: 'Seleccioná un idioma', incluyeVacio: true });
+  popularSelect('#fGenero', catalogos.generos, { tipo: 'generos', placeholder: 'Seleccioná un género', incluyeVacio: true });
+  popularSelect('#fCategoria', catalogos.categorias, { tipo: 'categorias', placeholder: 'Seleccioná una categoría', incluyeVacio: true });
+  popularSelect('#fEditorial', catalogos.editoriales, { tipo: 'editoriales', placeholder: 'Seleccioná una editorial', incluyeVacio: true });
 
 }
 

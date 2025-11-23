@@ -39,12 +39,32 @@
 
               <div class="mb-3">
                 <label class="form-label">Contrase&ntilde;a</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  required
-                  autocomplete="new-password">
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    required
+                    autocomplete="new-password">
+                  <button class="btn btn-outline-secondary" type="button" id="togglePassword" aria-label="Mostrar/Ocultar contraseña">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Confirmar contrase&ntilde;a</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="passwordConfirm"
+                    required
+                    autocomplete="new-password">
+                  <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirm" aria-label="Mostrar/Ocultar confirmación">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
               </div>
 
               <div class="mb-3">
@@ -68,6 +88,9 @@
   <script>
     const mensajeEstado = document.getElementById("mensaje");
     const passwordInput = document.getElementById("password");
+    const passwordConfirmInput = document.getElementById("passwordConfirm");
+    const togglePasswordBtn = document.getElementById("togglePassword");
+    const togglePasswordConfirmBtn = document.getElementById("togglePasswordConfirm");
     
     function applyTheme(theme) {
         const body = document.body;
@@ -170,9 +193,43 @@
       return true;
     }
 
+    function validarConfirmPassword(passInput, confirmInput, mostrarEstado = false) {
+      if (!passInput || !confirmInput) return true;
+      const error = (confirmInput.value || "") === (passInput.value || "") ? "" : "Las contraseñas no coinciden.";
+      confirmInput.setCustomValidity(error);
+      if (error) {
+        if (mostrarEstado) {
+          mostrarMensaje(error, "danger", "passwordConfirm");
+        }
+        return false;
+      }
+      if (mensajeEstado?.dataset.source === "passwordConfirm") {
+        limpiarMensaje();
+      }
+      return true;
+    }
+
     if (passwordInput) {
       passwordInput.addEventListener("input", () => validarPassword(passwordInput));
     }
+
+    togglePasswordBtn?.addEventListener("click", () => {
+      const icon = togglePasswordBtn.querySelector('i');
+      const visible = passwordInput?.type === 'text';
+      if (passwordInput) passwordInput.type = visible ? 'password' : 'text';
+      if (icon) icon.className = visible ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
+
+    if (passwordConfirmInput) {
+      passwordConfirmInput.addEventListener("input", () => validarConfirmPassword(passwordInput, passwordConfirmInput));
+    }
+
+    togglePasswordConfirmBtn?.addEventListener("click", () => {
+      const icon = togglePasswordConfirmBtn.querySelector('i');
+      const visible = passwordConfirmInput?.type === 'text';
+      if (passwordConfirmInput) passwordConfirmInput.type = visible ? 'password' : 'text';
+      if (icon) icon.className = visible ? 'bi bi-eye' : 'bi bi-eye-slash';
+    });
 
     // --- Registro ---
     const form = document.getElementById("registerForm");
@@ -191,6 +248,12 @@
       if (!validarPassword(passwordInput, true)) {
         passwordInput.reportValidity();
         passwordInput.focus();
+        return;
+      }
+
+      if (!validarConfirmPassword(passwordInput, passwordConfirmInput, true)) {
+        passwordConfirmInput.reportValidity();
+        passwordConfirmInput.focus();
         return;
       }
 

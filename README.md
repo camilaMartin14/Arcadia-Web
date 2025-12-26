@@ -1,50 +1,25 @@
 # Arcadia — E-commerce de Libros
 
-Arcadia es una aplicación e-commerce desarrollada con **.NET**, **SQL Server**, **HTML**, **CSS** y **JavaScript**. Implementa una arquitectura en capas con Repository, Services, Controllers y DTOs, junto con un esquema de autenticación basado en **JWT**. El sistema permite administrar un catálogo completo de libros y ejecutar operaciones transaccionales como pedidos y sus respectivos detalles.
+Arcadia es una aplicación e-commerce desarrollada con .NET y SQL Server en el backend, y HTML, CSS y JavaScript en el frontend. Permite la gestión integral de un catálogo de libros y la ejecución de operaciones transaccionales como pedidos y sus detalles.
 
-Este desarrollo surge como **proyecto integrador** de mi primer año en la Tecnicatura Universitaria en Programación, y me permitió consolidar conocimientos de POO, modelado y gestión de bases de datos relacionales, y arquitectura en capas y trabajo en equipo. 
+El proyecto fue desarrollado como **proyecto integrador** del primer año de la Tecnicatura Universitaria en Programación, consolidando conocimientos de POO, modelado de bases de datos relacionales, arquitectura en capas y trabajo en equipo.
 
-## 📽️ Demostración del Proyecto A IMPLEMENTAR
+## Funcionalidades
+- Catálogo de libros con filtros y detalles extendidos
+- Gestión de pedidos y relaciones transaccionales
+- ABMC de libros, autores y editoriales
+- Login y registro con validaciones server-side
+- Autenticación y autorización mediante JWT
+- Dashboard con métricas básicas de ventas
 
-* ------> Video demostrativo de funcionalidades
-* ------>  Diagrama ER y capturas de interfaz
+## Tecnologías y arquitectura
+- Backend: .NET Web API, SQL Server, JWT  
+- Frontend: HTML, CSS, JavaScript  
+- Arquitectura en capas: Controllers, Services, Repository y DTOs
 
-## 🚀 Contenidos principales
+## Demo
+La demo en video, el diagrama ER y las capturas de interfaz se encuentran en proceso de implementación.
 
-* **Catálogo de libros** con filtros, detalles e información extendida.
-* **Gestión de pedidos** y cruce completo con tablas de soporte (Libros, Autores, Categorías).
-* **Login y registro seguros** con validación server-side (desde el Backend).
-* **Autenticación JWT** para proteger endpoints.
-* **Dashboard** con datos resumidos de pedidos y ventas.
-* **ABMC** para tablas de soporte (libros, autores, editoriales).
-* Arquitectura escalable basada en buenas prácticas de diseño.
+🌐 **Deploy (Frontend)**  
+https://arcadia-mu-five.vercel.app/
 
-## 🧱 Arquitectura
-
-* **Backend (.NET Web API)**
-
-  * Controllers REST
-  * Services con lógica de negocio
-  * Repository Pattern para acceso a datos
-  * DTOs para desacoplar modelos
-* **Base de datos (SQL Server)**
-
-  * Modelo relacional con claves foráneas, tablas transaccionales y tablas soporte
-* **Frontend (HTML/CSS/JS)**
-
-  * Consumo de API mediante `fetch`
-  * Diseño responsive y estético
-
-## 🔐 Seguridad
-
-* JWT con expiración
-* Hashing de contraseñas
-* Validaciones en cliente y servidor
-
-## 📡 Endpoints principales (ejemplos)
-
-* `POST /api/auth/register` — Registro
-* `POST /api/auth/login` — Login + JWT
-* `GET /api/libros` — Catálogo
-* `POST /api/pedidos` — Crear pedido (JWT)
-* `GET /api/pedidos/{id}` — Ver detalle

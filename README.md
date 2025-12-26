@@ -20,6 +20,6 @@ El proyecto fue desarrollado como **proyecto integrador** del primer año de la 
 ## Demo
 La demo en video, el diagrama ER y las capturas de interfaz se encuentran en proceso de implementación.
 
-🌐 **Deploy (Frontend)**  
-https://arcadia-mu-five.vercel.app/
+🌐 [Deploy de Arcadia](https://arcadia-mu-five.vercel.app)
+
 

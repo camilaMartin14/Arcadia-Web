@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Libreria_API.DTOs;
 using Libreria_API.Models;
 using Libreria_API.Services.Interfaces;
@@ -68,6 +68,13 @@ namespace Libreria_API.Controllers
             }
         }
 
+        [HttpGet("estados")]
+        public ActionResult<List<EstadoPedidoDTO>> GetEstadosPedido()
+        {
+            var estados = _service.GetEstadosPedido();
+            return Ok(estados);
+        }
+
         [HttpGet("{nroPedido}/estado")]
         public ActionResult<string> GetEstadoActual(int nroPedido)
         {
@@ -75,7 +82,7 @@ namespace Libreria_API.Controllers
             return Ok(estado);
         }
 
-        [HttpPut("{nroPedido}/estado")]
+        [HttpPut("{nroPedido:int}/estado")]
         public IActionResult UpdateStatus(int nroPedido, [FromBody] UpdateEstadoDTO dto)
         {
             try
@@ -92,7 +99,7 @@ namespace Libreria_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             try

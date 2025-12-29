@@ -584,7 +584,7 @@ function tomarPayload() {
 
   return {
     titulo: getVal('#mTitulo'),
-    idsAutores: selecciones.autores.map((item) => item.id),
+    idsAutores: selecciones.autores.map((item) => Number(item.id)),
     autores: [],
     
     idIdioma: idiomaSeleccionado,
@@ -593,10 +593,10 @@ function tomarPayload() {
     idEditorial: editorialSeleccionada,
     editorial: null,
     
-    idsGeneros: selecciones.generos.map((item) => item.id),
+    idsGeneros: selecciones.generos.map((item) => Number(item.id)),
     generos: [],
     
-    idsCategorias: selecciones.categorias.map((item) => item.id),
+    idsCategorias: selecciones.categorias.map((item) => Number(item.id)),
     categorias: [],
     
     precio: getNum('#mPrecio'),
@@ -684,6 +684,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelector('#formLibros')
       .addEventListener('submit', buscarLibros);
+
+  document.querySelector('#formABM')
+      ?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const id = document.getElementById('mId').value;
+          if (id) {
+              await guardarEdicion(id);
+          } else {
+              await guardarAlta();
+          }
+      });
 
   document.querySelector('#filtroActivos')
       .addEventListener('change', buscarLibros);
@@ -820,6 +831,11 @@ document.addEventListener('click', async (e) => {
 
     const action = target.dataset.action;
     const id = target.dataset.id;
+
+    if (action === 'eliminar') {
+        await eliminarLibro(id);
+        return;
+    }
 
     if (action === 'ver' || action === 'editar') {
         try {

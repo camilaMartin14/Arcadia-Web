@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 const DEFAULT_API_BASE = "http://localhost:5157";
 const FALLBACK_API_BASES = [
@@ -42,7 +42,89 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     cargarUsuario();
+    
+    inicializarFiltros();
 });
+
+function inicializarFiltros() {
+    const filtroRango = document.getElementById('filtroRango');
+    const divFechaDesde = document.getElementById('divFechaDesde');
+    const divFechaHasta = document.getElementById('divFechaHasta');
+    const btnAplicarFiltro = document.getElementById('btnAplicarFiltro');
+
+    if (filtroRango) {
+        filtroRango.addEventListener('change', () => {
+            if (filtroRango.value === 'custom') {
+                divFechaDesde.classList.remove('d-none');
+                divFechaHasta.classList.remove('d-none');
+            } else {
+                divFechaDesde.classList.add('d-none');
+                divFechaHasta.classList.add('d-none');
+            }
+        });
+    }
+
+    if (btnAplicarFiltro) {
+        btnAplicarFiltro.addEventListener('click', () => {
+            cargarDashboard();
+        });
+    }
+}
+
+function obtenerParametrosFiltro() {
+    const filtroRango = document.getElementById('filtroRango');
+    if (!filtroRango) return 'meses=3';
+
+    const valor = filtroRango.value;
+    
+    if (valor === 'custom') {
+        const desde = document.getElementById('fechaDesde').value;
+        const hasta = document.getElementById('fechaHasta').value;
+        if (desde && hasta) {
+            return `fechaDesde=${desde}&fechaHasta=${hasta}`;
+        }
+        // Si faltan fechas, fallback a 3 meses
+        return 'meses=3'; 
+    }
+    
+    if (valor === 'last_week') {
+        const hoy = new Date();
+        const hace7dias = new Date();
+        hace7dias.setDate(hoy.getDate() - 7);
+        // Formato YYYY-MM-DD
+        const fDesde = hace7dias.toISOString().split('T')[0];
+        const fHasta = hoy.toISOString().split('T')[0];
+        return `fechaDesde=${fDesde}&fechaHasta=${fHasta}`;
+    }
+
+    if (valor === 'last_month') return 'meses=1';
+    
+    // Para valores numéricos (3, 6, 12)
+    return `meses=${valor}`;
+}
+
+function actualizarTextosFiltro() {
+    const filtroRango = document.getElementById('filtroRango');
+    if (!filtroRango) return;
+    
+    let texto = filtroRango.options[filtroRango.selectedIndex].text;
+    if (filtroRango.value === 'custom') {
+        const desde = document.getElementById('fechaDesde').value;
+        const hasta = document.getElementById('fechaHasta').value;
+        if(desde && hasta) texto = `Del ${desde} al ${hasta}`;
+    } else if (filtroRango.value === 'last_week') {
+        texto = "Última semana";
+    }
+
+    document.querySelectorAll('.card-header .text-secondary.small').forEach(el => {
+        // Evitar cambiar textos que no son del filtro (si hubiera otros)
+        // En este caso asumimos que los headers de cards en dashboard son para el filtro
+        if (el.textContent.includes('Últim') || el.textContent.includes('Del') || el.textContent.includes('Personalizado')) {
+             el.textContent = texto;
+        }
+    });
+}
+
 
 function inicializarBotonRefresco() {
     const boton = document.getElementById("refreshDashboardBtn");
@@ -162,6 +244,7 @@ async function cargarDashboard() {
     }
 
     dashboardLoading = true;
+    actualizarTextosFiltro();
     toggleRefreshButtonState(true, "Cargando datos...");
     mostrarPlaceholdersIniciales();
 
@@ -212,14 +295,16 @@ async function cargarDashboard() {
 function obtenerEndpoints() {
     const endpoints = [];
     const configBase = window.APP_CONFIG && window.APP_CONFIG.apiBaseUrl;
+    const params = obtenerParametrosFiltro();
+
     if (configBase) {
-        endpoints.push(`${configBase.replace(/\/$/, "")}/api/dashboard/resumen?meses=3`);
+        endpoints.push(`${configBase.replace(/\/$/, "")}/api/dashboard/resumen?${params}`);
     }
 
-    endpoints.push(`${DEFAULT_API_BASE.replace(/\/$/, "")}/api/dashboard/resumen?meses=3`);
+    endpoints.push(`${DEFAULT_API_BASE.replace(/\/$/, "")}/api/dashboard/resumen?${params}`);
 
     FALLBACK_API_BASES.forEach((base) => {
-        const url = `${base.replace(/\/$/, "")}/api/dashboard/resumen?meses=3`;
+        const url = `${base.replace(/\/$/, "")}/api/dashboard/resumen?${params}`;
         if (!endpoints.includes(url)) {
             endpoints.push(url);
         }
@@ -604,7 +689,16 @@ async function descargarResumenDashboard() {
 
         resetFuenteCuerpo();
         doc.text(`Generado: ${fechaTexto}`, marginX, cursorY);
-        cursorY += 10;
+        cursorY += 6;
+
+        if (ultimoResumenDashboard.fechaInicio && ultimoResumenDashboard.fechaFin) {
+            const fInicio = new Date(ultimoResumenDashboard.fechaInicio).toLocaleDateString("es-AR");
+            const fFin = new Date(ultimoResumenDashboard.fechaFin).toLocaleDateString("es-AR");
+            doc.text(`Período: ${fInicio} - ${fFin}`, marginX, cursorY);
+            cursorY += 10;
+        } else {
+            cursorY += 4;
+        }
 
         const secciones = construirSeccionesResumen(ultimoResumenDashboard);
 

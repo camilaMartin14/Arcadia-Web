@@ -141,9 +141,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   
-  Promise.all([cargarCatalogoLibros(), cargarCatalogoClientes()])
+  Promise.all([cargarCatalogoLibros(), cargarCatalogoClientes(), cargarEstadosPedido()])
     .then(() => cargarPedidos());
 });
+
+async function cargarEstadosPedido() {
+    try {
+        const resp = await fetch(`${API_PEDIDOS}/estados`);
+        if (!resp.ok) throw new Error("No se pudieron cargar los estados");
+        const estados = await resp.json();
+        
+        const select = document.getElementById("nuevoEstado");
+        if (!select) return;
+
+        // Mantener la opción por defecto
+        select.innerHTML = '<option value="">Seleccionar…</option>';
+
+        estados.forEach(est => {
+            const opt = document.createElement("option");
+            opt.value = est.id;
+            opt.textContent = est.nombre;
+            select.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Error cargando estados:", err);
+    }
+}
 
 async function cargarPedidos() {
   const desde = document.getElementById('filtroFechaDesde')?.value || '';
@@ -229,9 +252,14 @@ function renderPedidos(pedidos) {
         const activoFlag = (p.activo === true) || (p.activo === 1) || (String(p.activo).toLowerCase() === 'true');
         const activo = activoFlag ? 'Sí' : 'No';
         const nombreCompleto = [p.nombreCliente, p.apellidoCliente].filter(Boolean).join(' ');
-        const estadoActual = String(p.estadoActual ?? p.EstadoActual ?? '').toLowerCase();
+        
+        const estadoRaw = String(p.estadoActual ?? p.EstadoActual ?? '');
+        const estadoActual = estadoRaw.trim().toLowerCase();
+        
+        // Solo deshabilitar si es explícitamente 'recibido'
         const estadoDisabled = estadoActual === 'recibido' ? 'disabled' : '';
-        const estadoTitle = estadoDisabled ? ' title="Pedidos recibidos no pueden cambiar de estado"' : '';
+        const estadoTitle = estadoDisabled ? ' title="Pedidos recibidos no pueden cambiar de estado"' : ' title="Cambiar estado"';
+        
         tr.innerHTML = `
             <td>${p.nroPedido}</td>
             <td>${new Date(p.fecha).toLocaleString()}</td>
@@ -240,16 +268,16 @@ function renderPedidos(pedidos) {
             <td>${p.estadoActual ?? 'Sin estado'}</td>
             <td class="text-center">${activo}</td>
             <td class="text-end">
-                <button class="btn btn-sm btn-outline-info action-sm" onclick="verPedido(${p.nroPedido})">
+                <button class="btn btn-sm btn-outline-info action-sm" onclick="verPedido(${p.nroPedido})" title="Ver detalles">
                     <i class="bi bi-eye"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-warning action-sm" onclick="editarPedido(${p.nroPedido})">
+                <button class="btn btn-sm btn-outline-warning action-sm" onclick="editarPedido(${p.nroPedido})" title="Editar pedido">
                     <i class="bi bi-pencil"></i>
                 </button>
                 <button class="btn btn-sm btn-outline-secondary action-sm" ${estadoDisabled}${estadoTitle} onclick="cambiarEstado(${p.nroPedido})">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-danger action-sm" onclick="eliminarPedido(${p.nroPedido})">
+                <button class="btn btn-sm btn-outline-danger action-sm" onclick="eliminarPedido(${p.nroPedido})" title="Dar de baja">
                     <i class="bi bi-trash"></i>
                 </button>
             </td>`;
@@ -684,19 +712,48 @@ function armarBodyPedido() {
 }
 
 window.cambiarEstado = async function (nroPedido) {
+  if (!pedLast || pedLast.length === 0) {
+    console.warn("cambiarEstado: No hay pedidos en memoria local (pedLast vacío).");
+    return;
+  }
+
   const pedido = pedLast.find(p => String(p.nroPedido ?? p.NroPedido) === String(nroPedido));
-  const estadoActual = String(pedido?.estadoActual ?? pedido?.EstadoActual ?? '').toLowerCase();
+  
+  if (!pedido) {
+    console.error(`cambiarEstado: No se encontró el pedido #${nroPedido} en memoria.`);
+    alert("No se pudo localizar el pedido. Intente recargar la página.");
+    return;
+  }
+
+  const estadoRaw = String(pedido.estadoActual ?? pedido.EstadoActual ?? '');
+  const estadoActual = estadoRaw.trim().toLowerCase();
+
+  console.log(`Abriendo cambio de estado para Pedido #${nroPedido}. Estado actual: '${estadoRaw}' (normalizado: '${estadoActual}')`);
+
   if (estadoActual === 'recibido') {
     alert('Los pedidos recibidos no se pueden cambiar de estado.');
     return;
   }
 
   pedidoSeleccionado = nroPedido;
-  document.getElementById("estadoNroPedido").textContent = nroPedido;
+  const spanNro = document.getElementById("estadoNroPedido");
+  if (spanNro) spanNro.textContent = nroPedido;
   
-  document.getElementById("nuevoEstado").value = "";
+  const selectEstado = document.getElementById("nuevoEstado");
+  if (selectEstado) selectEstado.value = "";
 
-  modalEstadoBS.show();
+  if (modalEstadoBS) {
+    modalEstadoBS.show();
+  } else {
+    console.error("cambiarEstado: modalEstadoBS no está inicializado.");
+    const modalEl = document.getElementById('modalEstado');
+    if (modalEl) {
+        modalEstadoBS = new bootstrap.Modal(modalEl);
+        modalEstadoBS.show();
+    } else {
+        alert("Error interno: No se encuentra el modal de estado.");
+    }
+  }
 };
 
 async function guardarCambioEstado() {
@@ -713,6 +770,7 @@ async function guardarCambioEstado() {
 
   const body = {
     nuevoEstadoId: parseInt(nuevoEstadoId),
+    observaciones: ""
   };
 
   try {

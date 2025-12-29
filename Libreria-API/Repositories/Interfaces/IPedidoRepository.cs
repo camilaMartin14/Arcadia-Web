@@ -1,4 +1,4 @@
-﻿using Libreria_API.DTOs;
+using Libreria_API.DTOs;
 using Libreria_API.Models;
 
 namespace Libreria_API.Repositories.Interfaces
@@ -13,5 +13,6 @@ namespace Libreria_API.Repositories.Interfaces
         void Update(Pedido pedido);
         void Delete(int nroPedido);
         Task<bool> SoftDeletePedido(int id, bool estado);
+        List<EstadoPedidoDTO> GetEstadosPedido();
     }
 }

@@ -45,5 +45,8 @@ namespace Libreria_API.Services.Implementations
             var isUpdated = await _repo.SoftDeletePedido(id, false);
             return isUpdated;
         }
+
+        public List<EstadoPedidoDTO> GetEstadosPedido()
+            => _repo.GetEstadosPedido();
     }
 }

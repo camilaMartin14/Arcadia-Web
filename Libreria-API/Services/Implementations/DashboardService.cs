@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using System.Collections.Generic; // Necesario para List<T> en las firmas de m�todos
+using System.Collections.Generic; // Necesario para List<T> en las firmas de mtodos
 using Libreria_API.DTOs;
 using Libreria_API.Models;
 using Libreria_API.Services.Interfaces;
@@ -20,47 +20,63 @@ namespace Libreria_API.Services.Implementations
 
         private DashboardSummaryDTO? _cachedSummary;
         private DateTime _cacheTimestamp = DateTime.MinValue;
-        public DashboardSummaryDTO ObtenerResumen(int meses)
+
+        public DashboardSummaryDTO ObtenerResumen(DateTime fechaInicio, DateTime fechaFin)
         {
-            return GetOrCreateSummary(meses);
+            return GetOrCreateSummary(fechaInicio, fechaFin);
         }
 
-        public List<DashboardAuthorDTO> ObtenerAutoresMasVendidos(int meses)
+        public List<DashboardAuthorDTO> ObtenerAutoresMasVendidos(DateTime fechaInicio, DateTime fechaFin)
         {
-            return GetOrCreateSummary(meses).Autores;
+            return GetOrCreateSummary(fechaInicio, fechaFin).Autores;
         }
 
-        public List<DashboardPaymentDTO> ObtenerFormasPago(int meses)
+        public List<DashboardPaymentDTO> ObtenerFormasPago(DateTime fechaInicio, DateTime fechaFin)
         {
-            return GetOrCreateSummary(meses).Pagos;
+            return GetOrCreateSummary(fechaInicio, fechaFin).Pagos;
         }
 
-        public List<DashboardShippingDTO> ObtenerTiposEnvio(int meses)
+        public List<DashboardShippingDTO> ObtenerTiposEnvio(DateTime fechaInicio, DateTime fechaFin)
         {
-            return GetOrCreateSummary(meses).Envios;
+            return GetOrCreateSummary(fechaInicio, fechaFin).Envios;
         }
 
-        private DashboardSummaryDTO GetOrCreateSummary(int meses)
+        private DashboardSummaryDTO GetOrCreateSummary(DateTime fechaInicio, DateTime fechaFin)
         {
-            if (_cachedSummary != null && _cachedSummary.MesesConsiderados == meses && (DateTime.Now - _cacheTimestamp).TotalMinutes < 5)
+            // Normalizar fechas (ignorando horas/minutos si se desea, o usar precisión completa)
+            // Aquí comparamos hasta segundos o ticks, pero para cacheo de dashboard, fecha es suficiente.
+            if (_cachedSummary != null 
+                && _cachedSummary.FechaInicio.Date == fechaInicio.Date 
+                && _cachedSummary.FechaFin.Date == fechaFin.Date 
+                && (DateTime.Now - _cacheTimestamp).TotalMinutes < 5)
             {
                 return _cachedSummary;
             }
 
-            var mesesNormalizados = meses <= 0 ? 3 : meses;
-            var fechaFin = DateTime.Now;
-            var fechaInicio = fechaFin.AddMonths(-mesesNormalizados);
+            // Calcular meses aproximados para el DTO
+            var diffMeses = ((fechaFin.Year - fechaInicio.Year) * 12) + fechaFin.Month - fechaInicio.Month;
+            if (diffMeses <= 0) diffMeses = 1;
 
-            var resumen = ConstruirResumen(fechaInicio, fechaFin, mesesNormalizados);
+            var resumen = ConstruirResumen(fechaInicio, fechaFin, diffMeses);
 
             _cachedSummary = resumen;
             _cacheTimestamp = DateTime.Now;
             return resumen;
         }
+
         private DashboardSummaryDTO ConstruirResumen(DateTime fechaInicio, DateTime fechaFin, int mesesConsiderados)
         {
             var estadoCompletado = "ENTREGADO";
             var estadoPendiente = "EN PROCESO";
+
+            // Importante: Asegurar que fechaFin cubra hasta el final del día si viene sin hora
+            // Si fechaFin es "2023-10-25 00:00:00", no incluirá pedidos de ese día a las 10am.
+            // Ajustamos fechaFin para que sea el final del día si es necesario, o asumimos que el controller lo envía bien.
+            // Para seguridad:
+            if (fechaFin.Hour == 0 && fechaFin.Minute == 0 && fechaFin.Second == 0)
+            {
+                fechaFin = fechaFin.AddDays(1).AddTicks(-1);
+            }
 
             var pedidosRecientes = _context.Pedidos
                 .Include(p => p.DetallePedidos)
@@ -155,8 +171,8 @@ namespace Libreria_API.Services.Implementations
                 ClientesActivos = pedidosRecientes.Select(p => p.CodCliente).Distinct().Count(),
                 EnviosPendientes = pedidosConCalculos.Count(x => x.EstadoActual == estadoPendiente),
 
-                TotalUnidadesAutores = totalUnidadesAutores, // Puedes mantener este total si es un KPI
-                TotalEnvios = totalEnvios, // Puedes mantener este total si es un KPI
+                TotalUnidadesAutores = totalUnidadesAutores,
+                TotalEnvios = totalEnvios, 
                 Autores = autoresTop,
                 Envios = enviosAgrupados,
                 Pagos = pagosAgrupados

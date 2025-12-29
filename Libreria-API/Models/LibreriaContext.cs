@@ -15,6 +15,8 @@ public partial class LibreriaContext : DbContext
 
     public virtual DbSet<Autore> Autores { get; set; }
 
+    public virtual DbSet<EstadoPedido> EstadosPedidos { get; set; }
+
     public virtual DbSet<AutoresLibro> AutoresLibros { get; set; }
 
     public virtual DbSet<Barrio> Barrios { get; set; }
@@ -77,7 +79,7 @@ public partial class LibreriaContext : DbContext
     {
         modelBuilder.Entity<Autore>(entity =>
         {
-            entity.HasKey(e => e.IdAutor).HasName("pk_autor");
+            entity.HasKey(e => e.IdAutor).HasName("PK__autores__5FC3872DCA7C31ED");
 
             entity.ToTable("autores");
 
@@ -103,17 +105,41 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdNacionalidadNavigation).WithMany(p => p.Autores)
                 .HasForeignKey(d => d.IdNacionalidad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_autor_nacionalidad");
+                .HasConstraintName("FK__autores__id_naci__114A936A");
 
             entity.HasOne(d => d.IdSexoNavigation).WithMany(p => p.Autores)
                 .HasForeignKey(d => d.IdSexo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_autor_sexo");
+                .HasConstraintName("FK__autores__id_sexo__123EB7A3");
         });
+
+        modelBuilder.Entity<EstadoPedido>(entity =>
+        {
+        entity.HasKey(e => e.IdEstadoPedido)
+            .HasName("PK__Estados_Pedido");
+
+        entity.ToTable("Estados_Pedido");
+
+        entity.Property(e => e.IdEstadoPedido)
+            .HasColumnName("IdEstadoPedido");
+
+        entity.Property(e => e.Nombre)
+            .IsRequired()
+            .HasMaxLength(50)
+            .IsUnicode(false)
+            .HasColumnName("Nombre");
+
+        entity.HasMany(e => e.Pedidos)
+            .WithOne(p => p.EstadoPedido)
+            .HasForeignKey(p => p.IdEstadoPedido)
+            .HasConstraintName("FK_pedidos_estados_pedido");
+        });
+
+
 
         modelBuilder.Entity<AutoresLibro>(entity =>
         {
-            entity.HasKey(e => e.IdAutorLibro).HasName("pk_autor_libro");
+            entity.HasKey(e => e.IdAutorLibro).HasName("PK__autores___5CDCA301FCAC3152");
 
             entity.ToTable("autores_libros");
 
@@ -124,17 +150,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdAutorNavigation).WithMany(p => p.AutoresLibros)
                 .HasForeignKey(d => d.IdAutor)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_autor");
+                .HasConstraintName("FK__autores_l__id_au__1332DBDC");
 
             entity.HasOne(d => d.IdLibroNavigation).WithMany(p => p.AutoresLibros)
                 .HasForeignKey(d => d.IdLibro)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_librosAutores");
+                .HasConstraintName("FK__autores_l__id_li__14270015");
         });
 
         modelBuilder.Entity<Barrio>(entity =>
         {
-            entity.HasKey(e => e.IdBarrio).HasName("pk_barrio");
+            entity.HasKey(e => e.IdBarrio).HasName("PK__barrios__1121F0B2C57F10B5");
 
             entity.ToTable("barrios");
 
@@ -149,12 +175,12 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdCiudadNavigation).WithMany(p => p.Barrios)
                 .HasForeignKey(d => d.IdCiudad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_ciudad_barrio");
+                .HasConstraintName("FK__barrios__id_ciud__07C12930");
         });
 
         modelBuilder.Entity<Categoria>(entity =>
         {
-            entity.HasKey(e => e.IdCategoria).HasName("pk_categoria");
+            entity.HasKey(e => e.IdCategoria).HasName("PK__categori__CD54BC5AD0CE5A28");
 
             entity.ToTable("categorias");
 
@@ -168,7 +194,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Ciudade>(entity =>
         {
-            entity.HasKey(e => e.IdCiudad).HasName("pk_ciudad");
+            entity.HasKey(e => e.IdCiudad).HasName("PK__ciudades__B7DC4CD558AB4DFB");
 
             entity.ToTable("ciudades");
 
@@ -183,12 +209,12 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdProvinciaNavigation).WithMany(p => p.Ciudades)
                 .HasForeignKey(d => d.IdProvincia)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_ciudad_provincia");
+                .HasConstraintName("FK__ciudades__id_pro__06CD04F7");
         });
 
         modelBuilder.Entity<Cliente>(entity =>
         {
-            entity.HasKey(e => e.CodCliente).HasName("pk_cliente");
+            entity.HasKey(e => e.CodCliente).HasName("PK__clientes__08ED61F3DBF4000C");
 
             entity.ToTable("clientes");
 
@@ -238,31 +264,31 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdBarrioNavigation).WithMany(p => p.Clientes)
                 .HasForeignKey(d => d.IdBarrio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_cliente_barrio");
+                .HasConstraintName("FK__clientes__id_bar__08B54D69");
 
             entity.HasOne(d => d.IdNacionalidadNavigation).WithMany(p => p.Clientes)
                 .HasForeignKey(d => d.IdNacionalidad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_cliente_nacionalidad");
+                .HasConstraintName("FK__clientes__id_nac__0A9D95DB");
 
             entity.HasOne(d => d.IdSexoNavigation).WithMany(p => p.Clientes)
                 .HasForeignKey(d => d.IdSexo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_cliente_sexo");
+                .HasConstraintName("FK__clientes__id_sex__09A971A2");
 
             entity.HasOne(d => d.IdTipoDocNavigation).WithMany(p => p.Clientes)
                 .HasForeignKey(d => d.IdTipoDoc)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_cliente_tiposdoc");
+                .HasConstraintName("FK__clientes__id_tip__0B91BA14");
 
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Clientes)
                 .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("fk_clientes_usuarios");
+                .HasConstraintName("FK__clientes__IdUsua__0C85DE4D");
         });
 
         modelBuilder.Entity<Contacto>(entity =>
         {
-            entity.HasKey(e => e.IdContacto).HasName("pk_contacto");
+            entity.HasKey(e => e.IdContacto).HasName("PK__contacto__099A52B89843334C");
 
             entity.ToTable("contactos");
 
@@ -278,17 +304,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.Contactos)
                 .HasForeignKey(d => d.CodCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_contactos_clientes");
+                .HasConstraintName("FK__contactos__cod_c__0D7A0286");
 
             entity.HasOne(d => d.IdTipoContactoNavigation).WithMany(p => p.Contactos)
                 .HasForeignKey(d => d.IdTipoContacto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_contactos_tipos");
+                .HasConstraintName("FK__contactos__id_ti__0E6E26BF");
         });
 
         modelBuilder.Entity<DetalleFactura>(entity =>
         {
-            entity.HasKey(e => e.IdDetalleFactura).HasName("pk_detalle_fac");
+            entity.HasKey(e => e.IdDetalleFactura).HasName("PK__detalle___F6BFE3437EE650FB");
 
             entity.ToTable("detalle_facturas");
 
@@ -306,17 +332,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodLibroNavigation).WithMany(p => p.DetalleFacturas)
                 .HasForeignKey(d => d.CodLibro)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_detalle_libro");
+                .HasConstraintName("FK__detalle_f__cod_l__208CD6FA");
 
             entity.HasOne(d => d.NroFacturaNavigation).WithMany(p => p.DetalleFacturas)
                 .HasForeignKey(d => d.NroFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_detalle_factura");
+                .HasConstraintName("FK__detalle_f__nro_f__1F98B2C1");
         });
 
         modelBuilder.Entity<DetallePedido>(entity =>
         {
-            entity.HasKey(e => e.IdDetallePedido).HasName("pk_detalle_pedidos");
+            entity.HasKey(e => e.IdDetallePedido).HasName("PK__detalle___C08768CFBB739C82");
 
             entity.ToTable("detalle_pedidos");
 
@@ -331,17 +357,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodLibroNavigation).WithMany(p => p.DetallePedidos)
                 .HasForeignKey(d => d.CodLibro)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_detallepedidos_libros");
+                .HasConstraintName("FK__detalle_p__cod_l__1BC821DD");
 
             entity.HasOne(d => d.NroPedidoNavigation).WithMany(p => p.DetallePedidos)
                 .HasForeignKey(d => d.NroPedido)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_detallepedidos_pedido");
+                .HasConstraintName("FK__detalle_p__nro_p__1CBC4616");
         });
 
         modelBuilder.Entity<Editoriale>(entity =>
         {
-            entity.HasKey(e => e.IdEditorial).HasName("pk_editorial");
+            entity.HasKey(e => e.IdEditorial).HasName("PK__editoria__10C1DD0207266A1D");
 
             entity.ToTable("editoriales");
 
@@ -355,7 +381,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<EstadosEnvio>(entity =>
         {
-            entity.HasKey(e => e.IdEstadoEnvio).HasName("pk_estado_envio");
+            entity.HasKey(e => e.IdEstadoEnvio).HasName("PK__estados___5AAF6D3A433337FC");
 
             entity.ToTable("estados_envios");
 
@@ -369,7 +395,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Factura>(entity =>
         {
-            entity.HasKey(e => e.NroFactura).HasName("pk_factura");
+            entity.HasKey(e => e.NroFactura).HasName("PK__facturas__B31FA9AFA6F31375");
 
             entity.ToTable("facturas");
 
@@ -392,17 +418,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.Facturas)
                 .HasForeignKey(d => d.CodCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_facturas_clientes");
+                .HasConstraintName("FK__facturas__cod_cl__1DB06A4F");
 
             entity.HasOne(d => d.IdFormaEnvioNavigation).WithMany(p => p.Facturas)
                 .HasForeignKey(d => d.IdFormaEnvio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_facturas_formasenvio");
+                .HasConstraintName("FK__facturas__id_for__1EA48E88");
         });
 
         modelBuilder.Entity<FacturasFormaspago>(entity =>
         {
-            entity.HasKey(e => e.IdFacturaPago).HasName("pk_facturas_formaspago");
+            entity.HasKey(e => e.IdFacturaPago).HasName("PK__facturas__D7CA32CA3FFD3E4A");
 
             entity.ToTable("facturas_formaspago");
 
@@ -416,17 +442,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdFormaPagoNavigation).WithMany(p => p.FacturasFormaspagos)
                 .HasForeignKey(d => d.IdFormaPago)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_facturas_pagos");
+                .HasConstraintName("FK__facturas___id_fo__22751F6C");
 
             entity.HasOne(d => d.NroFacturaNavigation).WithMany(p => p.FacturasFormaspagos)
                 .HasForeignKey(d => d.NroFactura)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_facturas_factura");
+                .HasConstraintName("FK__facturas___nro_f__2180FB33");
         });
 
         modelBuilder.Entity<Financiera>(entity =>
         {
-            entity.HasKey(e => e.IdFinanciera).HasName("pk_financiera");
+            entity.HasKey(e => e.IdFinanciera).HasName("PK__financie__B6AE05DA493BDED7");
 
             entity.ToTable("financieras");
 
@@ -440,7 +466,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<FormapagosCliente>(entity =>
         {
-            entity.HasKey(e => e.IdFormapagoCliente).HasName("pk_formapagos_clientes");
+            entity.HasKey(e => e.IdFormapagoCliente).HasName("PK__formapag__781EDA7F0E02EAB6");
 
             entity.ToTable("formapagos_clientes");
 
@@ -455,22 +481,22 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.FormapagosClientes)
                 .HasForeignKey(d => d.CodCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_clientes");
+                .HasConstraintName("FK__formapago__cod_c__236943A5");
 
             entity.HasOne(d => d.IdFinancieraNavigation).WithMany(p => p.FormapagosClientes)
                 .HasForeignKey(d => d.IdFinanciera)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_financieras");
+                .HasConstraintName("FK__formapago__id_fi__25518C17");
 
             entity.HasOne(d => d.IdFormaPagoNavigation).WithMany(p => p.FormapagosClientes)
                 .HasForeignKey(d => d.IdFormaPago)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_formaspago");
+                .HasConstraintName("FK__formapago__id_fo__245D67DE");
         });
 
         modelBuilder.Entity<FormasEnvio>(entity =>
         {
-            entity.HasKey(e => e.IdFormaEnvio).HasName("pk_forma_envio");
+            entity.HasKey(e => e.IdFormaEnvio).HasName("PK__formas_e__FB2C7E215765FE0D");
 
             entity.ToTable("formas_envios");
 
@@ -484,7 +510,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<FormasPago>(entity =>
         {
-            entity.HasKey(e => e.IdFormaPago).HasName("pk_forma_pago");
+            entity.HasKey(e => e.IdFormaPago).HasName("PK__formas_p__DA9B39EEF3278C03");
 
             entity.ToTable("formas_pagos");
 
@@ -498,7 +524,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Genero>(entity =>
         {
-            entity.HasKey(e => e.IdGenero).HasName("pk_genero");
+            entity.HasKey(e => e.IdGenero).HasName("PK__generos__99A8E4F983610538");
 
             entity.ToTable("generos");
 
@@ -512,7 +538,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Idioma>(entity =>
         {
-            entity.HasKey(e => e.IdIdioma).HasName("pk_idioma");
+            entity.HasKey(e => e.IdIdioma).HasName("PK__idiomas__0BA1525F4F3019CC");
 
             entity.ToTable("idiomas");
 
@@ -526,7 +552,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Libro>(entity =>
         {
-            entity.HasKey(e => e.CodLibro).HasName("pk_libro");
+            entity.HasKey(e => e.CodLibro).HasName("PK__libros__6BF7918E48637779");
 
             entity.ToTable("libros");
 
@@ -558,17 +584,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdEditorialNavigation).WithMany(p => p.Libros)
                 .HasForeignKey(d => d.IdEditorial)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_libros_editoriales");
+                .HasConstraintName("FK__libros__id_edito__0F624AF8");
 
             entity.HasOne(d => d.IdIdiomaNavigation).WithMany(p => p.Libros)
                 .HasForeignKey(d => d.IdIdioma)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_libros_idiomas");
+                .HasConstraintName("FK__libros__id_idiom__10566F31");
         });
 
         modelBuilder.Entity<LibrosCategoria>(entity =>
         {
-            entity.HasKey(e => e.IdLibroCategoria).HasName("pk_libro_categoria");
+            entity.HasKey(e => e.IdLibroCategoria).HasName("PK__libros_c__EDB5CF8C3987938B");
 
             entity.ToTable("libros_categorias");
 
@@ -579,17 +605,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.LibrosCategoria)
                 .HasForeignKey(d => d.IdCategoria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_categorias_libros");
+                .HasConstraintName("FK__libros_ca__id_ca__17036CC0");
 
             entity.HasOne(d => d.IdLibroNavigation).WithMany(p => p.LibrosCategoria)
                 .HasForeignKey(d => d.IdLibro)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_libros_categoria");
+                .HasConstraintName("FK__libros_ca__id_li__17F790F9");
         });
 
         modelBuilder.Entity<LibrosGenero>(entity =>
         {
-            entity.HasKey(e => e.IdLibroGenero).HasName("Pk_libro_genero");
+            entity.HasKey(e => e.IdLibroGenero).HasName("PK__libros_g__270E9C32145F50FA");
 
             entity.ToTable("libros_generos");
 
@@ -600,17 +626,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdGeneroNavigation).WithMany(p => p.LibrosGeneros)
                 .HasForeignKey(d => d.IdGenero)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_generoslibros");
+                .HasConstraintName("FK__libros_ge__id_ge__151B244E");
 
             entity.HasOne(d => d.IdLibroNavigation).WithMany(p => p.LibrosGeneros)
                 .HasForeignKey(d => d.IdLibro)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_librosgeneros");
+                .HasConstraintName("FK__libros_ge__id_li__160F4887");
         });
 
         modelBuilder.Entity<Nacionalidade>(entity =>
         {
-            entity.HasKey(e => e.IdNacionalidad).HasName("pk_nacionalidad");
+            entity.HasKey(e => e.IdNacionalidad).HasName("PK__nacional__EDAEE094F63ADF97");
 
             entity.ToTable("nacionalidades");
 
@@ -624,7 +650,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Pedido>(entity =>
         {
-            entity.HasKey(e => e.NroPedido).HasName("pk_nro_pedido");
+            entity.HasKey(e => e.NroPedido).HasName("PK__pedidos__493904066A432A0E");
 
             entity.ToTable("pedidos");
 
@@ -644,17 +670,17 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.CodClienteNavigation).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => d.CodCliente)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_pedidos_clientes");
+                .HasConstraintName("FK__pedidos__cod_cli__18EBB532");
 
             entity.HasOne(d => d.IdFormaEnvioNavigation).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => d.IdFormaEnvio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_pedidos_formas");
+                .HasConstraintName("FK__pedidos__id_form__19DFD96B");
         });
 
         modelBuilder.Entity<Provincia>(entity =>
         {
-            entity.HasKey(e => e.IdProvincia).HasName("pk_provincia");
+            entity.HasKey(e => e.IdProvincia).HasName("PK__provinci__66C18BFD098BFE88");
 
             entity.ToTable("provincias");
 
@@ -668,7 +694,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<Sexo>(entity =>
         {
-            entity.HasKey(e => e.IdSexo).HasName("pk_sexo");
+            entity.HasKey(e => e.IdSexo).HasName("PK__sexos__D692FEE6250B406A");
 
             entity.ToTable("sexos");
 
@@ -682,7 +708,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<TiposContacto>(entity =>
         {
-            entity.HasKey(e => e.IdTipoContacto).HasName("pk_tipo_contacto");
+            entity.HasKey(e => e.IdTipoContacto).HasName("PK__tipos_co__CA854C0D7A5DBBAB");
 
             entity.ToTable("tipos_contactos");
 
@@ -696,7 +722,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<TiposDocumento>(entity =>
         {
-            entity.HasKey(e => e.IdTipoDoc).HasName("pk_tipo_doc");
+            entity.HasKey(e => e.IdTipoDoc).HasName("PK__tipos_do__B0A524EAE1A1FC6A");
 
             entity.ToTable("tipos_documentos");
 
@@ -710,7 +736,7 @@ public partial class LibreriaContext : DbContext
 
         modelBuilder.Entity<TrackingEnvio>(entity =>
         {
-            entity.HasKey(e => e.IdTracking).HasName("PK__tracking__8877058D5A66EEE6");
+            entity.HasKey(e => e.IdTracking).HasName("PK__tracking__8877058DAF6B9BFE");
 
             entity.ToTable("tracking_envios");
 
@@ -728,19 +754,19 @@ public partial class LibreriaContext : DbContext
             entity.HasOne(d => d.IdEstadoEnvioNavigation).WithMany(p => p.TrackingEnvios)
                 .HasForeignKey(d => d.IdEstadoEnvio)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_tracking_estado");
+                .HasConstraintName("FK__tracking___id_es__2739D489");
 
             entity.HasOne(d => d.NroPedidoNavigation).WithMany(p => p.TrackingEnvios)
                 .HasForeignKey(d => d.NroPedido)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_tracking_pedido");
+                .HasConstraintName("FK__tracking___nro_p__2645B050");
         });
 
         modelBuilder.Entity<Usuario>(entity =>
         {
-            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__5B65BF97062551EA");
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuarios__5B65BF9784E6E51C");
 
-            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE026658E68").IsUnique();
+            entity.HasIndex(e => e.NombreUsuario, "UQ__Usuarios__6B0F5AE05F9E8C88").IsUnique();
 
             entity.Property(e => e.ContrasenaHash)
                 .IsRequired()

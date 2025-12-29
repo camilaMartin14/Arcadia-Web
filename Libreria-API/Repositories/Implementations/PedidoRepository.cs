@@ -60,8 +60,7 @@ namespace Libreria_API.Repositories.Implementations
                 .Include(p => p.IdFormaEnvioNavigation)
                 .Include(p => p.DetallePedidos)
                     .ThenInclude(d => d.CodLibroNavigation)
-                .Include(p => p.TrackingEnvios)
-                    .ThenInclude(t => t.IdEstadoEnvioNavigation)
+                .Include(p => p.EstadoPedido)
                 .AsQueryable();
 
             if (fecha.HasValue)
@@ -85,10 +84,7 @@ namespace Libreria_API.Repositories.Implementations
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
                     NroDocCliente = p.CodClienteNavigation.NroDoc,
                     UsuarioCliente = p.CodClienteNavigation.IdUsuarioNavigation.NombreUsuario,
-                    EstadoActual = p.TrackingEnvios
-                        .OrderByDescending(t => t.FechaEstado)
-                        .Select(t => t.IdEstadoEnvioNavigation.EstadoActual)
-                        .FirstOrDefault() ?? "Sin estado",
+                    EstadoActual = p.EstadoPedido != null ? p.EstadoPedido.Nombre : "Sin estado",
                     Detalles = p.DetallePedidos.Select(d => new DetalleDTO
                     {
                         Cantidad = d.Cantidad,
@@ -108,8 +104,7 @@ namespace Libreria_API.Repositories.Implementations
                 .Include(p => p.IdFormaEnvioNavigation)
                 .Include(p => p.DetallePedidos)
                     .ThenInclude(d => d.CodLibroNavigation)
-                .Include(p => p.TrackingEnvios)
-                    .ThenInclude(t => t.IdEstadoEnvioNavigation)
+                .Include(p => p.EstadoPedido)
                 .Where(p => p.NroPedido == id)
                 .Select(p => new PedidoDTORead
                 {
@@ -125,10 +120,7 @@ namespace Libreria_API.Repositories.Implementations
                     NombreFormaEnvio = p.IdFormaEnvioNavigation.FormaEnvio,
                     NroDocCliente = p.CodClienteNavigation.NroDoc,
                     UsuarioCliente = p.CodClienteNavigation.IdUsuarioNavigation.NombreUsuario,
-                    EstadoActual = p.TrackingEnvios
-                        .OrderByDescending(t => t.FechaEstado)
-                        .Select(t => t.IdEstadoEnvioNavigation.EstadoActual)
-                        .FirstOrDefault() ?? "Sin estado",
+                    EstadoActual = p.EstadoPedido != null ? p.EstadoPedido.Nombre : "Sin estado",
                     Detalles = p.DetallePedidos.Select(d => new DetalleDTO
                     {
                         CodLibro = d.CodLibro,
@@ -143,33 +135,38 @@ namespace Libreria_API.Repositories.Implementations
         public void UpdateStatus(int nroPedido, int nuevoEstadoId, string observaciones)
         {
             var pedido = _context.Pedidos
-                .Include(p => p.TrackingEnvios)
                 .FirstOrDefault(p => p.NroPedido == nroPedido);
 
             if (pedido == null)
                 throw new KeyNotFoundException("Pedido no encontrado");
 
-            var tracking = new TrackingEnvio
-            {
-                NroPedido = nroPedido,
-                IdEstadoEnvio = nuevoEstadoId,
-                FechaEstado = DateTime.Now,
-                Observaciones = observaciones
-            };
+            // Validar que el estado exista
+            var existeEstado = _context.EstadosPedidos.Any(e => e.IdEstadoPedido == nuevoEstadoId);
+            if (!existeEstado)
+                throw new KeyNotFoundException($"El estado con ID {nuevoEstadoId} no existe.");
 
-            _context.TrackingEnvios.Add(tracking);
+            pedido.IdEstadoPedido = nuevoEstadoId;
             _context.SaveChanges();
         }
 
         public string ObtenerEstadoActualPedido(int nroPedido)
         {
-            var estado = _context.TrackingEnvios
-                .Where(t => t.NroPedido == nroPedido)
-                .OrderByDescending(t => t.FechaEstado)
-                .Select(t => t.IdEstadoEnvioNavigation.EstadoActual)
-                .FirstOrDefault();
+            var pedido = _context.Pedidos
+                .Include(p => p.EstadoPedido)
+                .FirstOrDefault(p => p.NroPedido == nroPedido);
 
-            return estado ?? "Sin estado";
+            return pedido?.EstadoPedido?.Nombre ?? "Sin estado";
+        }
+        
+        public List<EstadoPedidoDTO> GetEstadosPedido()
+        {
+            return _context.EstadosPedidos
+                .Select(e => new EstadoPedidoDTO
+                {
+                    Id = e.IdEstadoPedido,
+                    Nombre = e.Nombre
+                })
+                .ToList();
         }
 
         public void Update(Pedido pedido)

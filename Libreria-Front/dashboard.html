@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -83,6 +83,40 @@
               <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
             </button>
           </div>
+        </div>
+      </section>
+
+      <!-- Filtros de fecha -->
+      <section class="col-12 col-xl-10 mx-auto mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label for="filtroRango" class="form-label fw-medium text-secondary small">Rango de tiempo</label>
+                        <select id="filtroRango" class="form-select form-select-sm">
+                            <option value="last_week">Última semana</option>
+                            <option value="last_month">Último mes</option>
+                            <option value="3" selected>Últimos 3 meses</option>
+                            <option value="6">Últimos 6 meses</option>
+                            <option value="12">Último año</option>
+                            <option value="custom">Personalizado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-none" id="divFechaDesde">
+                        <label for="fechaDesde" class="form-label fw-medium text-secondary small">Desde</label>
+                        <input type="date" id="fechaDesde" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-3 d-none" id="divFechaHasta">
+                        <label for="fechaHasta" class="form-label fw-medium text-secondary small">Hasta</label>
+                        <input type="date" id="fechaHasta" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-auto ms-auto">
+                        <button id="btnAplicarFiltro" class="btn btn-primary btn-sm px-4">
+                            <i class="bi bi-funnel-fill me-1"></i> Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
       </section>
 

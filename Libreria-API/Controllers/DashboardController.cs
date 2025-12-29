@@ -1,7 +1,8 @@
 using Libreria_API.DTOs;
 using Libreria_API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic; // Asegúrate de que este using esté presente
+using System;
+using System.Collections.Generic;
 
 namespace Libreria_API.Controllers
 {
@@ -16,31 +17,60 @@ namespace Libreria_API.Controllers
             _dashboardService = dashboardService;
         }
 
-        [HttpGet("resumen")]
-        public ActionResult<DashboardSummaryDTO> ObtenerResumen([FromQuery] int meses = 3)
+        private (DateTime Inicio, DateTime Fin) ResolveDates(int? meses, DateTime? fechaDesde, DateTime? fechaHasta)
         {
-            var resultado = _dashboardService.ObtenerResumen(meses);
+            if (fechaDesde.HasValue && fechaHasta.HasValue)
+            {
+                return (fechaDesde.Value, fechaHasta.Value);
+            }
+
+            int mesesNormalizados = (meses.HasValue && meses.Value > 0) ? meses.Value : 3;
+            var fin = DateTime.Now;
+            var inicio = fin.AddMonths(-mesesNormalizados);
+            return (inicio, fin);
+        }
+
+        [HttpGet("resumen")]
+        public ActionResult<DashboardSummaryDTO> ObtenerResumen(
+            [FromQuery] int? meses,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta)
+        {
+            var (inicio, fin) = ResolveDates(meses, fechaDesde, fechaHasta);
+            var resultado = _dashboardService.ObtenerResumen(inicio, fin);
             return Ok(resultado);
         }
 
         [HttpGet("autores")]
-        public ActionResult<List<DashboardAuthorDTO>> ObtenerAutores([FromQuery] int meses = 3) // Adaptado 1/3
+        public ActionResult<List<DashboardAuthorDTO>> ObtenerAutores(
+            [FromQuery] int? meses,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta)
         {
-            var resultado = _dashboardService.ObtenerAutoresMasVendidos(meses);
+            var (inicio, fin) = ResolveDates(meses, fechaDesde, fechaHasta);
+            var resultado = _dashboardService.ObtenerAutoresMasVendidos(inicio, fin);
             return Ok(resultado);
         }
 
         [HttpGet("envios")]
-        public ActionResult<List<DashboardShippingDTO>> ObtenerTiposEnvio([FromQuery] int meses = 3) // Adaptado 2/3
+        public ActionResult<List<DashboardShippingDTO>> ObtenerTiposEnvio(
+            [FromQuery] int? meses,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta)
         {
-            var resultado = _dashboardService.ObtenerTiposEnvio(meses);
+            var (inicio, fin) = ResolveDates(meses, fechaDesde, fechaHasta);
+            var resultado = _dashboardService.ObtenerTiposEnvio(inicio, fin);
             return Ok(resultado);
         }
 
         [HttpGet("pagos")]
-        public ActionResult<List<DashboardPaymentDTO>> ObtenerFormasPago([FromQuery] int meses = 3) // Adaptado 3/3
+        public ActionResult<List<DashboardPaymentDTO>> ObtenerFormasPago(
+            [FromQuery] int? meses,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta)
         {
-            var resultado = _dashboardService.ObtenerFormasPago(meses);
+            var (inicio, fin) = ResolveDates(meses, fechaDesde, fechaHasta);
+            var resultado = _dashboardService.ObtenerFormasPago(inicio, fin);
             return Ok(resultado);
         }
     }

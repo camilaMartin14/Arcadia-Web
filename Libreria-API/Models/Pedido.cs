@@ -19,6 +19,9 @@ public partial class Pedido
 
     public int IdFormaEnvio { get; set; }
 
+    public int? IdEstadoPedido { get; set; }      
+    public virtual EstadoPedido? EstadoPedido { get; set; } 
+
     public bool Activo { get; set; }
 
     public virtual Cliente CodClienteNavigation { get; set; }
